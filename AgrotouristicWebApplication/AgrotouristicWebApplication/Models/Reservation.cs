@@ -8,6 +8,9 @@ namespace AgrotouristicWebApplication.Models
 {
     public class Reservation
     {
+
+        public static List<string> states = new List<string>(new string[] { "oczekiwanie", "zarezerwowano","zakończona" });
+
         public Reservation()
         {
             this.Reservation_House = new HashSet<Reservation_House>();

@@ -219,7 +219,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\Attraction_Reservation.cs" />
@@ -229,7 +229,7 @@
     <Compile Include="Models\AgrotourismContext.cs" />
     <Compile Include="Models\Meal.cs" />
     <Compile Include="Models\Worker.cs" />
-    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Views\ManageViewModels.cs" />
     <Compile Include="Models\Participant.cs" />
     <Compile Include="Models\Reservation.cs" />
     <Compile Include="Models\Reservation_House.cs" />
