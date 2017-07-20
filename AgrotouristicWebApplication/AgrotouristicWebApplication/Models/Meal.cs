@@ -21,6 +21,10 @@ namespace AgrotouristicWebApplication.Models
         [Required]
         public string Type { get; set; }
 
-        public virtual ICollection<Reservation_House> Reservation_House { get; private set; }
+        [Display(Name = "Cena:")]
+        [Required]
+        public decimal Price { get; set; }
+
+        public virtual ICollection<Reservation_House> Reservation_House { get; set; }
     }
 }

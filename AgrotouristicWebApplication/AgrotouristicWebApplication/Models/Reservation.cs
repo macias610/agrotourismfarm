@@ -17,6 +17,10 @@ namespace AgrotouristicWebApplication.Models
             this.Attraction_Reservation = new HashSet<Attraction_Reservation>();
         }
 
+        [Display(Name = "Id:")]
+        [Required]
+        public int Id { get; set; }
+
         [Display(Name = "Data przyjazdu:")]
         [Required]
         [DataType(DataType.Date)]
@@ -28,6 +32,21 @@ namespace AgrotouristicWebApplication.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
+
+        [Display(Name = "Ostateczny termin płatności:")]
+        [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime DeadlinePayment { get; set; }
+
+        [Display(Name = "Status:")]
+        [Required]
+        [MinLength(3), MaxLength(15)]
+        public string Status { get; set; }
+
+        [Display(Name = "Koszt całkowity:")]
+        [Required]
+        public decimal OverallCost { get; set; }
 
         public string ClientId { get; set; }
 

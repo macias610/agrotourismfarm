@@ -14,6 +14,6 @@ namespace AgrotouristicWebApplication.Models
             this.Attraction_Reservation_Worker = new HashSet<Attraction_Reservation_Worker>();
         }
 
-        public virtual ICollection<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; private set; }
+        public virtual ICollection<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get;  set; }
     }
 }
