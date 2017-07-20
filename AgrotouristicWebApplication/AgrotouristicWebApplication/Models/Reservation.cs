@@ -11,6 +11,7 @@ namespace AgrotouristicWebApplication.Models
         public Reservation()
         {
             this.Reservation_House = new HashSet<Reservation_House>();
+            this.Attraction_Reservation = new HashSet<Attraction_Reservation>();
         }
 
         [Display(Name = "Data przyjazdu:")]
@@ -25,7 +26,11 @@ namespace AgrotouristicWebApplication.Models
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
 
+        public string ClientId { get; set; }
+
         public virtual ICollection<Reservation_House> Reservation_House { get; set; }
+        public virtual ICollection<Attraction_Reservation> Attraction_Reservation { get; set; }
+        public virtual Client Client { get; set; }
     }
 
 }

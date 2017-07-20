@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace AgrotouristicWebApplication.Models
 {
+    [Table("Client")]
     public class Client : ApplicationUser
     {
         public Client()
         {
-            this.Reservation = new HashSet<Reservation>();
+            this.Reservations = new HashSet<Reservation>();
         }
-
-        public virtual ICollection<Reservation> Reservation { get; private set; }
+        public virtual ICollection<Reservation> Reservations { get; private set; }
     }
 }

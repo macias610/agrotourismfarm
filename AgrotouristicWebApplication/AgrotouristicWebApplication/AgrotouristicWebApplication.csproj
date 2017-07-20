@@ -220,9 +220,15 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ApplicationUser.cs" />
+    <Compile Include="Models\Attraction.cs" />
+    <Compile Include="Models\Attraction_Reservation.cs" />
+    <Compile Include="Models\Attraction_Reservation_Worker.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\House.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\AgrotourismContext.cs" />
+    <Compile Include="Models\Meal.cs" />
+    <Compile Include="Models\Worker.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Participant.cs" />
     <Compile Include="Models\Reservation.cs" />
