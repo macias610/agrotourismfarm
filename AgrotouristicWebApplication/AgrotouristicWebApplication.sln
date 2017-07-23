@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgrotouristicWebApplication
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgrotouristicWebApplication.Tests", "AgrotouristicWebApplication.Tests\AgrotouristicWebApplication.Tests.csproj", "{0C604FBF-03F1-4B68-906C-D7FEA4C06E28}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{8567A3D5-6FD3-4713-AFB5-2297CD8792C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0C604FBF-03F1-4B68-906C-D7FEA4C06E28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C604FBF-03F1-4B68-906C-D7FEA4C06E28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C604FBF-03F1-4B68-906C-D7FEA4C06E28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8567A3D5-6FD3-4713-AFB5-2297CD8792C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8567A3D5-6FD3-4713-AFB5-2297CD8792C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8567A3D5-6FD3-4713-AFB5-2297CD8792C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8567A3D5-6FD3-4713-AFB5-2297CD8792C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
