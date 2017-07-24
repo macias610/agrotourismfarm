@@ -26,6 +26,10 @@ namespace Repository.Models
         [Required]
         public string  Profession { get; set; }
 
+        [Display(Name = "Pensja:")]
+        [Required]
+        public decimal Salary { get; set; }
+
         public virtual ICollection<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get;  set; }
     }
 }

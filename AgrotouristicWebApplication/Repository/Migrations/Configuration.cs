@@ -1,7 +1,9 @@
 namespace Repository.Migrations
 {
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using Models;
     using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
@@ -9,23 +11,45 @@ namespace Repository.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;
         }
 
-        protected override void Seed(Repository.Models.AgrotourismContext context)
+        protected override void Seed(AgrotourismContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            SeedRoles(context);
+            SeedUsers(context);
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+        }
+
+        private void SeedRoles(AgrotourismContext context)
+        {
+            RoleManager<IdentityRole> roleManager = new RoleManager<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>(new RoleStore<IdentityRole>());
+
+            if (!roleManager.RoleExists("Admin"))
+            {
+                IdentityRole role = new IdentityRole();
+                role.Name = "Admin";
+                roleManager.Create(role);
+            }
+        }
+
+        private void SeedUsers(AgrotourismContext context)
+        {
+            UserStore<Worker> store = new UserStore<Worker>(context);
+            UserManager<Worker> manager = new UserManager<Worker>(store);
+
+            if (!context.Users.Any(u => u.UserName == "Admin@gmail.com"))
+            {
+                Worker user = new Worker { UserName = "Admin@gmail.com", Name = "Adam", Surname = "Kowalski", BirthDate = DateTime.Now, HireDate=DateTime.Now, Profession="Admin",Salary= 2300 };
+                var adminresult = manager.Create(user, "Password6#");
+
+                if (adminresult.Succeeded)
+                {
+                    manager.AddToRole(user.Id, "Admin");
+                }
+            }
+
         }
     }
 }
