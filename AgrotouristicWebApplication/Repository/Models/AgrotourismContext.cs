@@ -54,5 +54,6 @@ namespace Repository.Models
 
         }
 
+        public System.Data.Entity.DbSet<Repository.Models.Worker> IdentityUsers { get; set; }
     }
 }
