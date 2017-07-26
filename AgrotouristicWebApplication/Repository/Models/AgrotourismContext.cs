@@ -6,11 +6,12 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System.ComponentModel.DataAnnotations;
 using System;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using Repository.IRepo;
 
 namespace Repository.Models
 {
 
-    public class AgrotourismContext : IdentityDbContext
+    public class AgrotourismContext : IdentityDbContext,IAgrotourismContext
     {
         public AgrotourismContext()
             : base("DefaultConnection")
@@ -33,6 +34,7 @@ namespace Repository.Models
         public DbSet<Attraction_Reservation> Attraction_Reservation { get; set; }
         public DbSet<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
 
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -54,6 +56,5 @@ namespace Repository.Models
 
         }
 
-        public System.Data.Entity.DbSet<Repository.Models.Worker> IdentityUsers { get; set; }
     }
 }

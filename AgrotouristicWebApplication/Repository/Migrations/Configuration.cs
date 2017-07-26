@@ -1,5 +1,6 @@
 namespace Repository.Migrations
 {
+    using IRepo;
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.EntityFramework;
     using Models;
@@ -7,7 +8,7 @@ namespace Repository.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Repository.Models.AgrotourismContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<AgrotourismContext>
     {
         public Configuration()
         {
