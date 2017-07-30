@@ -50,7 +50,7 @@
                 <li>
                     <p>
                         @Model.Roles[userRole.RoleId]
-                        @Html.ActionLink("Delete", "Delete", new { id = user.Id})
+                        @Html.ActionLink("Delete", "Delete", new { userId = user.Id, SelectedRoleText = Model.Roles[userRole.RoleId]})
                     </p>
                 </li>
             </ul>

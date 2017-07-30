@@ -57,9 +57,9 @@ namespace Repository.Repository
             db.SaveChanges();
         }
 
-        public void RemoveFromRole(User user, string role)
+        public void RemoveFromRole(string userId, string role)
         {
-            GetUserManager().RemoveFromRole(user.Id, role);
+            GetUserManager().RemoveFromRole(userId, role);
         }
 
         public IQueryable<User> GetUsers()
@@ -91,8 +91,30 @@ namespace Repository.Repository
                 }
             }
             List<SelectListItem> selectList = avaiableRoles.Select(avaiableRole => new SelectListItem { Value = avaiableRole.Key.ToString(), Text = avaiableRole.Value }).ToList();
-            //return new SelectList(selectList,"Value","Text",null);
             return selectList;
+        }
+
+        public int GetNumberOfUsersForGivenRole(Dictionary<string, string> Roles,string role)
+        {
+            List<string> userRoles = new List<string>();
+            int numberOfUsers = 0;
+
+            foreach(IdentityUser user in db.Users)
+            {
+                List <IdentityUserRole> list= user.Roles.ToList();
+                list.ForEach(x => userRoles.Add(x.RoleId));
+            }
+   
+            string roleId = Roles[role];
+
+            foreach(string userRole in userRoles)
+            {
+                if(userRole.Equals(roleId))
+                {
+                    numberOfUsers++;
+                }
+            }
+            return numberOfUsers;
         }
     }
 }

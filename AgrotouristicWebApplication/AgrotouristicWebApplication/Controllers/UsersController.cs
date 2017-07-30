@@ -39,6 +39,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
 
             List<User> users = repository.GetUsers().ToList();
+
             Dictionary<string,string> roles = repository.GetRoles().ToDictionary(x=>x.Id,x=>x.Name);
             RolesUsers rolesUsers = new RolesUsers
             {
@@ -51,6 +52,12 @@ namespace AgrotouristicWebApplication.Controllers
         // GET: RoleUsers/Create
         public ActionResult Create(string id)
         {
+
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             List<IdentityUserRole> userRoles = repository.GetUserById(id).Roles.ToList();
             Dictionary<string, string> roles = repository.GetRoles().ToDictionary(x => x.Id, x => x.Name);
 
@@ -89,38 +96,65 @@ namespace AgrotouristicWebApplication.Controllers
 
 
         // GET: RoleUsers/Delete/5
-        //public ActionResult Delete(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    User user = db.Users.Find(id);
-        //    if (user == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(user);
-        //}
+        [Authorize(Roles ="Admin")]
+        public ActionResult Delete(string userId,string SelectedRoleText)
+        {
+            if (SelectedRoleText == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (userId == null)
+            {
+                return HttpNotFound();
+            }
 
-        //// POST: RoleUsers/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult DeleteConfirmed(string id)
-        //{
-        //    User user = db.Users.Find(id);
-        //    db.Users.Remove(user);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
+            RoleUser roleUser = new RoleUser
+            {
+                userId = userId,
+                SelectedRoleText = SelectedRoleText
 
-        //protected override void Dispose(bool disposing)
-        //{
-        //    if (disposing)
-        //    {
-        //        db.Dispose();
-        //    }
-        //    base.Dispose(disposing);
-        //}
+            };
+            return View(roleUser);
+        }
+
+        // POST: RoleUsers/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Admin")]
+        public ActionResult DeleteConfirmed([Bind(Include = "userId,SelectedRoleText")] RoleUser roleUser)
+        {
+
+            Dictionary<string, string> roles = repository.GetRoles().ToDictionary(x => x.Name, x => x.Id);
+
+            if (roleUser.SelectedRoleText.Equals("Admin") && repository.GetNumberOfUsersForGivenRole(roles, "Admin") <= 1)
+            {
+                ViewBag.error = true;
+                return View(roleUser);
+            }
+
+
+            try
+            {
+                repository.RemoveFromRole(roleUser.userId, roleUser.SelectedRoleText);
+                repository.SaveChanges();
+            }
+            catch
+            {
+                ViewBag.exception = true;
+                return View();
+            }
+            ViewBag.error = false;
+            ViewBag.exception = false;
+            return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                repository.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }
