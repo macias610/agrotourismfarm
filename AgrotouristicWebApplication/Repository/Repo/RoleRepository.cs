@@ -6,7 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Repository.Repository
 {
@@ -24,14 +27,18 @@ namespace Repository.Repository
             db.Roles.Add(role);
         }
 
-        public void AssignToRole(string id, string role)
+        private UserManager<User> GetUserManager()
         {
             RoleStore<IdentityRole> roleStore = new RoleStore<IdentityRole>(db);
             RoleManager<IdentityRole> roleManager = new RoleManager<IdentityRole>(roleStore);
 
-            UserStore<ApplicationUser> userStore = new UserStore<ApplicationUser>(db);
-            UserManager<ApplicationUser> userManager = new UserManager<ApplicationUser>(userStore);
-            userManager.AddToRole(id, role);
+            UserStore<User> userStore = new UserStore<User>(db);
+            return new UserManager<User>(userStore);
+        }
+
+        public void AssignToRole(string userId, string role)
+        {
+            GetUserManager().AddToRole(userId, role);
         }
 
         public void Dispose()
@@ -50,6 +57,42 @@ namespace Repository.Repository
             db.SaveChanges();
         }
 
+        public void RemoveFromRole(User user, string role)
+        {
+            GetUserManager().RemoveFromRole(user.Id, role);
+        }
 
+        public IQueryable<User> GetUsers()
+        {
+            IQueryable<User> users = db.ApplicationUsers.AsNoTracking();
+            return users;
+        }
+
+        public IdentityUser GetUserById(string id)
+        {
+            IdentityUser user = db.Users.Find(id);
+            return user;
+        }
+
+        public List<SelectListItem> GetNewRolesForUser(List<IdentityUserRole> UserRoles, Dictionary<string, string> Roles)
+        {
+            Dictionary<int,string> avaiableRoles = new Dictionary<int, string>();
+            List<string> IdUserRoles = new List<string>();
+            UserRoles.ForEach(item => IdUserRoles.Add(item.RoleId));
+
+            int index = 0;
+
+            foreach (KeyValuePair<string, string> Role in Roles)
+            {
+                if (!IdUserRoles.Contains(Role.Key))
+                {
+                    avaiableRoles.Add(index,Role.Value);
+                    index++;
+                }
+            }
+            List<SelectListItem> selectList = avaiableRoles.Select(avaiableRole => new SelectListItem { Value = avaiableRole.Key.ToString(), Text = avaiableRole.Value }).ToList();
+            //return new SelectList(selectList,"Value","Text",null);
+            return selectList;
+        }
     }
 }

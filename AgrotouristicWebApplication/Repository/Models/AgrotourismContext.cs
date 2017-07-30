@@ -25,7 +25,7 @@ namespace Repository.Models
 
         public DbSet<Attraction> Attractions { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<User> ApplicationUsers { get; set; }
         public DbSet<House> Houses { get; set; }
         public DbSet<Meal> Meals { get; set; }
         public DbSet<Participant> Participants { get; set; }
@@ -40,8 +40,6 @@ namespace Repository.Models
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
-            modelBuilder.Entity<Client>().ToTable("Client");
-            modelBuilder.Entity<Worker>().ToTable("Worker");
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 
             modelBuilder.Entity<Reservation>().HasRequired(x => x.Client)

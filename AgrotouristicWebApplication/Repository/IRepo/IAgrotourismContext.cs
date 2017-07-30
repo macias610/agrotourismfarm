@@ -16,7 +16,7 @@ namespace Repository.IRepo
     {
         DbSet<Attraction> Attractions { get; set; }
         DbSet<Reservation> Reservations { get; set; }
-        DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        DbSet<User> ApplicationUsers { get; set; }
         DbSet<House> Houses { get; set; }
         DbSet<Meal> Meals { get; set; }
         DbSet<Participant> Participants { get; set; }

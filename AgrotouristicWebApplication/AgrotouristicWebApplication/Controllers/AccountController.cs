@@ -156,7 +156,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    Client user = new Client { UserName = model.Email, Name = model.Name, Surname = model.Surname, BirthDate = model.BirthDate, Email = model.Email };
+                    User user = new User { UserName = model.Email, Name = model.Name, Surname = model.Surname, BirthDate = model.BirthDate, Email = model.Email };
                     IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
                     if (result.Succeeded)
@@ -375,7 +375,7 @@ namespace AgrotouristicWebApplication.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new Client { UserName = model.Email, Email = model.Email };
+                var user = new User { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
