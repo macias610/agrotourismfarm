@@ -1,68 +1,41 @@
-﻿@model Repository.ViewModels.RolesUsers
-
-@using Repository.Models;
-@using Microsoft.AspNet.Identity.EntityFramework;
+﻿@model IEnumerable<Repository.Models.User>
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-
+<h2>Lista użytkowników</h2>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model=>model.Users.First().Email)
+            @Html.DisplayNameFor(model => model.Email)
         </th>
         <th>
-            @Html.DisplayNameFor(model=>model.Users.First().Name)
+            @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Users.First().Surname)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Users.First().BirthDate)
-        </th>
-        <th>
-            @Html.DisplayName("Poziomy dostępu")
+            @Html.DisplayNameFor(model => model.Surname)
         </th>
         <th></th>
     </tr>
 
-    @foreach (User user in Model.Users) {
+@foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => user.Email)
+            @Html.DisplayFor(modelItem => item.Email)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => user.Name)
+            @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => user.Surname)
+            @Html.DisplayFor(modelItem => item.Surname)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => user.BirthDate)
-        </td>
-        <td>
-            @foreach (IdentityUserRole userRole in user.Roles)
-            {
-            <ul>
-                <li>
-                    <p>
-                        @Model.Roles[userRole.RoleId]
-                        @Html.ActionLink("Delete", "Delete", new { userId = user.Id, SelectedRoleText = Model.Roles[userRole.RoleId]})
-                    </p>
-                </li>
-            </ul>
-            }
-        </td>
-        <td>
-            @if (Model.Roles.Count != user.Roles.Count)
-            {
-            @Html.ActionLink("Dodaj poziom dostępu", "Create", new { id = user.Id })
-            }
+            @Html.ActionLink("Edytuj", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Szczegóły", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Usuń użytkownika", "Delete", new { id=item.Id })
         </td>
     </tr>
-    }
+}
 
 </table>

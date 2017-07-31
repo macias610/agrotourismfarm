@@ -12,9 +12,9 @@ namespace AgrotouristicWebApplication.Controllers
 {
     public class RoleController : Controller
     {
-        private readonly IRoleRepository repository;
+        private readonly IUserRepository repository;
 
-        public RoleController(IRoleRepository repository)
+        public RoleController(IUserRepository repository)
         {
             this.repository = repository;
         }

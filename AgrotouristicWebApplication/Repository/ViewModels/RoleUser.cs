@@ -15,6 +15,7 @@ namespace Repository.ViewModels
         {
 
         }
+
         public IEnumerable<SelectListItem> Roles { get; set; }
 
         [Display(Name ="Identyfikator")]

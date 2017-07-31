@@ -6,6 +6,7 @@ using Repository.IRepo;
 using Repository.Models;
 using Repository.Repository;
 using Repository.ViewModels;
+using Repository.Repo;
 
 namespace AgrotouristicWebApplication.App_Start
 {
@@ -44,8 +45,7 @@ namespace AgrotouristicWebApplication.App_Start
             // container.RegisterType<IProductRepository, ProductRepository>();
             container.RegisterType<AccountController>(new InjectionConstructor());
             container.RegisterType<ManageController>(new InjectionConstructor());
-            container.RegisterType<IRoleRepository,RoleRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<RoleUser>(new PerRequestLifetimeManager());
+            container.RegisterType<IUserRepository,UserRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IAgrotourismContext, AgrotourismContext>(new PerRequestLifetimeManager());
         }
     }

@@ -152,7 +152,7 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            using (IRoleRepository repository = new RoleRepository(new AgrotourismContext()))
+            using (IUserRepository repository = new UserRepository(new AgrotourismContext()))
             {
                 if (ModelState.IsValid)
                 {

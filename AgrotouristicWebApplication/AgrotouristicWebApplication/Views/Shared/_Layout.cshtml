@@ -28,9 +28,10 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Poziomy dostępu<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li>@Html.ActionLink("Lista", "Index", "Role")</li>
-                                <li>@Html.ActionLink("Uprawnenia użytkowników", "Index", "Users")</li>
+                                <li>@Html.ActionLink("Uprawnenia użytkowników", "Index", "RoleUsers")</li>
                             </ul>
                         </li>
+                        <li>@Html.ActionLink("Użytkownicy", "Index", "Users")</li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")

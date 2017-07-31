@@ -8,152 +8,106 @@ using System.Web;
 using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Repository.ViewModels;
+using Repository.Repo;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly IRoleRepository repository;
+        private readonly IUserRepository repository;
 
-        public UsersController(IRoleRepository repository)
+        public UsersController(IUserRepository repository)
         {
             this.repository = repository;
         }
 
-        // GET: RoleUsers
-        [Authorize(Roles = "Admin")]
+        // GET: Users
+        [Authorize(Roles ="Admin")]
         public ActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                if (!User.IsInRole("Admin"))
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
             List<User> users = repository.GetUsers().ToList();
-
-            Dictionary<string,string> roles = repository.GetRoles().ToDictionary(x=>x.Id,x=>x.Name);
-            RolesUsers rolesUsers = new RolesUsers
-            {
-                Users = users,
-                Roles = roles
-            };
-            return View(rolesUsers);
+            return View(users);
         }
 
-        // GET: RoleUsers/Create
-        public ActionResult Create(string id)
+        // GET: Users/Details/5
+        [Authorize(Roles ="Admin")]
+        public ActionResult Details(string id)
         {
-
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
-            List<IdentityUserRole> userRoles = repository.GetUserById(id).Roles.ToList();
-            Dictionary<string, string> roles = repository.GetRoles().ToDictionary(x => x.Id, x => x.Name);
-
-            RoleUser roleUser = new RoleUser
+            User user = repository.GetUserById(id);
+            if (user == null)
             {
-                userId = id,
-                Roles = repository.GetNewRolesForUser(userRoles,roles)
-            };
-            return View(roleUser);
+                return HttpNotFound();
+            }
+            return View(user);
         }
 
-        // POST: RoleUsers/Create
+        // GET: Users/Edit/5
+        [Authorize(Roles ="Admin")]
+        public ActionResult Edit(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            User user = repository.GetUserById(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
+        }
+
+        // POST: Users/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Admin")]
-        public ActionResult Create([Bind(Include = "userId,selectedRoleText")] RoleUser user)
+        public ActionResult Edit([Bind(Include = "Id,Email,PhoneNumber,Name,Surname,BirthDate")] User user)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    repository.AssignToRole(user.userId,user.SelectedRoleText);
-                    repository.SaveChanges();
-                }
-                catch
-                {
-                    ViewBag.exception = true;
-                    return View();
-                }    
-            }
-            ViewBag.exception = false;
-            return RedirectToAction("Index");
-        }
-
-
-        // GET: RoleUsers/Delete/5
-        [Authorize(Roles ="Admin")]
-        public ActionResult Delete(string userId,string SelectedRoleText)
-        {
-            if (SelectedRoleText == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            if (userId == null)
-            {
-                return HttpNotFound();
-            }
-
-            RoleUser roleUser = new RoleUser
-            {
-                userId = userId,
-                SelectedRoleText = SelectedRoleText
-
-            };
-            return View(roleUser);
-        }
-
-        // POST: RoleUsers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles ="Admin")]
-        public ActionResult DeleteConfirmed([Bind(Include = "userId,SelectedRoleText")] RoleUser roleUser)
-        {
-
-            Dictionary<string, string> roles = repository.GetRoles().ToDictionary(x => x.Name, x => x.Id);
-
-            if (roleUser.SelectedRoleText.Equals("Admin") && repository.GetNumberOfUsersForGivenRole(roles, "Admin") <= 1)
-            {
-                ViewBag.error = true;
-                return View(roleUser);
-            }
-
-
-            try
-            {
-                repository.RemoveFromRole(roleUser.userId, roleUser.SelectedRoleText);
+                user.UserName = user.Email;
+                repository.UpdateUser(user);
                 repository.SaveChanges();
+                return RedirectToAction("Index");
             }
-            catch
-            {
-                ViewBag.exception = true;
-                return View();
-            }
-            ViewBag.error = false;
-            ViewBag.exception = false;
-            return RedirectToAction("Index");
+            return View(user);
         }
+
+        // GET: Users/Delete/5
+        //public ActionResult Delete(string id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    User user = db.Users.Find(id);
+        //    if (user == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(user);
+        //}
+
+        // POST: Users/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(string id)
+        //{
+        //    User user = db.Users.Find(id);
+        //    db.Users.Remove(user);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                repository.Dispose();
-            }
+            
             base.Dispose(disposing);
         }
     }

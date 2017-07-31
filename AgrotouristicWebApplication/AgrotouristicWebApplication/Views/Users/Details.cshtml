@@ -1,0 +1,124 @@
+﻿@model Repository.Models.User
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Szczegółowe dane osobowe o użytkowniku</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EmailConfirmed)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EmailConfirmed)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LockoutEnabled)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LockoutEnabled)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AccessFailedCount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccessFailedCount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Surname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Surname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthDate)
+        </dd>
+
+        @if (Model.HireDate.HasValue)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.HireDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.HireDate)
+            </dd>
+        }
+
+        @if (!Model.Profession.IsEmpty())
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Profession)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Profession)
+            </dd>
+        }
+
+        
+        @if (Model.Salary.HasValue)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Salary)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Salary)
+            </dd>
+        }
+
+        
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Wróć", "Index")
+</p>

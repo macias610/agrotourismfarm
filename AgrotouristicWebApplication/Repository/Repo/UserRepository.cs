@@ -13,11 +13,11 @@ using System.Web.Mvc;
 
 namespace Repository.Repository
 {
-    public class RoleRepository: IRoleRepository
+    public class UserRepository: IUserRepository
     {
         private readonly AgrotourismContext db;
 
-        public RoleRepository(AgrotourismContext db)
+        public UserRepository(AgrotourismContext db)
         {
             this.db = db;
         }
@@ -68,9 +68,9 @@ namespace Repository.Repository
             return users;
         }
 
-        public IdentityUser GetUserById(string id)
+        public User GetUserById(string id)
         {
-            IdentityUser user = db.Users.Find(id);
+            User user = db.ApplicationUsers.Find(id);
             return user;
         }
 
@@ -115,6 +115,11 @@ namespace Repository.Repository
                 }
             }
             return numberOfUsers;
+        }
+
+        public void UpdateUser(User user)
+        {
+            db.Entry(user).State = EntityState.Modified;
         }
     }
 }

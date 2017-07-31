@@ -9,12 +9,13 @@ using System.Web.Mvc;
 
 namespace Repository.IRepo
 {
-    public interface IRoleRepository: IDisposable
+    public interface IUserRepository: IDisposable
     {
         IQueryable<IdentityRole> GetRoles();
         IQueryable<User> GetUsers();
-        IdentityUser GetUserById(string id);
+        User GetUserById(string id);
         void AssignToRole(string userId, string role);
+        void UpdateUser(User user);
         List<SelectListItem> GetNewRolesForUser(List<IdentityUserRole> UserRoles, Dictionary<string, string> Roles);
         int GetNumberOfUsersForGivenRole(Dictionary<string, string> Roles,string role);
         void RemoveFromRole(string userId, string role);
