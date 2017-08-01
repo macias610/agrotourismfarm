@@ -30,7 +30,7 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         // GET: Users/Details/5
-        [Authorize(Roles ="Admin")]
+        [Authorize]
         public ActionResult Details(string id)
         {
             if (id == null)
