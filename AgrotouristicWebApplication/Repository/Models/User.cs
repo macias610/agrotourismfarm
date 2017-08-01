@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -45,6 +46,9 @@ namespace Repository.Models
 
         [Display(Name = "Pensja")]
         public decimal? Salary { get; set; }
+
+        [NotMapped]
+        public bool isUserEmployed { get; set; }
 
         public virtual ICollection<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
 

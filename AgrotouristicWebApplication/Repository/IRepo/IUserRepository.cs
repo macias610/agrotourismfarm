@@ -18,6 +18,8 @@ namespace Repository.IRepo
         void UpdateUser(User user);
         List<SelectListItem> GetNewRolesForUser(List<IdentityUserRole> UserRoles, Dictionary<string, string> Roles);
         int GetNumberOfUsersForGivenRole(Dictionary<string, string> Roles,string role);
+        void RemoveUser(string id);
+        bool isUserEmployed(string userId);
         void RemoveFromRole(string userId, string role);
         void AddRole(IdentityRole role);
         void SaveChanges();

@@ -121,5 +121,36 @@ namespace Repository.Repository
         {
             db.Entry(user).State = EntityState.Modified;
         }
+
+        public bool isUserEmployed(string userId)
+        {
+            Dictionary<string, string> roles = db.Roles.ToDictionary(x => x.Name, x => x.Id);
+            roles.Remove("Klient");
+            List<string> userRoles = new List<string>();
+            db.Users.Find(userId).Roles.ToList().ForEach(item => userRoles.Add(item.RoleId));
+
+            foreach(string userRoleId in userRoles)
+            {
+                if (roles.ContainsValue(userRoleId))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void RemoveUser(string id)
+        {
+            User user = GetUserById(id);
+            ICollection<IdentityUserLogin> logins = user.Logins;
+            ICollection<IdentityUserRole> rolesForUser = user.Roles;
+            Dictionary<string, string> roles = db.Roles.ToDictionary(x => x.Id, x => x.Name);
+
+            logins.ToList().ForEach(item => GetUserManager().RemoveLogin(user.Id, new UserLoginInfo(item.LoginProvider, item.ProviderKey)));
+
+            rolesForUser.ToList().ForEach(item => RemoveFromRole(user.Id,roles[item.RoleId]));
+
+            db.Users.Remove(user);
+        }
     }
 }

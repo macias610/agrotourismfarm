@@ -4,13 +4,27 @@
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
+@if (ViewBag.error == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Nie można usunąć ostatniego administratora
+    </div>
+}
 
-<h3>Are you sure you want to delete this?</h3>
+@if (ViewBag.exception == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Wystąpił błąd
+    </div>
+}
+
+<h2>Usuń użytkownika</h2>
+
+<h3>Czy jesteś pewien?</h3>
 <div>
-    <h4>User</h4>
     <hr />
     <dl class="dl-horizontal">
+        @Html.HiddenFor(model=>model.Id)
         <dt>
             @Html.DisplayNameFor(model => model.Email)
         </dt>
@@ -20,87 +34,8 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.EmailConfirmed)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.EmailConfirmed)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PasswordHash)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PasswordHash)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.SecurityStamp)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SecurityStamp)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNumberConfirmed)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TwoFactorEnabled)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TwoFactorEnabled)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LockoutEndDateUtc)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LockoutEndDateUtc)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LockoutEnabled)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LockoutEnabled)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AccessFailedCount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AccessFailedCount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.Name)
+            
         </dt>
 
         <dd>
@@ -123,38 +58,14 @@
             @Html.DisplayFor(model => model.BirthDate)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.HireDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HireDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Profession)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Profession)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Salary)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Salary)
-        </dd>
-
     </dl>
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Usuń" class="btn btn-default" /> |
+            @Html.ActionLink("Wróć", "Index")
         </div>
     }
 </div>
