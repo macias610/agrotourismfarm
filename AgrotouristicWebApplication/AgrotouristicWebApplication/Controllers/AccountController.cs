@@ -156,7 +156,14 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    User user = new User { UserName = model.Email, Name = model.Name, Surname = model.Surname, BirthDate = model.BirthDate, Email = model.Email };
+                    User user = new User {
+                        UserName = model.Email,
+                        Name = model.Name,
+                        Surname = model.Surname,
+                        BirthDate = model.BirthDate,
+                        Email = model.Email,
+                        PhoneNumber=model.PhoneNumber
+                    };
                     IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
                     if (result.Succeeded)

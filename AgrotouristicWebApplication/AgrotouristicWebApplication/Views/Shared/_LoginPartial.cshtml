@@ -12,7 +12,7 @@
             <ul class="dropdown-menu" role="menu">
                 @*<li>@Html.ActionLink("Zarządzaj kontem", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })</li>*@
                 <li>@Html.ActionLink("Zmień hasło", "ChangePassword","Manage")</li>
-                <li>@Html.ActionLink("Moje dane osobowe", "Details", "Users", new { id = User.Identity.GetUserId()},null) )</li>
+                <li>@Html.ActionLink("Moje dane osobowe", "Details", "Users", new { id = User.Identity.GetUserId()},null)</li>
                 <li>@Html.ActionLink("Edytuj dane osobowe", "Edit", "Users", new { id=User.Identity.GetUserId()},null)</li>
                 <li><a href="javascript:document.getElementById('logoutForm').submit()">Wyloguj</a></li>
             </ul>

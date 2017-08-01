@@ -72,12 +72,12 @@ namespace Repository.Models
 
         [Required]
         [MinLength(3),MaxLength(20)]
-        [Display(Name = "Name")]
+        [Display(Name = "Imię")]
         public string Name { get; set; }
 
         [Required]
         [MinLength(3),MaxLength(20)]
-        [Display(Name = "Surname")]
+        [Display(Name = "Nazwisko")]
         public string Surname { get; set; }
 
         [DataType(DataType.Date)]
@@ -86,13 +86,18 @@ namespace Repository.Models
         public DateTime BirthDate { get; set; }
 
         [Required]
+        [MinLength(9),MaxLength(9)]
+        [Display(Name="Telefon")]
+        public string PhoneNumber { get; set; }
+
+        [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Hasło")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
+        [Display(Name = "Potwierdź hasło")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
