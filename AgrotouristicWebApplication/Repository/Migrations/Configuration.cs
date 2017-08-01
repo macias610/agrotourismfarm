@@ -1,5 +1,6 @@
 namespace Repository.Migrations
 {
+    using IRepo;
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.EntityFramework;
     using Models;
@@ -7,7 +8,7 @@ namespace Repository.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Repository.Models.AgrotourismContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<AgrotourismContext>
     {
         public Configuration()
         {
@@ -17,8 +18,8 @@ namespace Repository.Migrations
 
         protected override void Seed(AgrotourismContext context)
         {
-            SeedRoles(context);
-            SeedUsers(context);
+            //SeedRoles(context);
+            //SeedUsers(context);
 
         }
 
@@ -36,12 +37,12 @@ namespace Repository.Migrations
 
         private void SeedUsers(AgrotourismContext context)
         {
-            UserStore<Worker> store = new UserStore<Worker>(context);
-            UserManager<Worker> manager = new UserManager<Worker>(store);
+            UserStore<User> store = new UserStore<User>(context);
+            UserManager<User> manager = new UserManager<User>(store);
 
             if (!context.Users.Any(u => u.UserName == "Admin@gmail.com"))
             {
-                Worker user = new Worker { UserName = "Admin@gmail.com", Name = "Adam", Surname = "Kowalski", BirthDate = DateTime.Now, HireDate=DateTime.Now, Profession="Admin",Salary= 2300 };
+                User user = new User { UserName = "Admin@gmail.com", Name = "Adam", Surname = "Kowalski", BirthDate = DateTime.Now, HireDate=DateTime.Now, Profession="Admin",Salary= 2300 };
                 var adminresult = manager.Create(user, "Password6#");
 
                 if (adminresult.Succeeded)
