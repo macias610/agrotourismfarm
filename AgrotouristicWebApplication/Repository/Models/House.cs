@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -31,6 +32,10 @@ namespace Repository.Models
         [Display(Name ="Cena:")]
         [Required]
         public decimal Price { get; set; }
+
+        [NotMapped]
+        [Display(Name ="Aktualny status")]
+        public string statusHouse { get; set; }
 
 
         public ICollection<Reservation_House> Reservation_House { get; set; }

@@ -66,6 +66,9 @@ namespace AgrotouristicWebApplication.Controllers
                 {
                     repository.AddRole(role);
                     repository.SaveChanges();
+                    ViewBag.exception = false;
+                    ViewBag.error = false;
+                    return RedirectToAction("Index");
                 }
                 catch
                 {
@@ -73,9 +76,7 @@ namespace AgrotouristicWebApplication.Controllers
                     return View();
                 }
             }
-            ViewBag.exception = false;
-            ViewBag.error = false;
-            return RedirectToAction("Index");
+            return View();
         }
 
         protected override void Dispose(bool disposing)

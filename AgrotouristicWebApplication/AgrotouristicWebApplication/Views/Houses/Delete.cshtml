@@ -1,0 +1,62 @@
+﻿@model Repository.Models.House
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+@if (ViewBag.error == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Domek aktualnie jest zajęty.
+    </div>
+}
+
+@if (ViewBag.exception == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Wystąpił błąd
+    </div>
+}
+
+<h2>Usuń domek</h2>
+
+<h3>Jesteś pewien?</h3>
+<div>
+    <h4>Domek</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Usuń" class="btn btn-default" /> |
+            @Html.ActionLink("Powrót", "Index")
+        </div>
+    }
+</div>
