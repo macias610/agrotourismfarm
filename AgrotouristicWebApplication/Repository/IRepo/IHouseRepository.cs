@@ -12,9 +12,10 @@ namespace Repository.IRepo
     {
         IQueryable<House> GetHouses();
         House GetHouseById(int id);
+        IQueryable<House> GetHousesByType(string type);
         void setAvailabilityHouse(House house);
-
         List<SelectListItem> getAvaiableTypes();
+        void setPriceCreatedHouse(House house);
         void AddHouse(House house);
         void RemoveHouse(House house);
         void UpdateHouse(House house);

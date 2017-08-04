@@ -383,6 +383,7 @@
     <Content Include="Views\Houses\Delete.cshtml" />
     <Content Include="Views\Houses\Edit.cshtml" />
     <Content Include="Views\Houses\Index.cshtml" />
+    <Content Include="Views\Houses\EditPrice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

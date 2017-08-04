@@ -1,4 +1,4 @@
-﻿@model Repository.ViewModels.NewHouse
+﻿@model Repository.ViewModels.ExtendedHouse
 
 <head>
     @Scripts.Render("~/bundles/jquery")
@@ -29,7 +29,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.House.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.House.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextAreaFor(model => model.House.Description, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.House.Description, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -42,23 +42,16 @@
         </div>
 
         @Html.HiddenFor(model => model.SelectedTypeText)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.House.Price, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.House.Price, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.House.Price, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        @Html.HiddenFor(model => model.House.Price)
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Dodaj" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Wróć", "Index")
 </div>

@@ -35,7 +35,7 @@ namespace AgrotouristicWebApplication.Controllers
         // GET: Houses/Create
         public ActionResult Create()
         {
-            NewHouse house = new NewHouse()
+            ExtendedHouse house = new ExtendedHouse()
             {
                 Types = repository.getAvaiableTypes()
             };
@@ -51,7 +51,9 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult Create([Bind(Include = "Price,Description,Type")] House house,string selectedTypeText)
         {
             ModelState["house.Type"].Errors.Clear();
+            ModelState["house.Price"].Errors.Clear();
             house.Type = selectedTypeText;
+            repository.setPriceCreatedHouse(house);
             if (ModelState.IsValid)
             {
                 try
@@ -73,6 +75,41 @@ namespace AgrotouristicWebApplication.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
+        public ActionResult EditPrice()
+        {
+            HousesWage housesWage = new HousesWage()
+            {
+                Types = repository.getAvaiableTypes()
+            };
+            return View(housesWage);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPrice([Bind(Include = "Price,SelectedTypeText")] HousesWage wage)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    List<House> houses = repository.GetHousesByType(wage.SelectedTypeText).ToList();
+                    houses.ForEach(item => item.Price = wage.Price);
+                    houses.ForEach(item => repository.UpdateHouse(item));
+                    repository.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    ViewBag.exception = true;
+                    return View();
+                }
+
+            }
+            return View();
+        }
+
         // GET: Houses/Edit/5
         [Authorize(Roles ="Admin")]
         public ActionResult Edit(int? id)
@@ -86,12 +123,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return HttpNotFound();
             }
-            NewHouse newHouse = new NewHouse()
-            {
-                House = house,
-                Types = repository.getAvaiableTypes()
-            };
-            return View(newHouse);
+            return View(house);
         }
 
         // POST: Houses/Edit/5
@@ -100,14 +132,14 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Description,Type,Price,SelectedTypeText")] NewHouse house)
+        public ActionResult Edit([Bind(Include = "Id,Description,Type,Price")] House house)
         {
-            house.House.Type = house.SelectedTypeText;
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    repository.UpdateHouse(house.House);
+                    repository.UpdateHouse(house);
                     repository.SaveChanges();
                     return RedirectToAction("Index");
                 }
@@ -146,7 +178,7 @@ namespace AgrotouristicWebApplication.Controllers
             House house = repository.GetHouseById(id);
             repository.setAvailabilityHouse(house);
 
-            if (house.statusHouse.Equals("Zajęty"))
+            if (house.statusHouse.Equals("Zajęty")|| house.statusHouse.Equals("Zarezerwowany"))
             {
                 ViewBag.error = true;
                 return View(house);

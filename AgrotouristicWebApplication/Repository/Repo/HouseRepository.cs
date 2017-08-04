@@ -50,6 +50,14 @@ namespace Repository.Repo
             return houses;
         }
 
+        public IQueryable<House> GetHousesByType(string type)
+        {
+            IQueryable<House> houses = from house in db.Houses
+                                       where house.Type.Equals(type)
+                                       select house;
+            return houses;
+        }
+
         public void RemoveHouse(House house)
         {
             db.Houses.Remove(house);
@@ -75,9 +83,26 @@ namespace Repository.Repo
             {
                 house.statusHouse = "Zajęty";
             }
+            else if(reservationsIdForHouse.Count >= 1)
+            {
+                house.statusHouse = "Zarezerwowany";
+            }
             else
             {
                 house.statusHouse = "Wolny";
+            }
+        }
+
+        public void setPriceCreatedHouse(House house)
+        {
+            List<House> houses = GetHousesByType(house.Type).ToList();
+            if (houses.Count >= 1)
+            {
+                house.Price = houses.FirstOrDefault().Price;
+            }
+            else
+            {
+                house.Price = 100;
             }
         }
 
