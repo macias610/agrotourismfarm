@@ -68,14 +68,23 @@ namespace AgrotouristicWebApplication.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Edit([Bind(Include = "Id,Email,PhoneNumber,Name,Surname,BirthDate,HireDate,Profession,Salary")] User user)
+        public ActionResult Edit([Bind(Include = "Id,Email,PasswordHash,SecurityStamp,PhoneNumber,Name,Surname,BirthDate,HireDate,Profession,Salary")] User user)
         {
             if (ModelState.IsValid)
             {
                 user.UserName = user.Email;
-                repository.UpdateUser(user);
-                repository.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    repository.UpdateUser(user);
+                    repository.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch 
+                {
+                    ViewBag.exception = false;
+                    return View(user);
+                }
+               
             }
             return View(user);
         }

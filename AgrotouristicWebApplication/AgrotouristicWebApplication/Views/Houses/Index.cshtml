@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Repository.Models.House>
+@using Repository.Models;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Lista domków</h2>
+
+<p>
+    @Html.ActionLink("Dodaj domek", "Create")
+    @Html.ActionLink("Zmień cenę", "EditPrice")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("LP")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model=>model.statusHouse)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model.Select((value, i) => new { i, value })) {
+    House value = item.value;
+    int index = item.i+1;
+    <tr>
+        <td>
+            @index.ToString()
+        </td>
+        <td>
+            @value.Description
+        </td>
+        <td>
+            @value.Type
+        </td>
+        <td>
+            @value.Price.ToString()
+        </td>
+        <td>
+            @value.statusHouse
+        </td>
+        <td>
+            @Html.ActionLink("Edytuj", "Edit", new { id=value.Id }) |
+            @Html.ActionLink("Usuń", "Delete", new { id=value.Id })
+        </td>
+    </tr>
+}
+
+</table>

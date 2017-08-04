@@ -83,6 +83,8 @@ namespace AgrotouristicWebApplication.Controllers
                 {
                     repository.AssignToRole(user.userId,user.SelectedRoleText);
                     repository.SaveChanges();
+                    ViewBag.exception = false;
+                    return RedirectToAction("Index");
                 }
                 catch
                 {
@@ -90,8 +92,7 @@ namespace AgrotouristicWebApplication.Controllers
                     return View();
                 }    
             }
-            ViewBag.exception = false;
-            return RedirectToAction("Index");
+            return View();
         }
 
 

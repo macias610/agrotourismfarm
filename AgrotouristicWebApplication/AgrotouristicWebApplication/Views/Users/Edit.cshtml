@@ -8,7 +8,6 @@
     @Scripts.Render("~/bundles/jquery")    
     @Scripts.Render("~/bundles/jqueryui")
     @Styles.Render("~/Content/cssjqryUi")
-
 </head>
 
 <h2>Edytuj dane osobowe</h2>
@@ -23,6 +22,8 @@
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model=>model.PasswordHash)
+            @Html.HiddenFor(model=>model.SecurityStamp)
 
             <div class="form-group">
                 @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -104,7 +105,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Zapisz" class="btn btn-default" />
+                <input type="submit" value="Zapisz" class="btn btn-default"/>
             </div>
         </div>
 

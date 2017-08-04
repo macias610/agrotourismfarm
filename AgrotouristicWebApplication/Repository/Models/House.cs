@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Repository.Models
 {
     public class House
     {
-        public static List<string> houses = new List<string>(new string[] { "2-osobowy", "3-osobowy", "4-osobowy" });
-
         public House()
         {
             this.Reservation_House = new HashSet<Reservation_House>();
@@ -32,6 +32,9 @@ namespace Repository.Models
         [Required]
         public decimal Price { get; set; }
 
+        [NotMapped]
+        [Display(Name ="Aktualny status")]
+        public string statusHouse { get; set; }
 
         public ICollection<Reservation_House> Reservation_House { get; set; }
     }
