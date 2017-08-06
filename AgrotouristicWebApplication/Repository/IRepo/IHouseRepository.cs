@@ -11,14 +11,20 @@ namespace Repository.IRepo
     public interface IHouseRepository
     {
         IQueryable<House> GetHouses();
+        IQueryable<HouseType> GetHouseTypes();
         House GetHouseById(int id);
-        IQueryable<House> GetHousesByType(string type);
+        HouseType GetHouseTypeById(int id);
+        HouseType GetHouseTypeByType(string type);
         void setAvailabilityHouse(House house);
+        int countHousesWithGivenType(int id);
         List<SelectListItem> getAvaiableTypes();
         void setPriceCreatedHouse(House house);
         void AddHouse(House house);
+        void AddHouseType(HouseType houseType);
         void RemoveHouse(House house);
+        void RemoveHouseType(HouseType houseType);
         void UpdateHouse(House house);
+        void UpdateHouseType(HouseType houseType);
         void SaveChanges();
 
     }

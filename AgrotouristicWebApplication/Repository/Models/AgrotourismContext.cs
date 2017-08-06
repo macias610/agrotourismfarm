@@ -27,7 +27,7 @@ namespace Repository.Models
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<User> ApplicationUsers { get; set; }
         public DbSet<House> Houses { get; set; }
-        public DbSet<HouseType> HousesTypes { get; set; }
+        public DbSet<HouseType> HouseTypes { get; set; }
         public DbSet<Meal> Meals { get; set; }
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Reservation_House> Reservation_House { get; set; }
@@ -48,9 +48,9 @@ namespace Repository.Models
                                               .HasForeignKey(x => x.ClientId)
                                               .WillCascadeOnDelete(true);
 
-            modelBuilder.Entity<HouseType>().HasRequired(x => x.House)
-                                             .WithMany(x => x.HouseType)
-                                             .HasForeignKey(x => x.HouseId)
+            modelBuilder.Entity<House>().HasRequired(x => x.HouseType)
+                                             .WithMany(x => x.House)
+                                             .HasForeignKey(x => x.HouseTypeId)
                                              .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Reservation_House>().HasRequired(x => x.Meal)

@@ -75,41 +75,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
-        public ActionResult EditPrice()
-        {
-            HousesWage housesWage = new HousesWage()
-            {
-                Types = repository.getAvaiableTypes()
-            };
-            return View(housesWage);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult EditPrice([Bind(Include = "Price,SelectedTypeText")] HousesWage wage)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    List<House> houses = repository.GetHousesByType(wage.SelectedTypeText).ToList();
-                    //houses.ForEach(item => item.Price = wage.Price);
-                    houses.ForEach(item => repository.UpdateHouse(item));
-                    repository.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                catch
-                {
-                    ViewBag.exception = true;
-                    return View();
-                }
-
-            }
-            return View();
-        }
-
         // GET: Houses/Edit/5
         [Authorize(Roles ="Admin")]
         public ActionResult Edit(int? id)
