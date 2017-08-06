@@ -52,10 +52,11 @@ namespace Repository.Repo
 
         public IQueryable<House> GetHousesByType(string type)
         {
-            IQueryable<House> houses = from house in db.Houses
-                                       where house.Type.Equals(type)
-                                       select house;
-            return houses;
+            //IQueryable<House> houses = from house in db.Houses
+            //                           where house.Type.Equals(type)
+            //                           select house;
+            //return houses;
+            return null;
         }
 
         public void RemoveHouse(House house)
@@ -95,15 +96,15 @@ namespace Repository.Repo
 
         public void setPriceCreatedHouse(House house)
         {
-            List<House> houses = GetHousesByType(house.Type).ToList();
-            if (houses.Count >= 1)
-            {
-                house.Price = houses.FirstOrDefault().Price;
-            }
-            else
-            {
-                house.Price = 100;
-            }
+            //List<House> houses = GetHousesByType(house.Type).ToList();
+            //if (houses.Count >= 1)
+            //{
+            //    house.Price = houses.FirstOrDefault().Price;
+            //}
+            //else
+            //{
+            //    house.Price = 100;
+            //}
         }
 
         public void UpdateHouse(House house)

@@ -52,7 +52,7 @@ namespace AgrotouristicWebApplication.Controllers
         {
             ModelState["house.Type"].Errors.Clear();
             ModelState["house.Price"].Errors.Clear();
-            house.Type = selectedTypeText;
+            //house.Type = selectedTypeText;
             repository.setPriceCreatedHouse(house);
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace AgrotouristicWebApplication.Controllers
                 try
                 {
                     List<House> houses = repository.GetHousesByType(wage.SelectedTypeText).ToList();
-                    houses.ForEach(item => item.Price = wage.Price);
+                    //houses.ForEach(item => item.Price = wage.Price);
                     houses.ForEach(item => repository.UpdateHouse(item));
                     repository.SaveChanges();
                     return RedirectToAction("Index");

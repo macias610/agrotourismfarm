@@ -13,6 +13,7 @@ namespace Repository.Models
         public House()
         {
             this.Reservation_House = new HashSet<Reservation_House>();
+            this.HouseType = new HashSet<HouseType>();
         }
 
         [Display(Name = "Id:")]
@@ -21,20 +22,14 @@ namespace Repository.Models
 
         [Display(Name = "Opis:")]
         [Required]
-        [MinLength(3), MaxLength(15)]
+        [MinLength(3), MaxLength(100)]
         public string Description { get; set; }
-        [Display(Name = "Rodzaj:")]
-        [Required]
-        [MinLength(3), MaxLength(15)]
-        public string Type { get; set; }
-
-        [Display(Name ="Cena:")]
-        [Required]
-        public decimal Price { get; set; }
-
+        
         [NotMapped]
         [Display(Name ="Aktualny status")]
         public string statusHouse { get; set; }
+
+        public virtual ICollection<HouseType> HouseType { get; private set; }
 
         public ICollection<Reservation_House> Reservation_House { get; set; }
     }
