@@ -18,7 +18,6 @@ namespace Repository.IRepo
         void setAvailabilityHouse(House house);
         int countHousesWithGivenType(int id);
         List<SelectListItem> getAvaiableTypes();
-        void setPriceCreatedHouse(House house);
         void AddHouse(House house);
         void AddHouseType(HouseType houseType);
         void RemoveHouse(House house);

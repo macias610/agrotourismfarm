@@ -100,6 +100,7 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         // GET: HouseTypes/Delete/5
+        [Authorize(Roles ="Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)

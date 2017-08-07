@@ -42,7 +42,6 @@ namespace Repository.Repo
             List<HouseType> houseTypes = db.HouseTypes.AsNoTracking().ToList();
             List<string> avaiableTypes = new List<string>();
             houseTypes.ForEach(item => avaiableTypes.Add(item.Type));
-
             List<SelectListItem> selectList = avaiableTypes.Select(avaiableType => new SelectListItem { Value = avaiableType, Text = avaiableType }).ToList();
             return selectList;
         }
@@ -117,19 +116,6 @@ namespace Repository.Repo
             {
                 house.statusHouse = "Wolny";
             }
-        }
-
-        public void setPriceCreatedHouse(House house)
-        {
-            //List<House> houses = GetHousesByType(house.Type).ToList();
-            //if (houses.Count >= 1)
-            //{
-            //    house.Price = houses.FirstOrDefault().Price;
-            //}
-            //else
-            //{
-            //    house.Price = 100;
-            //}
         }
 
         public void UpdateHouse(House house)

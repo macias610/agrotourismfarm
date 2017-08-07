@@ -192,8 +192,7 @@
     <Compile Include="Repo\HouseRepository.cs" />
     <Compile Include="Repo\RoleComparer.cs" />
     <Compile Include="Repo\UserRepository.cs" />
-    <Compile Include="ViewModels\ExtendedHouse.cs" />
-    <Compile Include="ViewModels\HousesWage.cs" />
+    <Compile Include="ViewModels\HouseDetails.cs" />
     <Compile Include="ViewModels\RoleUser.cs" />
     <Compile Include="ViewModels\RolesUsers.cs" />
   </ItemGroup>

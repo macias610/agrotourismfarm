@@ -1,5 +1,5 @@
-﻿@model IEnumerable<Repository.Models.House>
-@using Repository.Models;
+﻿@model IEnumerable<Repository.ViewModels.HouseDetails>
+@using Repository.ViewModels;
 
 @{
     ViewBag.Title = "Index";
@@ -16,29 +16,35 @@
             @Html.DisplayName("LP")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model=>model.House.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Type)
+            @Html.DisplayNameFor(model => model.House.Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayNameFor(model=>model.Type)
         </th>
         <th>
-            @Html.DisplayNameFor(model=>model.statusHouse)
+            @Html.DisplayNameFor(model=>model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model=>model.House.statusHouse)
         </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model.Select((value, i) => new { i, value })) {
-    House value = item.value;
+    HouseDetails value = item.value;
     int index = item.i+1;
     <tr>
         <td>
             @index.ToString()
         </td>
         <td>
-            @value.Description
+            @value.House.Name
+        </td>
+        <td>
+            @value.House.Description
         </td>
         <td>
             @value.Type
@@ -47,11 +53,11 @@
             @value.Price.ToString()
         </td>
         <td>
-            @value.statusHouse
+            @value.House.statusHouse
         </td>
         <td>
-            @Html.ActionLink("Edytuj", "Edit", new { id=value.Id }) |
-            @Html.ActionLink("Usuń", "Delete", new { id=value.Id })
+            @Html.ActionLink("Edytuj", "Edit", new { id=value.House.Id }) |
+            @Html.ActionLink("Usuń", "Delete", new { id=value.House.Id })
         </td>
     </tr>
 }
