@@ -244,6 +244,7 @@
     <Compile Include="Controllers\HousesController.cs" />
     <Compile Include="Controllers\HouseTypesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MealsController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\RoleUsersController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -388,6 +389,10 @@
     <Content Include="Views\HouseTypes\Delete.cshtml" />
     <Content Include="Views\HouseTypes\Index.cshtml" />
     <Content Include="Views\HouseTypes\Edit.cshtml" />
+    <Content Include="Views\Meals\Create.cshtml" />
+    <Content Include="Views\Meals\Delete.cshtml" />
+    <Content Include="Views\Meals\Edit.cshtml" />
+    <Content Include="Views\Meals\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
