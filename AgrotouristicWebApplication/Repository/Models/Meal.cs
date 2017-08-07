@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -8,6 +9,7 @@ namespace Repository.Models
 {
     public class Meal
     {
+
         public Meal()
         {
             this.Reservation_House = new HashSet<Reservation_House>();
@@ -18,6 +20,9 @@ namespace Repository.Models
         public int Id { get; set; }
 
         [Display(Name = "Typ:")]
+        [Index(IsUnique = true)]
+        [MinLength(10),MaxLength(100)]
+        [RegularExpression(@"^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]{5,15}(?:\+[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]{5,15}){0,2}$")]
         [Required]
         public string Type { get; set; }
 
