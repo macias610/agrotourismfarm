@@ -170,8 +170,13 @@
     <Compile Include="Migrations\201707272225495_nullable_hiredate_user.Designer.cs">
       <DependentUpon>201707272225495_nullable_hiredate_user.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708062025435_added_HouseType_table_with_unique_type.cs" />
+    <Compile Include="Migrations\201708062025435_added_HouseType_table_with_unique_type.Designer.cs">
+      <DependentUpon>201708062025435_added_HouseType_table_with_unique_type.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AgrotourismContext.cs" />
+    <Compile Include="Models\HouseType.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\Attraction_Reservation.cs" />
@@ -187,8 +192,7 @@
     <Compile Include="Repo\HouseRepository.cs" />
     <Compile Include="Repo\RoleComparer.cs" />
     <Compile Include="Repo\UserRepository.cs" />
-    <Compile Include="ViewModels\ExtendedHouse.cs" />
-    <Compile Include="ViewModels\HousesWage.cs" />
+    <Compile Include="ViewModels\HouseDetails.cs" />
     <Compile Include="ViewModels\RoleUser.cs" />
     <Compile Include="ViewModels\RolesUsers.cs" />
   </ItemGroup>
@@ -201,6 +205,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201707272225495_nullable_hiredate_user.resx">
       <DependentUpon>201707272225495_nullable_hiredate_user.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708062025435_added_HouseType_table_with_unique_type.resx">
+      <DependentUpon>201708062025435_added_HouseType_table_with_unique_type.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

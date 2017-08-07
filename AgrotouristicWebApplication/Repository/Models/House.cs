@@ -19,22 +19,24 @@ namespace Repository.Models
         [Required]
         public int Id { get; set; }
 
+        [Display(Name ="Nazwa")]
+        [Required]
+        [MinLength(3),MaxLength(15)]
+        [Index(IsUnique = true)]
+        public string Name { get; set; }
+
         [Display(Name = "Opis:")]
         [Required]
-        [MinLength(3), MaxLength(15)]
+        [MinLength(3), MaxLength(100)]
         public string Description { get; set; }
-        [Display(Name = "Rodzaj:")]
-        [Required]
-        [MinLength(3), MaxLength(15)]
-        public string Type { get; set; }
-
-        [Display(Name ="Cena:")]
-        [Required]
-        public decimal Price { get; set; }
-
+        
         [NotMapped]
         [Display(Name ="Aktualny status")]
         public string statusHouse { get; set; }
+
+        public int  HouseTypeId { get; set; }
+
+        public virtual HouseType HouseType { get; set; }
 
         public ICollection<Reservation_House> Reservation_House { get; set; }
     }

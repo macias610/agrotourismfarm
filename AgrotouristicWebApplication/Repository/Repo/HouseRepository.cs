@@ -24,16 +24,24 @@ namespace Repository.Repo
             db.Houses.Add(house);
         }
 
+        public void AddHouseType(HouseType houseType)
+        {
+            db.HouseTypes.Add(houseType);
+        }
+
+        public int countHousesWithGivenType(int id)
+        {
+            int numberHouses = (from house in db.Houses
+                                where house.HouseTypeId.Equals(id)
+                                select house.Id).ToList().Count;
+            return numberHouses;
+        }
+
         public List<SelectListItem> getAvaiableTypes()
         {
-            List<string> avaiableTypes = new List<string>()
-            {
-                {"2-osobowy" },
-                {"3-osobowy" },
-                {"4-osobowy" },
-                {"5-osobowy" }
-            };
-
+            List<HouseType> houseTypes = db.HouseTypes.AsNoTracking().ToList();
+            List<string> avaiableTypes = new List<string>();
+            houseTypes.ForEach(item => avaiableTypes.Add(item.Type));
             List<SelectListItem> selectList = avaiableTypes.Select(avaiableType => new SelectListItem { Value = avaiableType, Text = avaiableType }).ToList();
             return selectList;
         }
@@ -50,17 +58,34 @@ namespace Repository.Repo
             return houses;
         }
 
-        public IQueryable<House> GetHousesByType(string type)
+        public HouseType GetHouseTypeById(int id)
         {
-            IQueryable<House> houses = from house in db.Houses
-                                       where house.Type.Equals(type)
-                                       select house;
-            return houses;
+            HouseType houseType = db.HouseTypes.Find(id);
+            return houseType;
+        }
+
+        public HouseType GetHouseTypeByType(string type)
+        {
+            HouseType houseType = (from item in db.HouseTypes
+                                   where item.Type.Equals(type)
+                                   select item).FirstOrDefault();
+            return houseType;
+        }
+
+        public IQueryable<HouseType> GetHouseTypes()
+        {
+            IQueryable<HouseType> houseTypes = db.HouseTypes.AsNoTracking();
+            return houseTypes;
         }
 
         public void RemoveHouse(House house)
         {
             db.Houses.Remove(house);
+        }
+
+        public void RemoveHouseType(HouseType houseType)
+        {
+            db.HouseTypes.Remove(houseType);
         }
 
         public void SaveChanges()
@@ -93,22 +118,14 @@ namespace Repository.Repo
             }
         }
 
-        public void setPriceCreatedHouse(House house)
-        {
-            List<House> houses = GetHousesByType(house.Type).ToList();
-            if (houses.Count >= 1)
-            {
-                house.Price = houses.FirstOrDefault().Price;
-            }
-            else
-            {
-                house.Price = 100;
-            }
-        }
-
         public void UpdateHouse(House house)
         {
             db.Entry(house).State = EntityState.Modified;
+        }
+
+        public void UpdateHouseType(HouseType houseType)
+        {
+            db.Entry(houseType).State = EntityState.Modified;
         }
     }
 }
