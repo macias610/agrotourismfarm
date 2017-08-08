@@ -240,6 +240,7 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AttractionsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HousesController.cs" />
     <Compile Include="Controllers\HouseTypesController.cs" />
@@ -393,6 +394,10 @@
     <Content Include="Views\Meals\Delete.cshtml" />
     <Content Include="Views\Meals\Edit.cshtml" />
     <Content Include="Views\Meals\Index.cshtml" />
+    <Content Include="Views\Attractions\Create.cshtml" />
+    <Content Include="Views\Attractions\Delete.cshtml" />
+    <Content Include="Views\Attractions\Edit.cshtml" />
+    <Content Include="Views\Attractions\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

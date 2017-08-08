@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IRepo\IAgrotourismContext.cs" />
+    <Compile Include="IRepo\IAttractionRepository.cs" />
     <Compile Include="IRepo\IHouseRepository.cs" />
     <Compile Include="IRepo\IMealRepository.cs" />
     <Compile Include="IRepo\IUserRepository.cs" />
@@ -179,6 +180,10 @@
     <Compile Include="Migrations\201708070917441_added_unique_type_meal.Designer.cs">
       <DependentUpon>201708070917441_added_unique_type_meal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708072226082_extended_length_name_description_in_Attraction_table.cs" />
+    <Compile Include="Migrations\201708072226082_extended_length_name_description_in_Attraction_table.Designer.cs">
+      <DependentUpon>201708072226082_extended_length_name_description_in_Attraction_table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AgrotourismContext.cs" />
     <Compile Include="Models\HouseType.cs" />
@@ -194,6 +199,7 @@
     <Compile Include="Models\Reservation_House_Participant.cs" />
     <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repo\AttractionRepository.cs" />
     <Compile Include="Repo\HouseRepository.cs" />
     <Compile Include="Repo\MealRepository.cs" />
     <Compile Include="Repo\RoleComparer.cs" />
@@ -217,6 +223,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201708070917441_added_unique_type_meal.resx">
       <DependentUpon>201708070917441_added_unique_type_meal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708072226082_extended_length_name_description_in_Attraction_table.resx">
+      <DependentUpon>201708072226082_extended_length_name_description_in_Attraction_table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
