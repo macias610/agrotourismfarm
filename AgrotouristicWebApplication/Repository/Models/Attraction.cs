@@ -20,19 +20,19 @@ namespace Repository.Models
 
         [Display(Name = "Atrakcja:")]
         [Required]
-        [MinLength(3), MaxLength(15)]
+        [MinLength(3), MaxLength(30)]
         public string Name { get; set; }
 
         [Display(Name = "Opis:")]
         [Required]
-        [MinLength(3), MaxLength(15)]
+        [MinLength(3), MaxLength(100)]
         public string Description { get; set; }
 
         [Display(Name = "Cena:")]
         [Required]
         public decimal Price { get; set; }
 
-        [Display(Name = "Zniżka:")]
+        [Display(Name = "Zniżka [%]:")]
         [Required]
         public decimal Discount { get; set; }
 
