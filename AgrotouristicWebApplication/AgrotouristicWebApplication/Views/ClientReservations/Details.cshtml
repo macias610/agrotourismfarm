@@ -1,66 +1,154 @@
-﻿@model Repository.Models.Reservation
+﻿@model Repository.ViewModels.ReservationDetails
+
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<!DOCTYPE html>
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+            $(function () {
+                $("#btnGet").click(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/ClientReservations/AjaxMethod",
+                        data: '{id: "' + $("#idValue").val() + '",name:"' + $("#SelectedHouseDetailsId option:selected").text() + '" }',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "text",
+                        success: function (response) {
+                            $('#SelectHouse').html(response)
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                            console.log(response.responseText)
+                        }
+                    });
+                });
+            });
+    </script>
+
+    <script type="text/javascript">
+            $(function () {
+                $("#btnHide").click(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/ClientReservations/AjaxMethod",
+                        data: '{id: "' + $("#idValue").val() + '",name: "-" }',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "text",
+                        success: function (response) {
+                            $('#SelectHouse').html(response)
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                            console.log(response.responseText)
+                        }
+                    });
+                });
+            });
+    </script>
+
+</head>
 
 <div>
-    <h4>Reservation</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Client.Email)
-        </dt>
+    <h2>Szczegóły rezerwacji</h2>
 
-        <dd>
-            @Html.DisplayFor(model => model.Client.Email)
-        </dd>
+        <h4>Rezerwacja</h4>
+        <hr />
 
-        <dt>
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
+        @Html.HiddenFor(model => model.SelectedHouseDetailsText)
 
-        <dd>
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Reservation.Client.Name)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Reservation.Client.Name)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Reservation.Client.Surname)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DeadlinePayment)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Reservation.Client.Surname)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.DeadlinePayment)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Reservation.StartDate)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Reservation.StartDate)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Reservation.EndDate)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OverallCost)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Reservation.EndDate)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.OverallCost)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Reservation.DeadlinePayment)
+            </dt>
 
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+            <dd>
+                @Html.DisplayFor(model => model.Reservation.DeadlinePayment)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Reservation.Status)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Reservation.Status)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Reservation.OverallCost)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Reservation.OverallCost)
+            </dd>
+        </dl>
+
+        <div class="form-group">
+            @Html.Label("Domki", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("SelectedHouseDetailsId", Model.Houses)
+            </div>
+        </div>
+
+        <input type="hidden" id="idValue" value=@Model.Reservation.Id />
+        <input type="button" id="btnGet" value="Wyświetl" />
+        <input type="button" id="btnHide" value="Ukryj" />
+
+
+        
+
+    <div id="SelectHouse" class="SelectHouse">
+
+    </div>
+
+
+
+
+    <p>
+        @Html.ActionLink("Wróć", "Index")
+    </p>
+    </div>

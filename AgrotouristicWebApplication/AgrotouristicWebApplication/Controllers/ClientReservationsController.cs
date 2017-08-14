@@ -10,10 +10,15 @@ using Repository.Models;
 using Repository.IRepo;
 using System.Web.Security;
 using Microsoft.AspNet.Identity;
+using Repository.ViewModels;
+using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using Microsoft.Ajax.Utilities;
+using Repository.Repo;
 
 namespace AgrotouristicWebApplication.Controllers
 {
-    public class ClientReservationsController : Controller
+    public class ClientReservationsController : Controller,IController
     {
         private readonly IReservationRepository repository;
 
@@ -30,19 +35,58 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         // GET: Reservations/Details/5
-        //public ActionResult Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Reservation reservation = db.Reservations.Find(id);
-        //    if (reservation == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(reservation);
-        //}
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Reservation reservation = repository.GetReservationById((int)id);
+            if (reservation == null)
+            {
+                return HttpNotFound();
+            }
+        
+            List<ReservationAttractionDetails> attractionDetails = new List<ReservationAttractionDetails>();
+
+            repository.GetAttractionsForReservation(reservation.Id).ForEach(item => attractionDetails.Add(new ReservationAttractionDetails()
+            {
+                Attraction = item,
+                Attraction_Reservation = repository.GetDetailsAboutReservedAttraction(item.Id),
+                Workers = repository.GetWorkersAssignedToAttraction(repository.GetDetailsAboutReservedAttraction(item.Id).Id)
+            }));
+
+            ReservationDetails reservationDetails = new ReservationDetails()
+            {
+                Reservation = reservation,
+                Houses = repository.GetAllNamesReservedHouses(new List<string>(repository.ConvertToDictionaryHouseDetails(repository.GetHousesForReservation(reservation.Id)).Keys)),
+                ReservationAttractionDetails = attractionDetails            
+            };
+            reservationDetails.SelectedHouseDetailsText = reservationDetails.Houses.First().Value;
+            return View(reservationDetails);
+        }
+
+
+        [HttpPost]
+        public ActionResult AjaxMethod(int id,string name)
+        {
+            ReservationHouseDetails houseDetails=null;
+            repository.GetHousesForReservation(id).Where(item => item.Name.Equals(name)).ForEach(item => houseDetails = new ReservationHouseDetails()
+            {
+                House=item,
+                Meal = repository.GetHouseMealForReservation(item.Id),
+                Participants = repository.GetParticipantsHouseForReservation(item.Id)
+            });
+
+            if (name.Equals("-"))
+            {
+                return new EmptyResult();
+            }
+
+            return PartialView("~/Views/Shared/_ReservationHouseDetailsPartial.cshtml", houseDetails);
+        }
+
+
 
         // GET: Reservations/Create
         //public ActionResult Create()

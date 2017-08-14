@@ -185,6 +185,10 @@
     <Compile Include="Migrations\201708072226082_extended_length_name_description_in_Attraction_table.Designer.cs">
       <DependentUpon>201708072226082_extended_length_name_description_in_Attraction_table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708090922383_changed_name_of_FK_in_Attraction_Reservation_Worker.cs" />
+    <Compile Include="Migrations\201708090922383_changed_name_of_FK_in_Attraction_Reservation_Worker.Designer.cs">
+      <DependentUpon>201708090922383_changed_name_of_FK_in_Attraction_Reservation_Worker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AgrotourismContext.cs" />
     <Compile Include="Models\HouseType.cs" />
@@ -207,6 +211,9 @@
     <Compile Include="Repo\RoleComparer.cs" />
     <Compile Include="Repo\UserRepository.cs" />
     <Compile Include="ViewModels\HouseDetails.cs" />
+    <Compile Include="ViewModels\ReservationAttractionDetails.cs" />
+    <Compile Include="ViewModels\ReservationDetails.cs" />
+    <Compile Include="ViewModels\ReservationHouseDetails.cs" />
     <Compile Include="ViewModels\RoleUser.cs" />
     <Compile Include="ViewModels\RolesUsers.cs" />
   </ItemGroup>
@@ -228,6 +235,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201708072226082_extended_length_name_description_in_Attraction_table.resx">
       <DependentUpon>201708072226082_extended_length_name_description_in_Attraction_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708090922383_changed_name_of_FK_in_Attraction_Reservation_Worker.resx">
+      <DependentUpon>201708090922383_changed_name_of_FK_in_Attraction_Reservation_Worker.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
