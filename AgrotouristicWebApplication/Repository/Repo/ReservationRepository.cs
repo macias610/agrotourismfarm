@@ -18,6 +18,17 @@ namespace Repository.Repo
             this.db = db;
         }
 
+        public List<SelectListItem> AppendToListItem(List<SelectListItem> list, string item)
+        {
+            List<string> result = new List<string>();
+            list.ForEach(elem => result.Add(elem.Value));
+            result.Add(item);
+            string tempStr = null;
+            result = result.OrderBy(o => (tempStr = o.Split(';')[0].Split('(')[1]).Substring(0, tempStr.Length - 1)).ToList();
+            List<SelectListItem> selectList = result.Select(elem => new SelectListItem { Value = elem.ToString(), Text = elem.ToString(),Selected = elem.ToString().Equals(item)?true:false }).ToList();
+            return selectList;
+        }
+
         public Dictionary<string, ReservationHouseDetails> ConvertToDictionaryHouseDetails(List<House> houses)
         {
             Dictionary<string, ReservationHouseDetails> reservationHouseDetails = new Dictionary<string, ReservationHouseDetails>();
@@ -30,6 +41,19 @@ namespace Repository.Repo
             }
             ));
             return reservationHouseDetails;
+        }
+
+        public List<SelectListItem> GetAllNamesAvaiableHouses(List<House> houses)
+        {
+            List<SelectListItem> selectList = houses.Select(house => new SelectListItem { Value = house.HouseType.Type+"("+house.Name+");", Text = house.HouseType.Type + "(" + house.Name +");" }).ToList();
+            return selectList;
+        }
+
+        public List<SelectListItem> GetAllNamesAvaiableMeals()
+        {
+            List<Meal> avaiableMeals = db.Meals.AsNoTracking().ToList();
+            List<SelectListItem> selectList = avaiableMeals.Select(avaiableMeal => new SelectListItem { Value = avaiableMeal.Type+"("+avaiableMeal.Price+")", Text = avaiableMeal.Type + "(" + avaiableMeal.Price +")" }).ToList();
+            return selectList;
         }
 
         public List<SelectListItem> GetAllNamesReservedHouses(List<string> keys)
@@ -47,6 +71,21 @@ namespace Repository.Repo
             return attractions;
         }
 
+        public List<House> GetAvaiableHousesInTerm(DateTime startDate, DateTime endDate)
+        {
+            List<int> reservationHousesIDs = (from reservation in db.Reservations
+                                              where (startDate.CompareTo(reservation.StartDate)>=0 & startDate.CompareTo(reservation.EndDate)<0)
+                                              | (endDate.CompareTo(reservation.StartDate)>=0 & endDate.CompareTo(reservation.EndDate) <0)
+                                              | (reservation.StartDate.CompareTo(startDate)>=0 & reservation.StartDate.CompareTo(endDate) <0)
+                                              | (reservation.EndDate.CompareTo(startDate) >=0 & reservation.EndDate.CompareTo(endDate) <0)
+                                              join resHouse in db.Reservation_House on reservation.Id equals resHouse.ReservationId
+                                              select resHouse.HouseId).ToList();
+
+            List<House> houses = db.Houses.Include("HouseType").ToList();
+            houses.RemoveAll(item=>reservationHousesIDs.Contains(item.Id));
+            return houses;
+        }
+
         public IQueryable<Reservation> GetClientReservations(string id)
         {
             IQueryable<Reservation> reservations = from reservation in db.Reservations
@@ -61,6 +100,14 @@ namespace Repository.Repo
                                                             where attrRes.AttractionId.Equals(id)
                                                             select attrRes).FirstOrDefault();
             return attractionReservation;
+        }
+
+        public House GetHouseByName(string name)
+        {
+            House house = (from h in db.Houses
+                           where h.Name.Equals(name)
+                           select h).FirstOrDefault();
+            return house;
         }
 
         public Meal GetHouseMealForReservation(int id)
@@ -114,6 +161,33 @@ namespace Repository.Repo
                                   join worker in db.ApplicationUsers on attrResWor.WorkerId equals worker.Id
                                   select worker).ToList();
             return workers;
+        }
+
+        public List<SelectListItem> RemoveFromListItem(List<SelectListItem> list, string item)
+        {
+            List<string> result = new List<string>();
+            list.ForEach(elem => result.Add(elem.Value));
+            result.Remove(item);
+            List<SelectListItem> selectList = result.Select(elem => new SelectListItem { Value = elem.ToString(), Text = elem.ToString(), Selected = elem.Equals(item) ? true : false }).ToList();
+            return selectList;
+        }
+
+        public void SaveAssignedMealsToHouses(NewReservation reservation)
+        {
+            foreach(SelectListItem houseMeal in reservation.SelectedHousesMeals.ToList())
+            {
+                string houseName = houseMeal.Value.Split(';')[0].TrimEnd(')').Split('(')[1];
+                string mealType = houseMeal.Value.Split(';')[1].Split('(')[0];
+                int houseId = db.Houses.Where(item => item.Name.Equals(houseName)).FirstOrDefault().Id;
+                //(from house in db.Houses
+                //           where house.Name.Equals(houseMeal.Value.Split(';')[0].TrimEnd(')').Split('(')[1])
+                //           select house.Id).FirstOrDefault();
+                int mealId = db.Meals.Where(item => item.Type.Equals(mealType)).FirstOrDefault().Id;
+                //(from meal in db.Meals
+                //          where meal.Type.Equals(houseMeal.Value.Split(';')[1])
+                //          select meal.Id).FirstOrDefault();
+                reservation.AssignedHousesMeals.Add(houseId, mealId);
+            }
         }
     }
 }

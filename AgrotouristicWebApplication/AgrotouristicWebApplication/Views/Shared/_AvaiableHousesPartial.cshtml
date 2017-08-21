@@ -1,0 +1,15 @@
+﻿@model IEnumerable<string>
+
+    <div>
+        <h4>Rodzaje domków</h4>
+            <div class="form-group">
+                <div>
+                    @foreach(string house in Model)
+                    {
+                        <p>@house.ToString()</p>
+                    }
+                </div>
+            </div>   
+    </div>
+
+

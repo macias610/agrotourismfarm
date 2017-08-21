@@ -1,0 +1,19 @@
+﻿@model IEnumerable<Repository.Models.Participant>
+    @using Repository.Models
+
+<div>
+    <h2>Uczestnicy</h2>
+    
+
+
+        @foreach (Participant item in Model)
+        {
+            <div >
+                @Html.Partial("~/Views/Shared/_HouseParticipant.cshtml", item)
+            </div>
+            
+        }
+
+
+
+</div>
