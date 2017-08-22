@@ -59,6 +59,7 @@
     <script type="text/javascript">
             $(function () {
                 $("#btnAddHouse").click(function () {
+                    document.getElementById('description').innerHTML = "";
                     var data = {
                         name: $('select[name="ReservationAvaiableHouses"]').val(),
                         isAdd: 'true',
