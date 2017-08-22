@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Repository.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Repository.ViewModels
             SelectedHouses = new List<SelectListItem>();
             SelectedHousesMeals = new List<SelectListItem>();
             AssignedHousesMeals = new Dictionary<int, int>();
+            AssignedParticipantsHouses = new Dictionary<string, List<Participant>>();
         }
 
         public IEnumerable<SelectListItem> AvaiableHouses { get; set; }
@@ -25,6 +27,8 @@ namespace Repository.ViewModels
         public IEnumerable<SelectListItem> SelectedHousesMeals { get; set; }
 
         public Dictionary<int,int> AssignedHousesMeals { get; set; }
+
+        public Dictionary<string,List<Participant>> AssignedParticipantsHouses { get; set; }
 
         [Display(Name = "Data przyjazdu:")]
         [DataType(DataType.Date)]

@@ -28,6 +28,7 @@ namespace Repository.IRepo
         List<User> GetWorkersAssignedToAttraction(int id);
         List<House> GetAvaiableHousesInTerm(DateTime startDate, DateTime endDate);
         void SaveAssignedMealsToHouses(NewReservation reservation);
+        void SaveSelectedHouses(NewReservation reservation);
         IQueryable<Reservation> GetClientReservations(string id);
     }
 }

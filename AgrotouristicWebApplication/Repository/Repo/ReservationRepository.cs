@@ -6,6 +6,7 @@ using System.Web;
 using Repository.Models;
 using Repository.ViewModels;
 using System.Web.Mvc;
+using System.Text.RegularExpressions;
 
 namespace Repository.Repo
 {
@@ -179,14 +180,20 @@ namespace Repository.Repo
                 string houseName = houseMeal.Value.Split(';')[0].TrimEnd(')').Split('(')[1];
                 string mealType = houseMeal.Value.Split(';')[1].Split('(')[0];
                 int houseId = db.Houses.Where(item => item.Name.Equals(houseName)).FirstOrDefault().Id;
-                //(from house in db.Houses
-                //           where house.Name.Equals(houseMeal.Value.Split(';')[0].TrimEnd(')').Split('(')[1])
-                //           select house.Id).FirstOrDefault();
                 int mealId = db.Meals.Where(item => item.Type.Equals(mealType)).FirstOrDefault().Id;
-                //(from meal in db.Meals
-                //          where meal.Type.Equals(houseMeal.Value.Split(';')[1])
-                //          select meal.Id).FirstOrDefault();
                 reservation.AssignedHousesMeals.Add(houseId, mealId);
+            }
+        }
+
+        public void SaveSelectedHouses(NewReservation reservation)
+        {
+            foreach(SelectListItem house in reservation.SelectedHouses.ToList())
+            {
+                int quantity = Int32.Parse(house.Value.Split('-')[0]);
+                string houseName = Regex.Match(house.Value, @"\(([^)]*)\)").Groups[1].Value;
+                List<Participant> participants = new List<Participant>(quantity);
+                participants.AddRange(Enumerable.Repeat(new Participant(),quantity));
+                reservation.AssignedParticipantsHouses.Add(houseName, new List<Participant>(participants));
             }
         }
     }

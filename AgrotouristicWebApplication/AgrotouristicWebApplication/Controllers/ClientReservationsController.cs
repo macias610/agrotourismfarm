@@ -124,13 +124,10 @@ namespace AgrotouristicWebApplication.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Klient")]
-        public ActionResult GetFormularParticipants(int quantity)
+        public ActionResult GetHouseParticipants(string houseName)
         {
-            List<Participant> participants = new List<Participant>(quantity);
-            for(int i = 0; i < quantity; i++)
-            {
-                participants.Add(new Participant());
-            }
+            NewReservation reservation = (NewReservation )Session["Reservation"];
+            List<Participant> participants = reservation.AssignedParticipantsHouses[houseName];
 
             return PartialView("~/Views/Shared/_HouseParticipants.cshtml", participants);
         }
@@ -146,6 +143,15 @@ namespace AgrotouristicWebApplication.Controllers
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
             return View("~/Views/ClientReservations/AddHouses.cshtml",reservation);
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="Klient")]
+        public ActionResult AddHouses(bool? housesConfirmed)
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            repository.SaveSelectedHouses(reservation);
+            return RedirectToAction("Create");
         }
 
         [Authorize(Roles ="Klient")]
@@ -164,6 +170,14 @@ namespace AgrotouristicWebApplication.Controllers
             NewReservation reservation = (NewReservation)Session["Reservation"];
             repository.SaveAssignedMealsToHouses(reservation);
             return RedirectToAction("Create");
+        }
+
+        [Authorize(Roles ="Klient")]
+        public ActionResult AddParticipants()
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            reservation.AvaiableMeals = repository.GetAllNamesAvaiableMeals();
+            return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
         }
 
         [HttpPost]
@@ -213,7 +227,7 @@ namespace AgrotouristicWebApplication.Controllers
             string action = (Request.UrlReferrer.Segments.Skip(2).Take(1).SingleOrDefault() ?? "Index").Trim('/');
             List<string> actions = new List<string>()
             {
-                "AddTerm","AddHouses","AddMeals","ConfirmMeals"
+                "AddTerm","AddHouses","AddMeals","AddParticipants"
             };
             if(!actions.Contains(action))
             {

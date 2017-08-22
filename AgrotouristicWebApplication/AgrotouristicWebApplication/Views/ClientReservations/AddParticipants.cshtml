@@ -1,0 +1,88 @@
+﻿@model Dictionary<string,List<Participant>>
+@using Repository.Models
+@{
+    ViewBag.Title = "AddParticipants";
+}
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+            $(function () {
+                $("#btnShowParticipants").click(function () {
+                    var data = {
+                        houseName: $('select[name="SelectedHousesParticipants"]').val(),
+                        __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/ClientReservations/GetHouseParticipants",
+                        data: data,
+                        dataType: "text",
+                        success: function (response) {
+                            $('#assignedParticipants').html(response)
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                });
+            });
+    </script>
+
+    <script type="text/javascript">
+            $(function () {
+                $("#btnConfirmParticipants").click(function () {
+                    $(".form-horizontal").each(function () {
+                        alert(($(this).find("#Name").val()));
+                        alert(($(this).find("#Surname").val()));
+                        alert(($(this).find("#BirthDate").val()));
+                    });
+                });
+            });
+    </script>
+
+</head>
+
+<h2>Dodaj lokatorów</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Domki</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("SelectedHousesParticipants", Model.Keys.Select(elem => new SelectListItem { Value = elem.ToString(), Text = elem.ToString() }).ToList())
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="button" id="btnShowParticipants" value="Pokaż" class="btn btn-default" />
+                <input type="submit" id="btnConfirmParticipants" value="Potwierdź lokatorów" class="btn btn-default"/>
+            </div>
+        </div>
+
+        <div id="assignedParticipants">
+
+        </div>
+
+    </div>
+
+}
+
+<div>
+    @Html.ActionLink("Wróć", "Create")
+</div>
