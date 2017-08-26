@@ -7,6 +7,7 @@ using Repository.Models;
 using Repository.ViewModels;
 using System.Web.Mvc;
 using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Repository.Repo
 {
@@ -177,5 +178,23 @@ namespace Repository.Repo
                 reservation.AssignedHousesMeals.Add(house, -1);
             }
         }
+
+        public bool ValidateFormularParticipants(Dictionary<string, List<Participant>> dictionary)
+        {
+            foreach (KeyValuePair<string, List<Participant>> item in dictionary)
+            {
+                foreach (Participant participant in item.Value)
+                {
+                    var context = new ValidationContext(participant, serviceProvider: null, items: null);
+                    var results = new List<ValidationResult>();
+                    if (!Validator.TryValidateObject(participant, context, results, true))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        
     }
 }

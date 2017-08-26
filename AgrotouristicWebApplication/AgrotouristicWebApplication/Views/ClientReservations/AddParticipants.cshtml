@@ -4,6 +4,13 @@
     ViewBag.Title = "AddParticipants";
 }
 
+@if (ViewBag.error == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Formularz jest niekompletny.
+    </div>
+}
+
 <head>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
@@ -19,6 +26,7 @@
                 document.getElementById('header-content').style.visibility = state;
                 document.getElementById("participantsTable").style.visibility = state;
                 document.getElementById("btnSaveHouseParticipants").style.visibility = state;
+                document.getElementById("btnConfirmParticipants").style.visibility = state;    
             }
     </script>
 
@@ -109,7 +117,8 @@
         <div class="form-group">
             <div class="col-md-10">
                 <input type="button" id="btnShowParticipants" value="Pokaż" class="btn btn-default" />
-                <input type="submit" id="btnSaveHouseParticipants" value="Potwierdź lokatorów domku" class="btn btn-default" style="visibility:hidden"/>
+                <input type="button" id="btnSaveHouseParticipants" value="Zapisz lokatorów domku" class="btn btn-default" style="visibility:hidden"/>
+                <input type="submit" id="btnConfirmParticipants" value="Potwierdź wszystkich lokatorów" class="btn btn-default" style="visibility:hidden"/>
             </div>
         </div>
 

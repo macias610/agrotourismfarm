@@ -15,6 +15,7 @@ using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using Microsoft.Ajax.Utilities;
 using Repository.Repo;
+using System.ComponentModel.DataAnnotations;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -137,6 +138,10 @@ namespace AgrotouristicWebApplication.Controllers
             return View("~/Views/ClientReservations/AddTerm.cshtml");
         }
 
+        [HttpPost]
+        [Authorize(Roles ="Klient")]
+        
+
         [Authorize(Roles ="Klient")]
         public ActionResult AddHouses()
         {
@@ -191,6 +196,22 @@ namespace AgrotouristicWebApplication.Controllers
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
             return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
+        }
+
+        [Authorize(Roles ="Klient")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddParticipants(bool? participantsConfirmed)
+        {
+            
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+
+            if(!repository.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
+            {
+                ViewBag.error = true;
+                return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
+            }
+            return RedirectToAction("Create");
         }
 
         [HttpPost]

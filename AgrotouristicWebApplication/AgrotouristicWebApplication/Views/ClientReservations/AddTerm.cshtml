@@ -21,13 +21,9 @@
                 var startDate = $('#startdate').val();
                 var endDate = moment(startDate).add(1, 'days').format('YYYY-MM-DD');
                 $('#enddate').attr('min', endDate);
-            }
-            else if (source == 'enddate')
-            {
-                $('#enddate').attr('min', moment().format('YYYY-MM-DD'))
-                var startDate = $('#enddate').val();
-                var endDate = moment(startDate).add(-1, 'days').format('YYYY-MM-DD');
-                $('#startdate').attr('max', endDate);
+                $('#startdate').attr('disabled', true);
+                $('#enddate').attr('disabled', false);
+
             }
             document.getElementById("btnConfirmTerm").style.visibility = 'hidden';     
         }
@@ -36,7 +32,11 @@
     <script type="text/javascript">
             $(function () {
                 $("#btnRefresh").click(function () {
-                    window.location.reload()
+                    $('#avaiableHouses').html('');
+                    $('#startdate, #enddate').val('');
+                    $('#startdate').attr('disabled', false);
+                    $('#enddate').attr('disabled', true);
+                    document.getElementById("btnConfirmTerm").style.visibility = 'hidden';
                 });
             });
     </script>
@@ -111,7 +111,7 @@
             @Html.LabelFor(m => m.EndDate, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 <span class="editors">
-                    <input id="enddate" type="date" min="@DateTime.Now.AddDays(2).ToShortDateString()" onchange="handler(event)" />
+                    <input id="enddate" type="date" min="@DateTime.Now.AddDays(2).ToShortDateString()" onchange="handler(event)" disabled />
                 </span>
                 @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
             </div>
@@ -123,7 +123,7 @@
             <div class="col-md-10">
                 <input type="button" id="btnRefresh" value="Wybierz ponownie termin" class="btn btn-default" /> 
                 <input type="button" id="btnCheckAvaiableHouses" value="Sprawdź dostępność domków" class="btn btn-default" /> 
-                <input type="button" id="btnConfirmTerm" value="Potwierdź termin" onclick="location.href='@Url.Action("Create", "ClientReservations")'"  class="btn btn-default" style="visibility:hidden" />
+                <input type="submit" id="btnConfirmTerm" value="Potwierdź termin" class="btn btn-default" style="visibility:hidden" />
             </div>
         </div>
         <div id="avaiableHouses">
