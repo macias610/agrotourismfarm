@@ -108,8 +108,7 @@ namespace AgrotouristicWebApplication.Controllers
             Session["Reservation"] = new NewReservation()
             {
                 StartDate = startDate,
-                EndDate = endDate,
-                AvaiableHouses = avaiableHouses
+                EndDate = endDate
             };
 
             return PartialView("~/Views/Shared/_AvaiableHousesPartial.cshtml", houses);
@@ -129,7 +128,7 @@ namespace AgrotouristicWebApplication.Controllers
             NewReservation reservation = (NewReservation )Session["Reservation"];
             List<Participant> participants = reservation.AssignedParticipantsHouses[houseName];
 
-            return PartialView("~/Views/Shared/_HouseParticipants.cshtml", participants);
+            return PartialView("~/Views/Shared/_HouseParticipantsPartial.cshtml", participants);
         }
 
         [Authorize(Roles ="Klient")]
@@ -142,15 +141,24 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddHouses()
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            return View("~/Views/ClientReservations/AddHouses.cshtml",reservation);
+
+            HousesSelection housesSelection = new HousesSelection()
+            {
+                AvaiableHouses = repository.GetAllNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(reservation.StartDate, reservation.EndDate)),
+                SelectedHouses = new List<SelectListItem>()
+            };
+
+            return View("~/Views/ClientReservations/AddHouses.cshtml", housesSelection);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles ="Klient")]
-        public ActionResult AddHouses(bool? housesConfirmed)
+        public ActionResult AddHouses([Bind(Include ="StringSelectedHouses")]HousesSelection housesSelection)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            repository.SaveSelectedHouses(reservation);
+            repository.SaveSelectedHouses(reservation,housesSelection.StringSelectedHouses);
+            Session["Reservation"] = reservation;
             return RedirectToAction("Create");
         }
 
@@ -158,17 +166,23 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddMeals()
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            reservation.AvaiableMeals = repository.GetAllNamesAvaiableMeals();
-            return View("~/Views/ClientReservations/AddMeals.cshtml", reservation);
+            MealsSelection mealsSelection = new MealsSelection()
+            {
+                AvaiableMeals = repository.GetAllNamesAvaiableMeals(),
+                SelectedHouses = reservation.AssignedHousesMeals.Keys.Select(key => new SelectListItem { Value = key, Text = key }).ToList(),
+                SelectedMeals = new List<SelectListItem>()
+            };
+
+            return View("~/Views/ClientReservations/AddMeals.cshtml", mealsSelection);
         }
 
         [HttpPost]
         [Authorize(Roles ="Klient")]
         [ValidateAntiForgeryToken]
-        public ActionResult AddMeals(bool? mealsConfirmed)
+        public ActionResult AddMeals([Bind(Include = "StringSelectedMeals")] MealsSelection mealsSelection)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            repository.SaveAssignedMealsToHouses(reservation);
+            repository.SaveAssignedMealsToHouses(reservation,mealsSelection.StringSelectedMeals);
             return RedirectToAction("Create");
         }
 
@@ -176,48 +190,30 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddParticipants()
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            reservation.AvaiableMeals = repository.GetAllNamesAvaiableMeals();
             return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [Authorize(Roles ="Klient")]
-        public ActionResult ChangeSelectedHousesMeals(string name,bool isAdd)
+        [ValidateHeaderAntiForgeryToken]
+        public ActionResult ChangeHouseParticipants(string houseName, List<Participant> participants)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            if (isAdd)
-            {
-                reservation.SelectedHousesMeals = repository.AppendToListItem(reservation.SelectedHousesMeals.ToList(),name);
-                reservation.SelectedHouses = repository.RemoveFromListItem(reservation.SelectedHouses.ToList(),name.Split(';')[0]+';');
-            }
-            else
-            {
-                reservation.SelectedHousesMeals = repository.RemoveFromListItem(reservation.SelectedHousesMeals.ToList(), name);
-                reservation.SelectedHouses = repository.AppendToListItem(reservation.SelectedHouses.ToList(), name.Split(';')[0] + ';');
-            }
+            reservation.AssignedParticipantsHouses[houseName] = participants;
             Session["Reservation"] = reservation;
-            return View("~/Views/ClientReservations/AddMeals.cshtml", reservation);
+            return PartialView("~/Views/Shared/_HouseParticipantsPartial.cshtml",participants);
         }
 
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         [Authorize(Roles ="Klient")]
-        public ActionResult ChangeSelectedHouses(string name,bool isAdd)
+        public ActionResult AddToSelectedHouses(IEnumerable<SelectListItem> avaiableHouses)
         {
-            NewReservation reservation = (NewReservation)Session["Reservation"];
-            if(isAdd)
-            {
-                reservation.SelectedHouses = repository.AppendToListItem(reservation.SelectedHouses.ToList(), name);
-                reservation.AvaiableHouses = repository.RemoveFromListItem(reservation.AvaiableHouses.ToList(), name);
-            }
-            else
-            {
-                reservation.AvaiableHouses = repository.AppendToListItem(reservation.AvaiableHouses.ToList(), name);
-                reservation.SelectedHouses = repository.RemoveFromListItem(reservation.SelectedHouses.ToList(), name);
-            }      
-            Session["Reservation"] = reservation;
-            return View("~/Views/ClientReservations/AddHouses.cshtml", reservation);
+            //SelectListItem item = avaiable.Where(x => x.Selected = true).FirstOrDefault();
+            //avaiable.ToList().Remove(item);
+            //selected.ToList().Add(item);
+            return PartialView("~/Views/Shared/_HousesSelectionPartial.cshtml");
         }
 
         // GET: Reservations/Create

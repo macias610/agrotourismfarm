@@ -1,4 +1,4 @@
-﻿@model Repository.ViewModels.NewReservation
+﻿@model Repository.ViewModels.MealsSelection
 
 @{
     ViewBag.Title = "AddMeals";
@@ -9,80 +9,78 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
-        $(function () {
-            var countSelectedHouses = '@Model.SelectedHouses.ToList().Count';
-            if (countSelectedHouses < 1)
-            {
-                document.getElementById("btnAddHouseMeal").style.visibility = 'hidden';
-            }
-            else
-            {
-                document.getElementById("btnAddHouseMeal").style.visibility = 'visible';
-            }
-            var countSelectedHousesMeals = '@Model.SelectedHousesMeals.ToList().Count';
-            if (countSelectedHousesMeals < 1) {
-                document.getElementById('btnRemoveSelected').style.visibility = 'hidden';
-                document.getElementById('btnConfirmHousesMeals').style.visibility = 'hidden'
-            }
-            else {
-                document.getElementById('btnRemoveSelected').style.visibility = 'visible';
-                document.getElementById('btnConfirmHousesMeals').style.visibility = 'visible'
-            }
+        $(function() {
+            $("form").submit(function () {
+                var selected = document.getElementById("MealsSelectedHousesMeals");
+                var appendingString = "";
+                for (i = 0; i < selected.length; i++) {
+                    appendingString += selected.options[i].value + '|';
+                    if(i == (selected.length-1))
+                    {
+                        $("#StringSelectedMeals").val(appendingString.slice(0,-1));
+                    }
+                }
+            });
         });
     </script>
 
     <script type="text/javascript">
-            $(function () {
-                $("#btnAddHouseMeal").click(function () {
-                    var data = {
-                        name: $('select[name="ReservationSelectedHouses"]').val() + $('select[name="ReservationAvaiableMeals"]').val(),
-                        isAdd: 'true',
-                        __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
-                    };
-                    $.ajax({
-                        type: "POST",
-                        url: "/ClientReservations/ChangeSelectedHousesMeals",
-                        data: data,
-                        dataType: "text",
-                        success: function (response) {
-                            window.location.reload()
-                        },
-                        failure: function (response) {
-                            alert(response.responseText);
-                        },
-                        error: function (response) {
-                            alert(response.responseText);
-                        }
-                    });
-                });
-            });
+            function checkStateDropDownLists(avaiable,selected) {
+                if (avaiable < 1) {
+                    document.getElementById("btnAddHouseMeal").style.visibility = 'hidden';
+                }
+                else {
+                    document.getElementById("btnAddHouseMeal").style.visibility = 'visible';
+                }
+                if (selected < 1) {
+                    document.getElementById("btnRemoveSelectedHouseMeal").style.visibility = 'hidden';
+                    document.getElementById('btnConfirmHousesMeals').style.visibility = 'hidden'
+                }
+                else {
+                    document.getElementById("btnRemoveSelectedHouseMeal").style.visibility = 'visible';
+                    document.getElementById('btnConfirmHousesMeals').style.visibility = 'visible'
+                }
+            }
     </script>
 
     <script type="text/javascript">
-            $(function () {
-                $("#btnRemoveSelected").click(function () {
-                    var data = {
-                        name: $('select[name="ReservationSelectedHousesMeals"]').val(),
-                        isAdd: 'false',
-                        __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
-                    };
-                    $.ajax({
-                        type: "POST",
-                        url: "/ClientReservations/ChangeSelectedHousesMeals",
-                        data: data,
-                        dataType: "text",
-                        success: function (response) {
-                            window.location.reload()
-                        },
-                        failure: function (response) {
-                            alert(response.responseText);
-                        },
-                        error: function (response) {
-                            alert(response.responseText);
-                        }
-                    });
-                });
+        $(function () {
+            $("#btnAddHouseMeal").click(function () {
+                var selectedHouses = document.getElementById('MealsSelectedHouses');
+                var selectedHouseValue = selectedHouses.options[selectedHouses.selectedIndex].value;
+                selectedHouses.remove(selectedHouses.selectedIndex);
+
+                var avaiableMeals = document.getElementById('MealsAvaiableMeals');
+                var selectedMealValue = avaiableMeals.options[avaiableMeals.selectedIndex].value;
+
+                var selectedHouseMeal = document.getElementById('MealsSelectedHousesMeals');
+                var option = document.createElement('option');
+                option.text = option.value = selectedHouseValue + selectedMealValue;
+                option.selected = true;
+                selectedHouseMeal.add(option, 0);
+                checkStateDropDownLists(document.getElementById('MealsSelectedHouses').length, document.getElementById('MealsSelectedHousesMeals').length);
             });
+            checkStateDropDownLists(document.getElementById('MealsSelectedHouses').length, document.getElementById('MealsSelectedHousesMeals').length);
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#btnRemoveSelectedHouseMeal").click(function () {
+                var selectedValue = $('#MealsSelectedHousesMeals option:selected').text();
+                var index = $('#MealsSelectedHousesMeals').get(0).selectedIndex;
+                $('#MealsSelectedHousesMeals option:eq(' + index + ')').remove();
+
+                selectedValue = selectedValue.split(';')[0] + ';';
+
+                $('#MealsSelectedHouses')
+                        .append($("<option></option>")
+                        .attr("selected", "selected")
+                        .text(selectedValue)
+                        .val(selectedValue));
+                checkStateDropDownLists(document.getElementById('MealsSelectedHouses').length, document.getElementById('MealsSelectedHousesMeals').length);
+            });
+        });
     </script>
 
 </head>
@@ -101,7 +99,7 @@
         <div class="form-group">
             @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("ReservationSelectedHouses", Model.SelectedHouses)
+                @Html.DropDownList("MealsSelectedHouses", Model.SelectedHouses, new { id= "MealsSelectedHouses" })
             </div>
 
         </div>
@@ -109,25 +107,26 @@
         <div class="form-group">
             @Html.Label("Dostępne posiłki", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("ReservationAvaiableMeals", Model.AvaiableMeals)
+                @Html.DropDownList("MealsAvaiableMeals", Model.AvaiableMeals, new { id= "MealsAvaiableMeals" })
             </div>
         </div>
 
         <div class="form-group">
             @Html.Label("Wybrane posiłki", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("ReservationSelectedHousesMeals", Model.SelectedHousesMeals)
-                <input type="button" id="btnRemoveSelected" value="Usuń zaznaczenie" />
+                @Html.DropDownList("MealsSelectedHousesMeals", Model.SelectedMeals, new { id= "MealsSelectedHousesMeals" })
+                <input type="button" id="btnRemoveSelectedHouseMeal" value="Usuń zaznaczenie" />
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-10">
                 <input type="button" id="btnAddHouseMeal" value="Dodaj posiłek" class="btn btn-default" />
-                <input type="submit" id="btnConfirmHousesMeals" value="Potwierdź posiłki" class="btn btn-default" style="visibility:hidden" />
+                <input type="submit" id="btnConfirmHousesMeals" value="Potwierdź posiłki" class="btn btn-default" />
             </div>
         </div>
     </div>
+    @Html.HiddenFor(model=>model.StringSelectedMeals)
 }
 
 <div>

@@ -19,17 +19,6 @@ namespace Repository.Repo
             this.db = db;
         }
 
-        public List<SelectListItem> AppendToListItem(List<SelectListItem> list, string item)
-        {
-            List<string> result = new List<string>();
-            list.ForEach(elem => result.Add(elem.Value));
-            result.Add(item);
-            string tempStr = null;
-            result = result.OrderBy(o => (tempStr = o.Split(';')[0].Split('(')[1]).Substring(0, tempStr.Length - 1)).ToList();
-            List<SelectListItem> selectList = result.Select(elem => new SelectListItem { Value = elem.ToString(), Text = elem.ToString(),Selected = elem.ToString().Equals(item)?true:false }).ToList();
-            return selectList;
-        }
-
         public Dictionary<string, ReservationHouseDetails> ConvertToDictionaryHouseDetails(List<House> houses)
         {
             Dictionary<string, ReservationHouseDetails> reservationHouseDetails = new Dictionary<string, ReservationHouseDetails>();
@@ -164,36 +153,28 @@ namespace Repository.Repo
             return workers;
         }
 
-        public List<SelectListItem> RemoveFromListItem(List<SelectListItem> list, string item)
+        public void SaveAssignedMealsToHouses(NewReservation reservation,string selectedMeals)
         {
-            List<string> result = new List<string>();
-            list.ForEach(elem => result.Add(elem.Value));
-            result.Remove(item);
-            List<SelectListItem> selectList = result.Select(elem => new SelectListItem { Value = elem.ToString(), Text = elem.ToString(), Selected = elem.Equals(item) ? true : false }).ToList();
-            return selectList;
-        }
-
-        public void SaveAssignedMealsToHouses(NewReservation reservation)
-        {
-            foreach(SelectListItem houseMeal in reservation.SelectedHousesMeals.ToList())
+            foreach(string houseMeal in selectedMeals.Split('|'))
             {
-                string houseName = houseMeal.Value.Split(';')[0].TrimEnd(')').Split('(')[1];
-                string mealType = houseMeal.Value.Split(';')[1].Split('(')[0];
-                int houseId = db.Houses.Where(item => item.Name.Equals(houseName)).FirstOrDefault().Id;
+                string houseName = houseMeal.Split(';')[0] + ';';
+                string mealType = houseMeal.Split(';')[1].Split('(')[0];
                 int mealId = db.Meals.Where(item => item.Type.Equals(mealType)).FirstOrDefault().Id;
-                reservation.AssignedHousesMeals.Add(houseId, mealId);
+                reservation.AssignedHousesMeals[houseName] = mealId;
+
             }
         }
 
-        public void SaveSelectedHouses(NewReservation reservation)
+        public void SaveSelectedHouses(NewReservation reservation,string selectedHouses)
         {
-            foreach(SelectListItem house in reservation.SelectedHouses.ToList())
+            foreach(string house in selectedHouses.Split('|'))
             {
-                int quantity = Int32.Parse(house.Value.Split('-')[0]);
-                string houseName = Regex.Match(house.Value, @"\(([^)]*)\)").Groups[1].Value;
+                int quantity = Int32.Parse(house.Split('-')[0]);
                 List<Participant> participants = new List<Participant>(quantity);
-                participants.AddRange(Enumerable.Repeat(new Participant(),quantity));
-                reservation.AssignedParticipantsHouses.Add(houseName, new List<Participant>(participants));
+                participants.AddRange(Enumerable.Repeat(new Participant(), quantity));
+                reservation.AssignedParticipantsHouses.Add(house, new List<Participant>(participants));
+
+                reservation.AssignedHousesMeals.Add(house, -1);
             }
         }
     }

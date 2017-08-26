@@ -254,6 +254,7 @@
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\RoleUsersController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Controllers\ValidateHeaderAntiForgeryTokenAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -345,6 +346,7 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\postJson.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
@@ -414,14 +416,13 @@
     <Content Include="Views\ClientReservations\Edit.cshtml" />
     <Content Include="Views\ClientReservations\Index.cshtml" />
     <Content Include="Views\Shared\_ReservationHouseDetailsPartial.cshtml" />
-    <Content Include="Views\Shared\_HouseParticipants.cshtml" />
-    <Content Include="Views\Shared\_HouseParticipant.cshtml" />
     <Content Include="Views\ClientReservations\Create.cshtml" />
     <Content Include="Views\ClientReservations\AddTerm.cshtml" />
     <Content Include="Views\ClientReservations\AddHouses.cshtml" />
     <Content Include="Views\Shared\_HouseDescriptionPartial.cshtml" />
     <Content Include="Views\ClientReservations\AddMeals.cshtml" />
     <Content Include="Views\ClientReservations\AddParticipants.cshtml" />
+    <Content Include="Views\Shared\_HouseParticipantsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

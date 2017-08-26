@@ -1,4 +1,4 @@
-﻿@model Repository.ViewModels.NewReservation
+﻿@model Repository.ViewModels.HousesSelection
 
 @{
     ViewBag.Title = "AddHouses";
@@ -10,36 +10,96 @@
 
     <script type="text/javascript">
         $(function () {
-            var countAvaiable = '@Model.AvaiableHouses.ToList().Count';
-            if (countAvaiable < 1)
-            {
-                document.getElementById("btnAddHouse").style.visibility = 'hidden';
-                document.getElementById("btnShowDescription").style.visibility = 'hidden';
+            $(".SelectListHouses").change(function () {
+                $('#description').html('')
+            });
+        })
+    </script>
+
+    <script type="text/javascript">
+        $(function() {
+            $("form").submit(function () {
+                var selected = document.getElementById("HousesSelectedHouses");
+                var appendingString = "";
+                for (i = 0; i < selected.length; i++) {
+                    appendingString += selected.options[i].value + '|';
+                    if(i == (selected.length-1))
+                    {
+                        $("#StringSelectedHouses").val(appendingString.slice(0,-1));
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+            function checkStateDropDownLists(avaiable,selected) {
+                if (avaiable < 1) {
+                    document.getElementById("btnAddHouse").style.visibility = 'hidden';
+                    document.getElementById("btnShowDescription").style.visibility = 'hidden';
+                }
+                else {
+                    document.getElementById("btnAddHouse").style.visibility = 'visible';
+                    document.getElementById("btnShowDescription").style.visibility = 'visible';
+                }
+                if (selected < 1) {
+                    document.getElementById("btnRemoveSelected").style.visibility = 'hidden';
+                    document.getElementById('btnConfirmHouses').style.visibility = 'hidden'
+                }
+                else {
+                    document.getElementById("btnRemoveSelected").style.visibility = 'visible';
+                    document.getElementById('btnConfirmHouses').style.visibility = 'visible'
+                }
             }
-            else
-            {
-                document.getElementById("btnAddHouse").style.visibility = 'visible';
-                document.getElementById("btnShowDescription").style.visibility = 'visible';
-            }
-            var countSelected = '@Model.SelectedHouses.ToList().Count';
-            if (countSelected < 1) {
-                document.getElementById("btnRemoveSelected").style.visibility = 'hidden';
-                document.getElementById('btnConfirmHouses').style.visibility = 'hidden'
-            }
-            else {
-                document.getElementById("btnRemoveSelected").style.visibility = 'visible';
-                document.getElementById('btnConfirmHouses').style.visibility = 'visible'
-            }
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#btnAddHouse").click(function () {
+                var avaiable = document.getElementById('HousesAvaiableHouses');
+
+                var selectedValue = avaiable.options[avaiable.selectedIndex].value;
+                avaiable.remove(avaiable.selectedIndex);
+
+                var selected = document.getElementById('HousesSelectedHouses');
+                var option = document.createElement('option');
+                option.text = option.value = selectedValue;
+                option.selected = true;
+                selected.add(option, 0);
+                checkStateDropDownLists(document.getElementById('HousesAvaiableHouses').length, document.getElementById('HousesSelectedHouses').length);
+                $('#description').html('')
+            });
+            checkStateDropDownLists(document.getElementById('HousesAvaiableHouses').length, document.getElementById('HousesSelectedHouses').length);
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#btnRemoveSelected").click(function () {
+                var selectedValue = $('#HousesSelectedHouses option:selected').text();
+                var index = $('#HousesSelectedHouses').get(0).selectedIndex;
+                $('#HousesSelectedHouses option:eq(' + index + ')').remove();
+
+                $('#HousesAvaiableHouses')
+                        .append($("<option></option>")
+                        .attr("selected", "selected")
+                        .text(selectedValue)
+                        .val(selectedValue));
+                checkStateDropDownLists(document.getElementById('HousesAvaiableHouses').length, document.getElementById('HousesSelectedHouses').length);
+                $('#description').html('')
+            });
         });
     </script>
 
     <script type="text/javascript">
             $(function () {
                 $("#btnShowDescription").click(function () {
+                    var regExp = /\(([^)]+)\)/;
+                    var matches = regExp.exec($('select[name="HousesAvaiableHouses"]').val());
                     $.ajax({
                         type: "POST",
                         url: "/ClientReservations/GetHouseDescription",
-                        data: '{name: "' + $('select[name="ReservationAvaiableHouses"]').val().split('(')[1].slice(0, -2) + '"  }',
+                        data: '{name: "' + matches[1] + '"  }',
                         contentType: "application/json; charset=utf-8",
                         dataType: "text",
                         success: function (response) {
@@ -55,62 +115,6 @@
                 });
             });
     </script>
-
-    <script type="text/javascript">
-            $(function () {
-                $("#btnAddHouse").click(function () {
-                    document.getElementById('description').innerHTML = "";
-                    var data = {
-                        name: $('select[name="ReservationAvaiableHouses"]').val(),
-                        isAdd: 'true',
-                        __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
-                    };
-                    $.ajax({
-                        type: "POST",
-                        url: "/ClientReservations/ChangeSelectedHouses",
-                        data: data,
-                        dataType: "text",
-                        success: function (response) {
-                            window.location.reload()
-                        },
-                        failure: function (response) {
-                            alert(response.responseText);
-                        },
-                        error: function (response) {
-                            alert(response.responseText);
-                        }
-                    });
-                });
-            });
-    </script>
-
-    <script type="text/javascript">
-            $(function () {
-                $("#btnRemoveSelected").click(function () {
-                    var data = {
-                        name: $('select[name="ReservationSelectedHouses"]').val(),
-                        isAdd: 'false',
-                        __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
-                    };
-                    $.ajax({
-                        type: "POST",
-                        url: "/ClientReservations/ChangeSelectedHouses",
-                        data: data,
-                        dataType: "text",
-                        success: function (response) {
-                            window.location.reload()
-                        },
-                        failure: function (response) {
-                            alert(response.responseText);
-                        },
-                        error: function (response) {
-                            alert(response.responseText);
-                        }
-                    });
-                });
-            });
-    </script>
-
 </head>
 
 <h2>Wybierz domki</h2>
@@ -124,33 +128,39 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.Label("Rodzaje domków", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ReservationAvaiableHouses", Model.AvaiableHouses)
-                <input type="button" id="btnShowDescription" value="Opis" />
-                <div id="description" style="display:inline-flex">
+        <div id="housesDropdownLists">
 
+            <div class="form-group">
+                @Html.Label("Rodzaje domków", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("HousesAvaiableHouses", Model.AvaiableHouses, new { id = "HousesAvaiableHouses",@class = "SelectListHouses" })
+                    <input type="button" id="btnShowDescription" value="Opis" />
+                    <div id="description" style="display:inline-flex">
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("HousesSelectedHouses", Model.SelectedHouses, new { id = "HousesSelectedHouses", @class = "SelectListHouses" })
+                    <input type="button" id="btnRemoveSelected" value="Usuń zaznaczenie"  />
                 </div>
             </div>
-           
-        </div>
 
-        <div class="form-group">
-            @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ReservationSelectedHouses", Model.SelectedHouses)
-                <input type="button" id="btnRemoveSelected" value="Usuń zaznaczenie" />
-            </div>
         </div>
-
         <div class="form-group">
             <div class="col-md-10">
-                <input type="button" id="btnAddHouse" value="Dodaj domek" class="btn btn-default" /> 
-                <input type="submit" id="btnConfirmHouses" value="Potwierdź domki" class="btn btn-default" style="visibility:hidden" />
+                <input type="button" id="btnAddHouse" value="Dodaj domek" class="btn btn-default"  />
+                <input type="submit" id="btnConfirmHouses" value="Potwierdź domki" class="btn btn-default" />
             </div>
         </div>
     </div>
+
+    @Html.HiddenFor(model=>model.StringSelectedHouses)
+
 }
 
 <div>

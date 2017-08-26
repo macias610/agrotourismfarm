@@ -14,19 +14,15 @@ namespace Repository.ViewModels
         {
             SelectedHouses = new List<SelectListItem>();
             SelectedHousesMeals = new List<SelectListItem>();
-            AssignedHousesMeals = new Dictionary<int, int>();
+            AssignedHousesMeals = new Dictionary<string, int>();
             AssignedParticipantsHouses = new Dictionary<string, List<Participant>>();
         }
 
-        public IEnumerable<SelectListItem> AvaiableHouses { get; set; }
-
         public IEnumerable<SelectListItem> SelectedHouses { get; set; }
-
-        public IEnumerable<SelectListItem> AvaiableMeals { get; set; }
 
         public IEnumerable<SelectListItem> SelectedHousesMeals { get; set; }
 
-        public Dictionary<int,int> AssignedHousesMeals { get; set; }
+        public Dictionary<string,int> AssignedHousesMeals { get; set; }
 
         public Dictionary<string,List<Participant>> AssignedParticipantsHouses { get; set; }
 
