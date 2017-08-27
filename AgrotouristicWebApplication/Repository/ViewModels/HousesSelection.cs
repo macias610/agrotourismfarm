@@ -12,6 +12,5 @@ namespace Repository.ViewModels
 
         public IEnumerable<SelectListItem> SelectedHouses  { get; set; }
 
-        public string StringSelectedHouses { get; set; }
     }
 }

@@ -140,6 +140,13 @@ namespace AgrotouristicWebApplication.Controllers
 
         [HttpPost]
         [Authorize(Roles ="Klient")]
+        public ActionResult AddTerm(bool isTermConfirmed)
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            reservation.stagesConfirmation[0] = isTermConfirmed;
+            Session["Reservation"] = reservation;
+            return RedirectToAction("Create");
+        }
         
 
         [Authorize(Roles ="Klient")]
@@ -159,10 +166,11 @@ namespace AgrotouristicWebApplication.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Klient")]
-        public ActionResult AddHouses([Bind(Include ="StringSelectedHouses")]HousesSelection housesSelection)
+        public ActionResult AddHouses(bool isHousesConfirmed)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            repository.SaveSelectedHouses(reservation,housesSelection.StringSelectedHouses);
+            repository.SaveSelectedHouses(reservation, Request.Form.GetValues("HousesSelectedHouses").ToList());
+            reservation.stagesConfirmation[1] = isHousesConfirmed;
             Session["Reservation"] = reservation;
             return RedirectToAction("Create");
         }

@@ -12,19 +12,17 @@ namespace Repository.ViewModels
     {
         public NewReservation()
         {
-            SelectedHouses = new List<SelectListItem>();
-            SelectedHousesMeals = new List<SelectListItem>();
             AssignedHousesMeals = new Dictionary<string, int>();
             AssignedParticipantsHouses = new Dictionary<string, List<Participant>>();
+            stagesConfirmation = new List<bool>(4);
+            stagesConfirmation.AddRange(Enumerable.Repeat(false, 4));
         }
-
-        public IEnumerable<SelectListItem> SelectedHouses { get; set; }
-
-        public IEnumerable<SelectListItem> SelectedHousesMeals { get; set; }
 
         public Dictionary<string,int> AssignedHousesMeals { get; set; }
 
         public Dictionary<string,List<Participant>> AssignedParticipantsHouses { get; set; }
+
+        public List<bool> stagesConfirmation { get; set; }
 
         [Display(Name = "Data przyjazdu:")]
         [DataType(DataType.Date)]

@@ -166,15 +166,14 @@ namespace Repository.Repo
             }
         }
 
-        public void SaveSelectedHouses(NewReservation reservation,string selectedHouses)
+        public void SaveSelectedHouses(NewReservation reservation,List<string> selectedHouses)
         {
-            foreach(string house in selectedHouses.Split('|'))
+            foreach(string house in selectedHouses)
             {
                 int quantity = Int32.Parse(house.Split('-')[0]);
                 List<Participant> participants = new List<Participant>(quantity);
                 participants.AddRange(Enumerable.Repeat(new Participant(), quantity));
                 reservation.AssignedParticipantsHouses.Add(house, new List<Participant>(participants));
-
                 reservation.AssignedHousesMeals.Add(house, -1);
             }
         }

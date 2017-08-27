@@ -119,7 +119,7 @@
 
 <h2>Wybierz domki</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("AddHouses","ClientReservations",new { isHousesConfirmed = true,data=Model.SelectedHouses}))
 {
     @Html.AntiForgeryToken()
 
@@ -145,7 +145,7 @@
             <div class="form-group">
                 @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DropDownList("HousesSelectedHouses", Model.SelectedHouses, new { id = "HousesSelectedHouses", @class = "SelectListHouses" })
+                    @Html.ListBox("HousesSelectedHouses", Model.SelectedHouses, new { id = "HousesSelectedHouses", @class = "SelectListHouses" })
                     <input type="button" id="btnRemoveSelected" value="Usuń zaznaczenie"  />
                 </div>
             </div>
@@ -158,8 +158,6 @@
             </div>
         </div>
     </div>
-
-    @Html.HiddenFor(model=>model.StringSelectedHouses)
 
 }
 

@@ -26,7 +26,7 @@ namespace Repository.IRepo
         List<User> GetWorkersAssignedToAttraction(int id);
         List<House> GetAvaiableHousesInTerm(DateTime startDate, DateTime endDate);
         void SaveAssignedMealsToHouses(NewReservation reservation,string selectedMeals);
-        void SaveSelectedHouses(NewReservation reservation,string selectedHouses);
+        void SaveSelectedHouses(NewReservation reservation,List<string> selectedHouses);
         bool ValidateFormularParticipants(Dictionary<string, List<Participant>> dictionary);
         IQueryable<Reservation> GetClientReservations(string id);
     }

@@ -89,7 +89,7 @@
 
 <h2>Ustal termin</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm("AddTerm", "ClientReservations",new { isTermConfirmed=true }))
 {
     @Html.AntiForgeryToken()
 
