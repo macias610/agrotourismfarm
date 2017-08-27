@@ -154,9 +154,9 @@ namespace Repository.Repo
             return workers;
         }
 
-        public void SaveAssignedMealsToHouses(NewReservation reservation,string selectedMeals)
+        public void SaveAssignedMealsToHouses(NewReservation reservation,List<string> selectedMeals)
         {
-            foreach(string houseMeal in selectedMeals.Split('|'))
+            foreach(string houseMeal in selectedMeals)
             {
                 string houseName = houseMeal.Split(';')[0] + ';';
                 string mealType = houseMeal.Split(';')[1].Split('(')[0];

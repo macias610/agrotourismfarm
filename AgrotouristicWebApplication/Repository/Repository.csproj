@@ -211,8 +211,6 @@
     <Compile Include="Repo\RoleComparer.cs" />
     <Compile Include="Repo\UserRepository.cs" />
     <Compile Include="ViewModels\HouseDetails.cs" />
-    <Compile Include="ViewModels\HousesSelection.cs" />
-    <Compile Include="ViewModels\MealsSelection.cs" />
     <Compile Include="ViewModels\NewReservation.cs" />
     <Compile Include="ViewModels\ReservationAttractionDetails.cs" />
     <Compile Include="ViewModels\ReservationDetails.cs" />

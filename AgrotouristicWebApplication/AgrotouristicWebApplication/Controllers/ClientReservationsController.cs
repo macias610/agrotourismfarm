@@ -153,14 +153,13 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddHouses()
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-
-            HousesSelection housesSelection = new HousesSelection()
+            Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
-                AvaiableHouses = repository.GetAllNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(reservation.StartDate, reservation.EndDate)),
-                SelectedHouses = new List<SelectListItem>()
+                { "Avaiable",repository.GetAllNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(reservation.StartDate, reservation.EndDate))},
+                { "Selected",new List<SelectListItem>()}
             };
 
-            return View("~/Views/ClientReservations/AddHouses.cshtml", housesSelection);
+            return View("~/Views/ClientReservations/AddHouses.cshtml", dictionary);
         }
 
         [HttpPost]
@@ -169,7 +168,7 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddHouses(bool isHousesConfirmed)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            repository.SaveSelectedHouses(reservation, Request.Form.GetValues("HousesSelectedHouses").ToList());
+            repository.SaveSelectedHouses(reservation, Request.Form.GetValues("HousesListBoxSelected").ToList());
             reservation.stagesConfirmation[1] = isHousesConfirmed;
             Session["Reservation"] = reservation;
             return RedirectToAction("Create");
@@ -179,23 +178,25 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddMeals()
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            MealsSelection mealsSelection = new MealsSelection()
+
+            Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
-                AvaiableMeals = repository.GetAllNamesAvaiableMeals(),
-                SelectedHouses = reservation.AssignedHousesMeals.Keys.Select(key => new SelectListItem { Value = key, Text = key }).ToList(),
-                SelectedMeals = new List<SelectListItem>()
+                { "AvaiableMeals",repository.GetAllNamesAvaiableMeals()},
+                { "SelectedHouses",reservation.AssignedHousesMeals.Keys.Select(key => new SelectListItem { Value = key, Text = key }).ToList()},
+                { "SelectedMeals",new List<SelectListItem>()}
             };
 
-            return View("~/Views/ClientReservations/AddMeals.cshtml", mealsSelection);
+            return View("~/Views/ClientReservations/AddMeals.cshtml", dictionary);
         }
 
         [HttpPost]
         [Authorize(Roles ="Klient")]
         [ValidateAntiForgeryToken]
-        public ActionResult AddMeals([Bind(Include = "StringSelectedMeals")] MealsSelection mealsSelection)
+        public ActionResult AddMeals(bool isMealsConfirmed)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            repository.SaveAssignedMealsToHouses(reservation,mealsSelection.StringSelectedMeals);
+            repository.SaveAssignedMealsToHouses(reservation, Request.Form.GetValues("ListBoxSelectedHousesMeals").ToList());
+            reservation.stagesConfirmation[2] = isMealsConfirmed;
             return RedirectToAction("Create");
         }
 
@@ -209,9 +210,8 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddParticipants(bool? participantsConfirmed)
-        {
-            
+        public ActionResult AddParticipants(bool isParticipantsConfirmed)
+        {       
             NewReservation reservation = (NewReservation)Session["Reservation"];
 
             if(!repository.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
@@ -219,6 +219,7 @@ namespace AgrotouristicWebApplication.Controllers
                 ViewBag.error = true;
                 return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
             }
+            reservation.stagesConfirmation[3] = isParticipantsConfirmed;
             return RedirectToAction("Create");
         }
 

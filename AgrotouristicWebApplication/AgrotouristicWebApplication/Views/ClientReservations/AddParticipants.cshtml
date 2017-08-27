@@ -96,7 +96,7 @@
 
 <h2>Dodaj lokatorów</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm("AddParticipants","ClientReservations",new { isParticipantsConfirmed=true}))
 {
     @Html.AntiForgeryToken()
 

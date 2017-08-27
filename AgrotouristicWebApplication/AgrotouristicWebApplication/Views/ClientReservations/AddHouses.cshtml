@@ -1,4 +1,4 @@
-﻿@model Repository.ViewModels.HousesSelection
+﻿@model Dictionary<string,List<SelectListItem>>
 
 @{
     ViewBag.Title = "AddHouses";
@@ -14,22 +14,6 @@
                 $('#description').html('')
             });
         })
-    </script>
-
-    <script type="text/javascript">
-        $(function() {
-            $("form").submit(function () {
-                var selected = document.getElementById("HousesSelectedHouses");
-                var appendingString = "";
-                for (i = 0; i < selected.length; i++) {
-                    appendingString += selected.options[i].value + '|';
-                    if(i == (selected.length-1))
-                    {
-                        $("#StringSelectedHouses").val(appendingString.slice(0,-1));
-                    }
-                }
-            });
-        });
     </script>
 
     <script type="text/javascript">
@@ -66,6 +50,13 @@
                 option.text = option.value = selectedValue;
                 option.selected = true;
                 selected.add(option, 0);
+
+                var listBox = document.getElementById('HousesListBoxSelected');
+                var option2 = document.createElement('option');
+                option2.text = option2.value = selectedValue;
+                option2.selected = true;
+                listBox.add(option2, 0);
+
                 checkStateDropDownLists(document.getElementById('HousesAvaiableHouses').length, document.getElementById('HousesSelectedHouses').length);
                 $('#description').html('')
             });
@@ -79,6 +70,9 @@
                 var selectedValue = $('#HousesSelectedHouses option:selected').text();
                 var index = $('#HousesSelectedHouses').get(0).selectedIndex;
                 $('#HousesSelectedHouses option:eq(' + index + ')').remove();
+
+                var listBox = document.getElementById('HousesListBoxSelected');
+                $('#HousesListBoxSelected option:eq(' + index + ')').remove();
 
                 $('#HousesAvaiableHouses')
                         .append($("<option></option>")
@@ -119,7 +113,7 @@
 
 <h2>Wybierz domki</h2>
 
-@using (Html.BeginForm("AddHouses","ClientReservations",new { isHousesConfirmed = true,data=Model.SelectedHouses}))
+@using (Html.BeginForm("AddHouses","ClientReservations",new { isHousesConfirmed = true}))
 {
     @Html.AntiForgeryToken()
 
@@ -133,7 +127,7 @@
             <div class="form-group">
                 @Html.Label("Rodzaje domków", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DropDownList("HousesAvaiableHouses", Model.AvaiableHouses, new { id = "HousesAvaiableHouses",@class = "SelectListHouses" })
+                    @Html.DropDownList("HousesAvaiableHouses", Model["Avaiable"], new { id = "HousesAvaiableHouses",@class = "SelectListHouses" })
                     <input type="button" id="btnShowDescription" value="Opis" />
                     <div id="description" style="display:inline-flex">
 
@@ -145,10 +139,12 @@
             <div class="form-group">
                 @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.ListBox("HousesSelectedHouses", Model.SelectedHouses, new { id = "HousesSelectedHouses", @class = "SelectListHouses" })
+                    @Html.DropDownList("HousesSelectedHouses", Model["Selected"], new { id = "HousesSelectedHouses", @class = "SelectListHouses" })
                     <input type="button" id="btnRemoveSelected" value="Usuń zaznaczenie"  />
                 </div>
             </div>
+
+            @Html.ListBox("HousesListBoxSelected", Model["Selected"], new { id = "HousesListBoxSelected", style="visibility:hidden" })
 
         </div>
         <div class="form-group">

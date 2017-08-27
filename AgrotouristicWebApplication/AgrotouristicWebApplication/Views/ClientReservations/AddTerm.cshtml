@@ -35,6 +35,7 @@
                     $('#avaiableHouses').html('');
                     $('#startdate, #enddate').val('');
                     $('#startdate').attr('disabled', false);
+                    $('#startdate').attr('min', '@DateTime.Now.AddDays(1).ToShortDateString()');
                     $('#enddate').attr('disabled', true);
                     document.getElementById("btnConfirmTerm").style.visibility = 'hidden';
                 });

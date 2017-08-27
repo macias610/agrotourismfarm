@@ -1,4 +1,4 @@
-﻿@model Repository.ViewModels.MealsSelection
+﻿@model Dictionary<string,List<SelectListItem>>
 
 @{
     ViewBag.Title = "AddMeals";
@@ -7,22 +7,6 @@
 <head>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
-
-    <script type="text/javascript">
-        $(function() {
-            $("form").submit(function () {
-                var selected = document.getElementById("MealsSelectedHousesMeals");
-                var appendingString = "";
-                for (i = 0; i < selected.length; i++) {
-                    appendingString += selected.options[i].value + '|';
-                    if(i == (selected.length-1))
-                    {
-                        $("#StringSelectedMeals").val(appendingString.slice(0,-1));
-                    }
-                }
-            });
-        });
-    </script>
 
     <script type="text/javascript">
             function checkStateDropDownLists(avaiable,selected) {
@@ -58,6 +42,13 @@
                 option.text = option.value = selectedHouseValue + selectedMealValue;
                 option.selected = true;
                 selectedHouseMeal.add(option, 0);
+
+                var listBox = document.getElementById('ListBoxSelectedHousesMeals');
+                var option2 = document.createElement('option');
+                option2.text = option2.value = selectedHouseValue + selectedMealValue;
+                option2.selected = true;
+                listBox.add(option2, 0);
+
                 checkStateDropDownLists(document.getElementById('MealsSelectedHouses').length, document.getElementById('MealsSelectedHousesMeals').length);
             });
             checkStateDropDownLists(document.getElementById('MealsSelectedHouses').length, document.getElementById('MealsSelectedHousesMeals').length);
@@ -70,6 +61,9 @@
                 var selectedValue = $('#MealsSelectedHousesMeals option:selected').text();
                 var index = $('#MealsSelectedHousesMeals').get(0).selectedIndex;
                 $('#MealsSelectedHousesMeals option:eq(' + index + ')').remove();
+
+                var listBox = document.getElementById('ListBoxSelectedHousesMeals');
+                $('#ListBoxSelectedHousesMeals option:eq(' + index + ')').remove();
 
                 selectedValue = selectedValue.split(';')[0] + ';';
 
@@ -87,7 +81,7 @@
 
 <h2>Wybierz posiłki</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("AddMeals", "ClientReservations",new { isMealsConfirmed=true}))
 {
     @Html.AntiForgeryToken()
 
@@ -99,7 +93,7 @@
         <div class="form-group">
             @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("MealsSelectedHouses", Model.SelectedHouses, new { id= "MealsSelectedHouses" })
+                @Html.DropDownList("MealsSelectedHouses", Model["SelectedHouses"], new { id= "MealsSelectedHouses" })
             </div>
 
         </div>
@@ -107,17 +101,19 @@
         <div class="form-group">
             @Html.Label("Dostępne posiłki", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("MealsAvaiableMeals", Model.AvaiableMeals, new { id= "MealsAvaiableMeals" })
+                @Html.DropDownList("MealsAvaiableMeals", Model["AvaiableMeals"], new { id= "MealsAvaiableMeals" })
             </div>
         </div>
 
         <div class="form-group">
             @Html.Label("Wybrane posiłki", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("MealsSelectedHousesMeals", Model.SelectedMeals, new { id= "MealsSelectedHousesMeals" })
+                @Html.DropDownList("MealsSelectedHousesMeals", Model["SelectedMeals"], new { id= "MealsSelectedHousesMeals" })
                 <input type="button" id="btnRemoveSelectedHouseMeal" value="Usuń zaznaczenie" />
             </div>
         </div>
+
+        @Html.ListBox("ListBoxSelectedHousesMeals",Model["SelectedMeals"],new { id= "ListBoxSelectedHousesMeals", style="visibility:hidden"})
 
         <div class="form-group">
             <div class="col-md-10">
@@ -126,7 +122,6 @@
             </div>
         </div>
     </div>
-    @Html.HiddenFor(model=>model.StringSelectedMeals)
 }
 
 <div>
