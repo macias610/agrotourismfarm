@@ -9,6 +9,22 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
+        function handler(e) {
+            var source = e.srcElement.id;
+            if (source == 'MealsSelectedHousesMeals')
+            {
+                var index = $('#MealsSelectedHousesMeals').get(0).selectedIndex;
+                var selectedValue = $('#ListBoxSelectedHousesMeals option:eq(' + index + ')').text();
+                labelMealType.innerHTML = selectedValue.split(';')[1].split('(')[0];
+
+                var regExp = /\(([^)]+)\)/;
+                var matches = regExp.exec((selectedValue.split(';')[1]));
+                labelMealPrice.innerHTML = matches[1];
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
             function checkStateDropDownLists(avaiable,selected) {
                 if (avaiable < 1) {
                     document.getElementById("btnAddHouseMeal").style.visibility = 'hidden';
@@ -27,6 +43,7 @@
             }
     </script>
 
+
     <script type="text/javascript">
         $(function () {
             $("#btnAddHouseMeal").click(function () {
@@ -39,7 +56,7 @@
 
                 var selectedHouseMeal = document.getElementById('MealsSelectedHousesMeals');
                 var option = document.createElement('option');
-                option.text = option.value = selectedHouseValue + selectedMealValue;
+                option.text = option.value = selectedHouseValue;
                 option.selected = true;
                 selectedHouseMeal.add(option, 0);
 
@@ -48,6 +65,14 @@
                 option2.text = option2.value = selectedHouseValue + selectedMealValue;
                 option2.selected = true;
                 listBox.add(option2, 0);
+
+                var labelMealType = document.getElementById('labelMealType');
+                labelMealType.innerHTML = selectedMealValue.split('(')[0];
+
+                var labelMealPrice = document.getElementById('labelMealPrice');
+                var regExp = /\(([^)]+)\)/;
+                var matches = regExp.exec((selectedMealValue));
+                labelMealPrice.innerHTML = matches[1];
 
                 checkStateDropDownLists(document.getElementById('MealsSelectedHouses').length, document.getElementById('MealsSelectedHousesMeals').length);
             });
@@ -65,7 +90,22 @@
                 var listBox = document.getElementById('ListBoxSelectedHousesMeals');
                 $('#ListBoxSelectedHousesMeals option:eq(' + index + ')').remove();
 
-                selectedValue = selectedValue.split(';')[0] + ';';
+                var labelMealType = document.getElementById('labelMealType');
+                var labelMealPrice = document.getElementById('labelMealPrice');
+                var regExp = /\(([^)]+)\)/;
+                var matches = regExp.exec($('#ListBoxSelectedHousesMeals option:selected').text().split(';')[1]);
+                if ($('#MealsSelectedHousesMeals>option').length >= 1)
+                {
+                    labelMealType.innerHTML = $('#ListBoxSelectedHousesMeals option:selected').text().split(';')[1].split('(')[0];
+                    labelMealPrice.innerHTML = matches[1];
+                }
+                else
+                {
+                    labelMealType.innerHTML = 'Wybrany posiłek';
+                    labelMealPrice.innerHTML = 'Cena posiłku';
+                }
+
+                
 
                 $('#MealsSelectedHouses')
                         .append($("<option></option>")
@@ -108,7 +148,9 @@
         <div class="form-group">
             @Html.Label("Wybrane posiłki", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("MealsSelectedHousesMeals", Model["SelectedMeals"], new { id= "MealsSelectedHousesMeals" })
+                @Html.DropDownList("MealsSelectedHousesMeals", Model["SelectedMeals"], new { id= "MealsSelectedHousesMeals", onchange="handler(event)" })
+                @Html.Label("Wybrany posiłek",new { id= "labelMealType", style = "border: 1px solid black;font-weight: normal;" })
+                @Html.Label("Cena posiłku", new { id = "labelMealPrice", style = "border: 1px solid black;font-weight: normal;" })
                 <input type="button" id="btnRemoveSelectedHouseMeal" value="Usuń zaznaczenie" />
             </div>
         </div>
