@@ -12,47 +12,30 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
+        function handler(e) {
+            document.getElementById('DetailsSelectHouse').style.visibility = 'hidden';
+        }
+    </script>
+
+
+    <script type="text/javascript">
             $(function () {
                 $("#btnGet").click(function () {
                     $.ajax({
                         type: "POST",
-                        url: "/ClientReservations/AjaxMethod",
+                        url: "/ClientReservations/GetHouseDetails",
                         data: '{id: "' + $("#idValue").val() + '",name:"' + $("#SelectedHouseDetailsId option:selected").text() + '" }',
                         contentType: "application/json; charset=utf-8",
                         dataType: "text",
                         success: function (response) {
-                            $('#SelectHouse').html(response)
+                            $('#DetailsSelectHouse').html(response)
+                            document.getElementById('DetailsSelectHouse').style.visibility = 'visible';
                         },
                         failure: function (response) {
                             alert(response.responseText);
                         },
                         error: function (response) {
                             alert(response.responseText);
-                            console.log(response.responseText)
-                        }
-                    });
-                });
-            });
-    </script>
-
-    <script type="text/javascript">
-            $(function () {
-                $("#btnHide").click(function () {
-                    $.ajax({
-                        type: "POST",
-                        url: "/ClientReservations/AjaxMethod",
-                        data: '{id: "' + $("#idValue").val() + '",name: "-" }',
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "text",
-                        success: function (response) {
-                            $('#SelectHouse').html(response)
-                        },
-                        failure: function (response) {
-                            alert(response.responseText);
-                        },
-                        error: function (response) {
-                            alert(response.responseText);
-                            console.log(response.responseText)
                         }
                     });
                 });
@@ -130,23 +113,19 @@
         <div class="form-group">
             @Html.Label("Domki", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("SelectedHouseDetailsId", Model.Houses)
+                @Html.DropDownList("SelectedHouseDetailsId", Model.Houses,new { onchange = "handler(event)" })
             </div>
         </div>
 
         <input type="hidden" id="idValue" value=@Model.Reservation.Id />
         <input type="button" id="btnGet" value="Wyświetl" />
-        <input type="button" id="btnHide" value="Ukryj" />
 
 
         
 
-    <div id="SelectHouse" class="SelectHouse">
+    <div id="DetailsSelectHouse" style="visibility:hidden">
 
     </div>
-
-
-
 
     <p>
         @Html.ActionLink("Wróć", "Index")

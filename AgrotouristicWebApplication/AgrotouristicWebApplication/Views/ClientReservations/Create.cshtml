@@ -127,6 +127,10 @@
             <input type="submit" id="finalConfirmReservation" value="Potwierdź rezerwację" class="btn btn-default" style="visibility:hidden" />
         </div>
     </div>
+
+    @Html.HiddenFor(model=>model.StartDate)
+    @Html.HiddenFor(model=>model.EndDate)
+
 }
 
 <div>

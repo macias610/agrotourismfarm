@@ -11,11 +11,7 @@ using Repository.IRepo;
 using System.Web.Security;
 using Microsoft.AspNet.Identity;
 using Repository.ViewModels;
-using System.Web.Script.Serialization;
-using Newtonsoft.Json;
 using Microsoft.Ajax.Utilities;
-using Repository.Repo;
-using System.ComponentModel.DataAnnotations;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -72,7 +68,7 @@ namespace AgrotouristicWebApplication.Controllers
 
         [HttpPost]
         [Authorize(Roles ="Klient")]
-        public ActionResult AjaxMethod(int id,string name)
+        public ActionResult GetHouseDetails(int id,string name)
         {
             ReservationHouseDetails houseDetails=null;
             repository.GetHousesForReservation(id).Where(item => item.Name.Equals(name)).ForEach(item => houseDetails = new ReservationHouseDetails()
@@ -81,12 +77,6 @@ namespace AgrotouristicWebApplication.Controllers
                 Meal = repository.GetHouseMealForReservation(item.Id),
                 Participants = repository.GetParticipantsHouseForReservation(item.Id)
             });
-
-            if (name.Equals("-"))
-            {
-                return new EmptyResult();
-            }
-
             return PartialView("~/Views/Shared/_ReservationHouseDetailsPartial.cshtml", houseDetails);
         }
 
@@ -234,18 +224,6 @@ namespace AgrotouristicWebApplication.Controllers
             return PartialView("~/Views/Shared/_HouseParticipantsPartial.cshtml",participants);
         }
 
-
-        [HttpPost]
-        //[ValidateAntiForgeryToken]
-        [Authorize(Roles ="Klient")]
-        public ActionResult AddToSelectedHouses(IEnumerable<SelectListItem> avaiableHouses)
-        {
-            //SelectListItem item = avaiable.Where(x => x.Selected = true).FirstOrDefault();
-            //avaiable.ToList().Remove(item);
-            //selected.ToList().Add(item);
-            return PartialView("~/Views/Shared/_HousesSelectionPartial.cshtml");
-        }
-
         // GET: Reservations/Create
         [Authorize(Roles ="Klient")]
         public ActionResult Create()
@@ -266,20 +244,25 @@ namespace AgrotouristicWebApplication.Controllers
         // POST: Reservations/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create([Bind(Include = "Id,StartDate,EndDate,DeadlinePayment,Status,OverallCost,ClientId")] Reservation reservation)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Reservations.Add(reservation);
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Klient")]
+        public ActionResult Create([Bind(Include = "StartDate,EndDate")] NewReservation reservation)
+        {
+            if (ModelState.IsValid)
+            {
+                reservation = (NewReservation )Session["Reservation"];
+                Reservation savedReservation = repository.GetReservationBasedOnData(reservation, User.Identity.GetUserId());
+                repository.AddReservation(savedReservation);
+                repository.SaveChanges();
 
-        //    ViewBag.ClientId = new SelectList(db.Users, "Id", "Email", reservation.ClientId);
-        //    return View(reservation);
-        //}
+
+                return RedirectToAction("Index");
+            }
+
+            
+            return View(reservation);
+        }
 
         // GET: Reservations/Edit/5
         //public ActionResult Edit(int? id)

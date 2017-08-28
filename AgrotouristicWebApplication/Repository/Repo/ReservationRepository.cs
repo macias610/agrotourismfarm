@@ -20,6 +20,33 @@ namespace Repository.Repo
             this.db = db;
         }
 
+        private decimal CalculateCostHouses(List<string> houses)
+        {
+            decimal result = 0;
+            foreach (string house in houses)
+            {
+                string houseName = Regex.Match(house, @"\(([^)]*)\)").Groups[1].Value;
+                result += (from houseType in db.HouseTypes
+                           join hh in db.Houses on houseType.Id equals hh.HouseTypeId
+                           where hh.Name.Equals(houseName)
+                           select houseType.Price).FirstOrDefault();
+
+            }
+            return result;
+        }
+
+        private decimal CalculateCostMeals(Dictionary<string,int> selectedMeals)
+        {
+            decimal result = 0;
+            int quantity = 0;
+            foreach(KeyValuePair<string,int> item in selectedMeals)
+            {
+                quantity = Int32.Parse(item.Key.Split('-')[0]);
+                result += quantity * (db.Meals.Find(item.Value).Price);
+            }
+            return result;
+        }
+
         public Dictionary<string, ReservationHouseDetails> ConvertToDictionaryHouseDetails(List<House> houses)
         {
             Dictionary<string, ReservationHouseDetails> reservationHouseDetails = new Dictionary<string, ReservationHouseDetails>();
@@ -194,6 +221,29 @@ namespace Repository.Repo
             }
             return true;
         }
-        
+
+        public Reservation GetReservationBasedOnData(NewReservation reservation,string userId)
+        {
+            Reservation savedReservation = new Reservation()
+            {
+                ClientId =  userId,
+                DeadlinePayment = DateTime.Now.AddDays(1),
+                StartDate = reservation.StartDate,
+                EndDate = reservation.EndDate,
+                Status = Reservation.states[0],
+                OverallCost = CalculateCostHouses(reservation.AssignedParticipantsHouses.Keys.ToList())+CalculateCostMeals(reservation.AssignedHousesMeals)
+            };
+            return savedReservation;
+        }
+
+        public void AddReservation(Reservation reservation)
+        {
+            db.Reservations.Add(reservation);
+        }
+
+        public void SaveChanges()
+        {
+            db.SaveChanges();
+        }
     }
 }

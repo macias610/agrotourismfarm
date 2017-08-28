@@ -13,6 +13,7 @@ namespace Repository.IRepo
     {
         IQueryable<Reservation> GetReservations();
         Reservation GetReservationById(int id);
+        Reservation GetReservationBasedOnData(NewReservation reservation,string userId);
         List<House> GetHousesForReservation(int id);
         House GetHouseByName(string name);
         Dictionary<string,ReservationHouseDetails> ConvertToDictionaryHouseDetails(List<House> houses);
@@ -27,7 +28,10 @@ namespace Repository.IRepo
         List<House> GetAvaiableHousesInTerm(DateTime startDate, DateTime endDate);
         void SaveAssignedMealsToHouses(NewReservation reservation,List<string> selectedMeals);
         void SaveSelectedHouses(NewReservation reservation,List<string> selectedHouses);
+        void AddReservation(Reservation reservation);
+        void SaveChanges();
         bool ValidateFormularParticipants(Dictionary<string, List<Participant>> dictionary);
         IQueryable<Reservation> GetClientReservations(string id);
+
     }
 }
