@@ -75,8 +75,8 @@ namespace AgrotouristicWebApplication.Controllers
             ReservationHouseDetails houseDetails = new ReservationHouseDetails()
             {
                 House = house,
-                Meal = repository.GetHouseMealForReservation(house.Id),
-                Participants = repository.GetParticipantsHouseForReservation(house.Id)
+                Meal = repository.GetHouseMealForReservation(id,house.Id),
+                Participants = repository.GetParticipantsHouseForReservation(id,house.Id)
             };
             return PartialView("~/Views/Shared/_ReservationHouseDetailsPartial.cshtml", houseDetails);
         }
@@ -87,12 +87,9 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult GetAvaiableHouses(DateTime startDate, DateTime endDate)
         {
             Session.Remove("Reservation");
-            IEnumerable <SelectListItem> avaiableHouses = repository.GetAllNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(startDate, endDate));
-
             List<string> houses = new List<string>();
-            avaiableHouses.ToList().ForEach(item => houses.Add(item.Value));
-
-            if(avaiableHouses.ToList().Count == 0)
+            repository.GetNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(startDate, endDate)).ToList().ForEach(item => houses.Add(item.Value));
+            if(houses.Count == 0)
             {
                 return new EmptyResult();
             }
@@ -146,7 +143,7 @@ namespace AgrotouristicWebApplication.Controllers
             NewReservation reservation = (NewReservation)Session["Reservation"];
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
-                { "Avaiable",repository.GetAllNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(reservation.StartDate, reservation.EndDate))},
+                { "Avaiable",repository.GetNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(reservation.StartDate, reservation.EndDate))},
                 { "Selected",new List<SelectListItem>()}
             };
 
@@ -169,14 +166,12 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddMeals()
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
-                { "AvaiableMeals",repository.GetAllNamesAvaiableMeals()},
+                { "AvaiableMeals",repository.GetNamesAvaiableMeals()},
                 { "SelectedHouses",reservation.AssignedHousesMeals.Keys.Select(key => new SelectListItem { Value = key, Text = key }).ToList()},
                 { "SelectedMeals",new List<SelectListItem>()}
             };
-
             return View("~/Views/ClientReservations/AddMeals.cshtml", dictionary);
         }
 
@@ -204,7 +199,6 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddParticipants(bool isParticipantsConfirmed)
         {       
             NewReservation reservation = (NewReservation)Session["Reservation"];
-
             if(!repository.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
             {
                 ViewBag.error = true;
@@ -252,7 +246,7 @@ namespace AgrotouristicWebApplication.Controllers
                 Reservation savedReservation = repository.GetReservationBasedOnData(reservation, User.Identity.GetUserId());
                 repository.AddReservation(savedReservation);
                 repository.SaveChanges();
-
+                repository.SaveAssignedMealsAndHouses(savedReservation.Id, reservation);
 
                 return RedirectToAction("Index");
             }

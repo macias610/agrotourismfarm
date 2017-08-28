@@ -15,10 +15,10 @@ namespace Repository.IRepo
         Reservation GetReservationBasedOnData(NewReservation reservation,string userId);
         List<House> GetHousesForReservation(int id);
         House GetHouseByName(string name);
-        List<SelectListItem> GetAllNamesAvaiableHouses(List<House> houses);
-        List<SelectListItem> GetAllNamesAvaiableMeals();
-        Meal GetHouseMealForReservation(int id);
-        List<Participant> GetParticipantsHouseForReservation(int id);
+        List<SelectListItem> GetNamesAvaiableHouses(List<House> houses);
+        List<SelectListItem> GetNamesAvaiableMeals();
+        Meal GetHouseMealForReservation(int reservationId, int houseId);
+        List<Participant> GetParticipantsHouseForReservation(int reservationId, int houseId);
         Attraction_Reservation GetDetailsAboutReservedAttraction(int id);
         List<Attraction> GetAttractionsForReservation(int id);
         List<User> GetWorkersAssignedToAttraction(int id);
@@ -29,6 +29,6 @@ namespace Repository.IRepo
         void SaveChanges();
         bool ValidateFormularParticipants(Dictionary<string, List<Participant>> dictionary);
         IQueryable<Reservation> GetClientReservations(string id);
-
+        void SaveAssignedMealsAndHouses(int id, NewReservation reservation);
     }
 }

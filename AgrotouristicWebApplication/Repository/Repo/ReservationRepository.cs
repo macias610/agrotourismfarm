@@ -30,7 +30,6 @@ namespace Repository.Repo
                            join hh in db.Houses on houseType.Id equals hh.HouseTypeId
                            where hh.Name.Equals(houseName)
                            select houseType.Price).FirstOrDefault();
-
             }
             return result;
         }
@@ -47,13 +46,29 @@ namespace Repository.Repo
             return result;
         }
 
-        public List<SelectListItem> GetAllNamesAvaiableHouses(List<House> houses)
+        private void SaveAssignedHouseParticipants(int reservationHouseId,List<Participant> participants)
+        {
+            foreach(Participant participant in participants)
+            {
+                db.Participants.Add(participant);
+                db.SaveChanges();
+                Reservation_House_Participant resHousePart = new Reservation_House_Participant()
+                {
+                    ParticipantId=participant.Id,
+                    Reservation_HouseId = reservationHouseId
+                };
+                db.Reservation_House_Participant.Add(resHousePart);
+                db.SaveChanges();
+            }
+        }
+
+        public List<SelectListItem> GetNamesAvaiableHouses(List<House> houses)
         {
             List<SelectListItem> selectList = houses.Select(house => new SelectListItem { Value = house.HouseType.Type+"("+house.Name+");", Text = house.HouseType.Type + "(" + house.Name +");" }).ToList();
             return selectList;
         }
 
-        public List<SelectListItem> GetAllNamesAvaiableMeals()
+        public List<SelectListItem> GetNamesAvaiableMeals()
         {
             List<Meal> avaiableMeals = db.Meals.AsNoTracking().ToList();
             List<SelectListItem> selectList = avaiableMeals.Select(avaiableMeal => new SelectListItem { Value = avaiableMeal.Type+"("+avaiableMeal.Price+")", Text = avaiableMeal.Type + "(" + avaiableMeal.Price +")" }).ToList();
@@ -108,10 +123,11 @@ namespace Repository.Repo
             return house;
         }
 
-        public Meal GetHouseMealForReservation(int id)
+        public Meal GetHouseMealForReservation(int reservationId,int houseId)
         {
             Meal meal = (from resHouse in db.Reservation_House
-                         where resHouse.HouseId.Equals(id)
+                         where resHouse.HouseId.Equals(houseId)
+                         && resHouse.ReservationId.Equals(reservationId)
                          join m in db.Meals on resHouse.MealId equals m.Id
                          select m).FirstOrDefault();
             return meal;
@@ -127,10 +143,11 @@ namespace Repository.Repo
 
         }
 
-        public List<Participant> GetParticipantsHouseForReservation(int id)
+        public List<Participant> GetParticipantsHouseForReservation(int reservationId,int houseId)
         {
             int resHouseId = (from resHouse in db.Reservation_House
-                                where resHouse.HouseId.Equals(id)
+                                where resHouse.HouseId.Equals(houseId)
+                                && resHouse.ReservationId.Equals(reservationId)
                                 select resHouse.Id).FirstOrDefault();
 
             List<Participant> participants = (from resHousePart in db.Reservation_House_Participant
@@ -219,5 +236,25 @@ namespace Repository.Repo
         {
             db.SaveChanges();
         }
+
+        public void SaveAssignedMealsAndHouses(int id, NewReservation reservation)
+        {
+            foreach(KeyValuePair<string,int> item in reservation.AssignedHousesMeals)
+            {
+                string houseName = Regex.Match(item.Key, @"\(([^)]*)\)").Groups[1].Value;
+                int houseId = db.Houses.Where(house => house.Name.Equals(houseName)).FirstOrDefault().Id;
+                Reservation_House reservationHouse = new Reservation_House()
+                {
+                    HouseId=houseId,
+                    MealId = item.Value,
+                    ReservationId = id
+                };
+                db.Reservation_House.Add(reservationHouse);
+                db.SaveChanges();
+                SaveAssignedHouseParticipants(reservationHouse.Id,reservation.AssignedParticipantsHouses[item.Key]);
+
+            }
+        } 
+
     }
 }
