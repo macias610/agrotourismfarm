@@ -1,0 +1,68 @@
+﻿@model  Repository.ViewModels.ReservationHouseDetails
+@using Repository.Models
+<dl>
+    <dt>
+        @Html.DisplayNameFor(model => model.House.HouseType.Price)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.House.HouseType.Price)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.House.Description)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.House.Description)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.Meal.Type)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Meal.Type)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.Meal.Price)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.Meal.Price)
+    </dd>
+</dl>
+<h4>Lokatorzy</h4>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("LP")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Participants.FirstOrDefault().Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Participants.FirstOrDefault().Surname)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Participants.Select((value, i) => new { i, value }))
+    {
+        Participant value = item.value;
+        int index = item.i + 1;
+        <tr>
+            <td>
+                @index.ToString()
+            </td>
+            <td>
+                @value.Name
+            </td>
+            <td>
+                @value.Surname
+            </td>
+        </tr>
+    }
+
+</table>

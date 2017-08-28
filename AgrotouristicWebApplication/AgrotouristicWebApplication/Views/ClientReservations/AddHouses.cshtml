@@ -1,0 +1,162 @@
+﻿@model Dictionary<string,List<SelectListItem>>
+
+@{
+    ViewBag.Title = "AddHouses";
+}
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+            $(".SelectListHouses").change(function () {
+                $('#description').html('')
+            });
+        })
+    </script>
+
+    <script type="text/javascript">
+            function checkStateDropDownLists(avaiable,selected) {
+                if (avaiable < 1) {
+                    document.getElementById("btnAddHouse").style.visibility = 'hidden';
+                    document.getElementById("btnShowDescription").style.visibility = 'hidden';
+                }
+                else {
+                    document.getElementById("btnAddHouse").style.visibility = 'visible';
+                    document.getElementById("btnShowDescription").style.visibility = 'visible';
+                }
+                if (selected < 1) {
+                    document.getElementById("btnRemoveSelected").style.visibility = 'hidden';
+                    document.getElementById('btnConfirmHouses').style.visibility = 'hidden'
+                }
+                else {
+                    document.getElementById("btnRemoveSelected").style.visibility = 'visible';
+                    document.getElementById('btnConfirmHouses').style.visibility = 'visible'
+                }
+            }
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#btnAddHouse").click(function () {
+                var avaiable = document.getElementById('HousesAvaiableHouses');
+
+                var selectedValue = avaiable.options[avaiable.selectedIndex].value;
+                avaiable.remove(avaiable.selectedIndex);
+
+                var selected = document.getElementById('HousesSelectedHouses');
+                var option = document.createElement('option');
+                option.text = option.value = selectedValue;
+                option.selected = true;
+                selected.add(option, 0);
+
+                var listBox = document.getElementById('HousesListBoxSelected');
+                var option2 = document.createElement('option');
+                option2.text = option2.value = selectedValue;
+                option2.selected = true;
+                listBox.add(option2, 0);
+
+                checkStateDropDownLists(document.getElementById('HousesAvaiableHouses').length, document.getElementById('HousesSelectedHouses').length);
+                $('#description').html('')
+            });
+            checkStateDropDownLists(document.getElementById('HousesAvaiableHouses').length, document.getElementById('HousesSelectedHouses').length);
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#btnRemoveSelected").click(function () {
+                var selectedValue = $('#HousesSelectedHouses option:selected').text();
+                var index = $('#HousesSelectedHouses').get(0).selectedIndex;
+                $('#HousesSelectedHouses option:eq(' + index + ')').remove();
+
+                var listBox = document.getElementById('HousesListBoxSelected');
+                $('#HousesListBoxSelected option:eq(' + index + ')').remove();
+
+                $('#HousesAvaiableHouses')
+                        .append($("<option></option>")
+                        .attr("selected", "selected")
+                        .text(selectedValue)
+                        .val(selectedValue));
+                checkStateDropDownLists(document.getElementById('HousesAvaiableHouses').length, document.getElementById('HousesSelectedHouses').length);
+                $('#description').html('')
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+            $(function () {
+                $("#btnShowDescription").click(function () {
+                    var regExp = /\(([^)]+)\)/;
+                    var matches = regExp.exec($('select[name="HousesAvaiableHouses"]').val());
+                    $.ajax({
+                        type: "POST",
+                        url: "/ClientReservations/GetHouseDescription",
+                        data: '{name: "' + matches[1] + '"  }',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "text",
+                        success: function (response) {
+                            $('#description').html(response)
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                });
+            });
+    </script>
+</head>
+
+<h2>Wybierz domki</h2>
+
+@using (Html.BeginForm("AddHouses","ClientReservations",new { isHousesConfirmed = true}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Domek</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div id="housesDropdownLists">
+
+            <div class="form-group">
+                @Html.Label("Rodzaje domków", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("HousesAvaiableHouses", Model["Avaiable"], new { id = "HousesAvaiableHouses",@class = "SelectListHouses" })
+                    <input type="button" id="btnShowDescription" value="Opis" />
+                    <div id="description" style="display:inline-flex">
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("HousesSelectedHouses", Model["Selected"], new { id = "HousesSelectedHouses", @class = "SelectListHouses" })
+                    <input type="button" id="btnRemoveSelected" value="Usuń zaznaczenie"  />
+                </div>
+            </div>
+
+            @Html.ListBox("HousesListBoxSelected", Model["Selected"], new { id = "HousesListBoxSelected", style="visibility:hidden" })
+
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="button" id="btnAddHouse" value="Dodaj domek" class="btn btn-default"  />
+                <input type="submit" id="btnConfirmHouses" value="Potwierdź domki" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+
+}
+
+<div>
+    @Html.ActionLink("Wróć", "Create")
+</div>

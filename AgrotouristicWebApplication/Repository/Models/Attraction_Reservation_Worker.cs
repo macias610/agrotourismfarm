@@ -13,7 +13,7 @@ namespace Repository.Models
         }
 
         public int Id { get; set; }
-        public int WorkerId { get; set; }
+        public string WorkerId { get; set; }
         public int Attraction_ReservationId { get; set; }
         public virtual User Worker { get; set; }
         public virtual Attraction_Reservation Attraction_Reservation { get; set; }

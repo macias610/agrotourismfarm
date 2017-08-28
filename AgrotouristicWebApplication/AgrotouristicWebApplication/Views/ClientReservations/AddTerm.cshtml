@@ -1,0 +1,141 @@
+﻿@model Repository.ViewModels.NewReservation
+
+@{
+    ViewBag.Title = "AddTerm";
+}
+
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/moment")
+
+
+
+    <script type="text/javascript">
+        function handler(e) {
+            var source = e.srcElement.id;
+            if (source == 'startdate')
+            {
+                $('#startdate').attr('min', moment().format('YYYY-MM-DD'))
+                var startDate = $('#startdate').val();
+                var endDate = moment(startDate).add(1, 'days').format('YYYY-MM-DD');
+                $('#enddate').attr('min', endDate);
+                $('#startdate').attr('disabled', true);
+                $('#enddate').attr('disabled', false);
+
+            }
+            document.getElementById("btnConfirmTerm").style.visibility = 'hidden';     
+        }
+    </script>
+
+    <script type="text/javascript">
+            $(function () {
+                $("#btnRefresh").click(function () {
+                    $('#avaiableHouses').html('');
+                    $('#startdate, #enddate').val('');
+                    $('#startdate').attr('disabled', false);
+                    $('#startdate').attr('min', '@DateTime.Now.AddDays(1).ToShortDateString()');
+                    $('#enddate').attr('disabled', true);
+                    document.getElementById("btnConfirmTerm").style.visibility = 'hidden';
+                });
+            });
+    </script>
+
+    <script type="text/javascript">
+        function addDays(date, days) {
+            var result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+    </script>
+
+
+
+    <script type="text/javascript">
+        $(function () {
+            $("#btnCheckAvaiableHouses").click(function () {
+                var data = {
+                    startDate: $("#startdate").val(),
+                    endDate: $("#enddate").val(),
+                    __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
+                };
+                    $.ajax({
+                        type: "POST",
+                        url: "/ClientReservations/GetAvaiableHouses",
+                        data: data,
+                        dataType: "text",
+                        success: function (response) {
+                            $('#avaiableHouses').html(response)
+                            if (!$('#avaiableHouses').is(':empty')) {
+                                document.getElementById("btnConfirmTerm").style.visibility = 'visible';
+                            }
+                            else {
+                                $('#avaiableHouses').html('Brak dostępnych domków w podanym terminie')
+                            }
+
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                });
+            });
+    </script>
+</head>
+  
+
+<h2>Ustal termin</h2>
+
+@using (Html.BeginForm("AddTerm", "ClientReservations",new { isTermConfirmed=true }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Termin</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.StartDate, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <span class="editors">
+                    <input id="startdate" type="date" min='@DateTime.Now.AddDays(1).ToShortDateString()' onchange="handler(event)" />
+                </span>
+                @Html.ValidationMessageFor(m => m.StartDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.EndDate, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <span class="editors">
+                    <input id="enddate" type="date" min="@DateTime.Now.AddDays(2).ToShortDateString()" onchange="handler(event)" disabled />
+                </span>
+                @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="button" id="btnRefresh" value="Wybierz ponownie termin" class="btn btn-default" /> 
+                <input type="button" id="btnCheckAvaiableHouses" value="Sprawdź dostępność domków" class="btn btn-default" /> 
+                <input type="submit" id="btnConfirmTerm" value="Potwierdź termin" class="btn btn-default" style="visibility:hidden" />
+            </div>
+        </div>
+        <div id="avaiableHouses">
+
+        </div>
+
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Wróć", "Index")
+</div>
+
+

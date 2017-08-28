@@ -1,0 +1,151 @@
+﻿@model Repository.Models.Reservation
+
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<!DOCTYPE html>
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function handler(e) {
+            document.getElementById('DetailsSelectHouse').style.visibility = 'hidden';
+        }
+    </script>
+
+
+    <script type="text/javascript">
+            $(function () {
+                $("#btnGetHouseDetails").click(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/ClientReservations/GetHouseDetails",
+                        data: '{id: "' + $("#idValue").val() + '",houseName:"' + $("#SelectedHouseDetails option:selected").text() + '" }',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "text",
+                        success: function (response) {
+                            document.getElementById('DetailsSelectHouse').style.visibility = 'visible';
+                            $('#DetailsSelectHouse').html(response)
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                });
+            });
+    </script>
+
+    <script type="text/javascript">
+            $(function () {
+                $("#btnGetDetailsReservation").click(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/ClientReservations/GetReservationDetails",
+                        data: '{id: "' + $("#idValue").val() + '" }',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "text",
+                        success: function (response) {
+                            $('#DetailsReservation').html(response)
+                            document.getElementById('DetailsReservation').style.visibility = 'visible';
+                            document.getElementById('btnGetHouseDetails').style.visibility = 'visible';
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                });
+            });
+    </script>
+
+</head>
+
+<div>
+    <h2>Szczegóły rezerwacji</h2>
+
+        <h4>Rezerwacja</h4>
+        <hr />
+
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Client.Name)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Client.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Client.Surname)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Client.Surname)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.StartDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.EndDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DeadlinePayment)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DeadlinePayment)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Status)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.OverallCost)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.OverallCost)
+            </dd>
+        </dl>
+
+        <input type="hidden" id="idValue" value=@Model.Id />
+        <input type="button" id="btnGetDetailsReservation" value="Szczegoły rezerwacji" />
+
+    <div id="DetailsReservation" style="visibility:hidden">
+
+    </div>
+    <input type="button" id="btnGetHouseDetails" value="Wyświetl" style="visibility:hidden;display:flex"/>
+    <div id="DetailsSelectHouse" style="visibility:hidden">
+
+    </div>
+    
+
+    <p>
+        @Html.ActionLink("Wróć", "Index")
+    </p>
+    </div>

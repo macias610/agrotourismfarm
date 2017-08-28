@@ -48,6 +48,10 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Json.NET.Web, Version=1.0.49.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Json.NET.Web.1.0.49\lib\portable45-net45+win8+wpa81\Json.NET.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.4.0\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -158,6 +162,10 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -178,10 +186,6 @@
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Optimization">
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
@@ -246,9 +250,11 @@
     <Compile Include="Controllers\HouseTypesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MealsController.cs" />
+    <Compile Include="Controllers\ClientReservationsController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\RoleUsersController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Controllers\ValidateHeaderAntiForgeryTokenAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -329,11 +335,18 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\postJson.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
@@ -398,6 +411,19 @@
     <Content Include="Views\Attractions\Delete.cshtml" />
     <Content Include="Views\Attractions\Edit.cshtml" />
     <Content Include="Views\Attractions\Index.cshtml" />
+    <Content Include="Views\ClientReservations\Delete.cshtml" />
+    <Content Include="Views\ClientReservations\Details.cshtml" />
+    <Content Include="Views\ClientReservations\Edit.cshtml" />
+    <Content Include="Views\ClientReservations\Index.cshtml" />
+    <Content Include="Views\Shared\_ReservationHouseDetailsPartial.cshtml" />
+    <Content Include="Views\ClientReservations\Create.cshtml" />
+    <Content Include="Views\ClientReservations\AddTerm.cshtml" />
+    <Content Include="Views\ClientReservations\AddHouses.cshtml" />
+    <Content Include="Views\Shared\_HouseDescriptionPartial.cshtml" />
+    <Content Include="Views\ClientReservations\AddMeals.cshtml" />
+    <Content Include="Views\ClientReservations\AddParticipants.cshtml" />
+    <Content Include="Views\Shared\_HouseParticipantsPartial.cshtml" />
+    <Content Include="Views\Shared\_ReservationDetailsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
