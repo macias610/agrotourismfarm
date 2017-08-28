@@ -260,7 +260,7 @@ namespace AgrotouristicWebApplication.Controllers
                 Session.Remove("Reservation");
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            return View();
+            return View("~/Views/ClientReservations/Create.cshtml",reservation);
         }
 
         // POST: Reservations/Create
