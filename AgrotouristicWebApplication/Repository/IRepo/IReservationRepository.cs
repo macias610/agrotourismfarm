@@ -11,13 +11,10 @@ namespace Repository.IRepo
 {
     public interface IReservationRepository
     {
-        IQueryable<Reservation> GetReservations();
         Reservation GetReservationById(int id);
         Reservation GetReservationBasedOnData(NewReservation reservation,string userId);
         List<House> GetHousesForReservation(int id);
         House GetHouseByName(string name);
-        Dictionary<string,ReservationHouseDetails> ConvertToDictionaryHouseDetails(List<House> houses);
-        List<SelectListItem> GetAllNamesReservedHouses(List<string> keys);
         List<SelectListItem> GetAllNamesAvaiableHouses(List<House> houses);
         List<SelectListItem> GetAllNamesAvaiableMeals();
         Meal GetHouseMealForReservation(int id);

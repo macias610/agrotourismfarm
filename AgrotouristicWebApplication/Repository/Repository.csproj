@@ -213,7 +213,6 @@
     <Compile Include="ViewModels\HouseDetails.cs" />
     <Compile Include="ViewModels\NewReservation.cs" />
     <Compile Include="ViewModels\ReservationAttractionDetails.cs" />
-    <Compile Include="ViewModels\ReservationDetails.cs" />
     <Compile Include="ViewModels\ReservationHouseDetails.cs" />
     <Compile Include="ViewModels\RoleUser.cs" />
     <Compile Include="ViewModels\RolesUsers.cs" />

@@ -45,9 +45,6 @@
         <th>
             @Html.DisplayNameFor(model => model.Participants.FirstOrDefault().Surname)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Participants.FirstOrDefault().BirthDate)
-        </th>
         <th></th>
     </tr>
 
@@ -64,9 +61,6 @@
             </td>
             <td>
                 @value.Surname
-            </td>
-            <td>
-                @value.BirthDate.ToShortDateString()
             </td>
         </tr>
     }

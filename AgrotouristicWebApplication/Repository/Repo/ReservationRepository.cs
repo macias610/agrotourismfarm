@@ -47,20 +47,6 @@ namespace Repository.Repo
             return result;
         }
 
-        public Dictionary<string, ReservationHouseDetails> ConvertToDictionaryHouseDetails(List<House> houses)
-        {
-            Dictionary<string, ReservationHouseDetails> reservationHouseDetails = new Dictionary<string, ReservationHouseDetails>();
-
-            houses.ForEach(item => reservationHouseDetails.Add(item.Name,new ReservationHouseDetails()
-            {
-                House = item,
-                Participants = GetParticipantsHouseForReservation(item.Id),
-                Meal = GetHouseMealForReservation(item.Id)
-            }
-            ));
-            return reservationHouseDetails;
-        }
-
         public List<SelectListItem> GetAllNamesAvaiableHouses(List<House> houses)
         {
             List<SelectListItem> selectList = houses.Select(house => new SelectListItem { Value = house.HouseType.Type+"("+house.Name+");", Text = house.HouseType.Type + "(" + house.Name +");" }).ToList();
@@ -71,12 +57,6 @@ namespace Repository.Repo
         {
             List<Meal> avaiableMeals = db.Meals.AsNoTracking().ToList();
             List<SelectListItem> selectList = avaiableMeals.Select(avaiableMeal => new SelectListItem { Value = avaiableMeal.Type+"("+avaiableMeal.Price+")", Text = avaiableMeal.Type + "(" + avaiableMeal.Price +")" }).ToList();
-            return selectList;
-        }
-
-        public List<SelectListItem> GetAllNamesReservedHouses(List<string> keys)
-        {
-            List<SelectListItem> selectList = keys.Select(key => new SelectListItem { Value = key, Text = key }).ToList();
             return selectList;
         }
 
@@ -164,12 +144,6 @@ namespace Repository.Repo
         {
             Reservation reservation = db.Reservations.Find(id);
             return reservation;
-        }
-
-        public IQueryable<Reservation> GetReservations()
-        {
-            IQueryable<Reservation> reservations = db.Reservations.AsNoTracking();
-            return reservations;
         }
 
         public List<User> GetWorkersAssignedToAttraction(int id)

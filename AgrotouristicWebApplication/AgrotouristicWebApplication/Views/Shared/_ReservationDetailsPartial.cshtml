@@ -1,0 +1,10 @@
+﻿@model Dictionary<string,List<SelectListItem>>
+
+<div>
+    <div class="form-group">
+        @Html.Label("Domki", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("SelectedHouseDetails", Model["Houses"], new { id= "SelectedHouseDetails", onchange = "handler(event)" })
+        </div>
+    </div>
+</div>

@@ -24,7 +24,6 @@ namespace AgrotouristicWebApplication.Controllers
             this.repository = repository;
         }
 
-        // GET: Reservations
         [Authorize(Roles ="Klient")]
         public ActionResult Index()
         {
@@ -32,7 +31,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(reservations.ToList());
         }
 
-        // GET: Reservations/Details/5
         [Authorize(Roles ="Klient")]
         public ActionResult Details(int? id)
         {
@@ -44,39 +42,42 @@ namespace AgrotouristicWebApplication.Controllers
             if (reservation == null)
             {
                 return HttpNotFound();
-            }
-        
-            List<ReservationAttractionDetails> attractionDetails = new List<ReservationAttractionDetails>();
+            }      
+            //List<ReservationAttractionDetails> attractionDetails = new List<ReservationAttractionDetails>();
 
-            repository.GetAttractionsForReservation(reservation.Id).ForEach(item => attractionDetails.Add(new ReservationAttractionDetails()
-            {
-                Attraction = item,
-                Attraction_Reservation = repository.GetDetailsAboutReservedAttraction(item.Id),
-                Workers = repository.GetWorkersAssignedToAttraction(repository.GetDetailsAboutReservedAttraction(item.Id).Id)
-            }));
+            //repository.GetAttractionsForReservation(reservation.Id).ForEach(item => attractionDetails.Add(new ReservationAttractionDetails()
+            //{
+            //    Attraction = item,
+            //    Attraction_Reservation = repository.GetDetailsAboutReservedAttraction(item.Id),
+            //    Workers = repository.GetWorkersAssignedToAttraction(repository.GetDetailsAboutReservedAttraction(item.Id).Id)
+            //}));
 
-            ReservationDetails reservationDetails = new ReservationDetails()
-            {
-                Reservation = reservation,
-                Houses = repository.GetAllNamesReservedHouses(new List<string>(repository.ConvertToDictionaryHouseDetails(repository.GetHousesForReservation(reservation.Id)).Keys)),
-                ReservationAttractionDetails = attractionDetails            
-            };
-            reservationDetails.SelectedHouseDetailsText = reservationDetails.Houses.First().Value;
-            return View(reservationDetails);
+            return View(reservation);
         }
-
 
         [HttpPost]
         [Authorize(Roles ="Klient")]
-        public ActionResult GetHouseDetails(int id,string name)
+        public ActionResult GetReservationDetails(int id)
         {
-            ReservationHouseDetails houseDetails=null;
-            repository.GetHousesForReservation(id).Where(item => item.Name.Equals(name)).ForEach(item => houseDetails = new ReservationHouseDetails()
+            List<House> houses = repository.GetHousesForReservation(id);
+            Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
-                House=item,
-                Meal = repository.GetHouseMealForReservation(item.Id),
-                Participants = repository.GetParticipantsHouseForReservation(item.Id)
-            });
+                { "Houses",houses.Select(house => new SelectListItem { Value = house.Name , Text = house.Name }).ToList()}
+            };
+            return PartialView("~/Views/Shared/_ReservationDetailsPartial.cshtml", dictionary);
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="Klient")]
+        public ActionResult GetHouseDetails(int id,string houseName)
+        {
+            House house = repository.GetHousesForReservation(id).Where(item => item.Name.Equals(houseName)).FirstOrDefault();
+            ReservationHouseDetails houseDetails = new ReservationHouseDetails()
+            {
+                House = house,
+                Meal = repository.GetHouseMealForReservation(house.Id),
+                Participants = repository.GetParticipantsHouseForReservation(house.Id)
+            };
             return PartialView("~/Views/Shared/_ReservationHouseDetailsPartial.cshtml", houseDetails);
         }
 
@@ -224,7 +225,6 @@ namespace AgrotouristicWebApplication.Controllers
             return PartialView("~/Views/Shared/_HouseParticipantsPartial.cshtml",participants);
         }
 
-        // GET: Reservations/Create
         [Authorize(Roles ="Klient")]
         public ActionResult Create()
         {
@@ -241,9 +241,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View("~/Views/ClientReservations/Create.cshtml",reservation);
         }
 
-        // POST: Reservations/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Klient")]

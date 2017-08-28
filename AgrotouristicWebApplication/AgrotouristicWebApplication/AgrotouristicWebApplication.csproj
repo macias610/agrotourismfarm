@@ -423,6 +423,7 @@
     <Content Include="Views\ClientReservations\AddMeals.cshtml" />
     <Content Include="Views\ClientReservations\AddParticipants.cshtml" />
     <Content Include="Views\Shared\_HouseParticipantsPartial.cshtml" />
+    <Content Include="Views\Shared\_ReservationDetailsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -8,7 +8,6 @@ namespace Repository.ViewModels
 {
     public class ReservationHouseDetails
     {
-
         public House House { get; set; }
 
         public List<Participant> Participants { get; set; }
