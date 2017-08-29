@@ -16,6 +16,7 @@ namespace Repository.ViewModels
             AssignedParticipantsHouses = new Dictionary<string, List<Participant>>();
             stagesConfirmation = new List<bool>(4);
             stagesConfirmation.AddRange(Enumerable.Repeat(false, 4));
+            OverallCost = 0;
         }
 
         public Dictionary<string,int> AssignedHousesMeals { get; set; }
@@ -23,6 +24,8 @@ namespace Repository.ViewModels
         public Dictionary<string,List<Participant>> AssignedParticipantsHouses { get; set; }
 
         public List<bool> stagesConfirmation { get; set; }
+
+        public decimal OverallCost { get; set; }
 
         [Display(Name = "Data przyjazdu:")]
         [DataType(DataType.Date)]

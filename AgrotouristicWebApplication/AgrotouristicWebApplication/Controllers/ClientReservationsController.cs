@@ -146,7 +146,8 @@ namespace AgrotouristicWebApplication.Controllers
                 { "Avaiable",repository.GetNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(reservation.StartDate, reservation.EndDate))},
                 { "Selected",new List<SelectListItem>()}
             };
-
+            ViewBag.OverallCost = reservation.OverallCost;
+            ViewBag.StayLength = reservation.EndDate.Subtract(reservation.StartDate).Days + 1;
             return View("~/Views/ClientReservations/AddHouses.cshtml", dictionary);
         }
 
@@ -156,6 +157,7 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddHouses(bool isHousesConfirmed)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
+            reservation.OverallCost = Decimal.Parse(Request.Form["housesOverallCost"]);
             repository.SaveSelectedHouses(reservation, Request.Form.GetValues("HousesListBoxSelected").ToList());
             reservation.stagesConfirmation[1] = isHousesConfirmed;
             Session["Reservation"] = reservation;
@@ -172,6 +174,8 @@ namespace AgrotouristicWebApplication.Controllers
                 { "SelectedHouses",reservation.AssignedHousesMeals.Keys.Select(key => new SelectListItem { Value = key, Text = key }).ToList()},
                 { "SelectedMeals",new List<SelectListItem>()}
             };
+            ViewBag.OverallCost = reservation.OverallCost;
+            ViewBag.StayLength = reservation.EndDate.Subtract(reservation.StartDate).Days+1;
             return View("~/Views/ClientReservations/AddMeals.cshtml", dictionary);
         }
 
@@ -181,8 +185,10 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddMeals(bool isMealsConfirmed)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
+            reservation.OverallCost = Decimal.Parse(Request.Form["mealsOverallCost"]);
             repository.SaveAssignedMealsToHouses(reservation, Request.Form.GetValues("ListBoxSelectedHousesMeals").ToList());
             reservation.stagesConfirmation[2] = isMealsConfirmed;
+            Session["Reservation"] = reservation;
             return RedirectToAction("Create");
         }
 

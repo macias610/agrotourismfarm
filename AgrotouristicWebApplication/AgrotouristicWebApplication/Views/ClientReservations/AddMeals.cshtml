@@ -74,6 +74,11 @@
                 var matches = regExp.exec((selectedMealValue));
                 labelMealPrice.innerHTML = matches[1];
 
+                var labelOverallCost = document.getElementById('mealsOverallCost');
+                var number = parseInt(labelOverallCost.value, 10);
+                number += parseInt(matches[1].split('[')[0], 10) * parseInt(selectedHouseValue.split('-')[0], 10) * parseInt(@ViewBag.StayLength,10);
+                labelOverallCost.value = number;
+
                 checkStateDropDownLists(document.getElementById('MealsSelectedHouses').length, document.getElementById('MealsSelectedHousesMeals').length);
             });
             checkStateDropDownLists(document.getElementById('MealsSelectedHouses').length, document.getElementById('MealsSelectedHousesMeals').length);
@@ -94,6 +99,12 @@
                 var labelMealPrice = document.getElementById('labelMealPrice');
                 var regExp = /\(([^)]+)\)/;
                 var matches = regExp.exec($('#ListBoxSelectedHousesMeals option:selected').text().split(';')[1]);
+
+                var labelOverallCost = document.getElementById('mealsOverallCost');
+                var number = parseInt(labelOverallCost.value, 10);
+                number -= parseInt(labelMealPrice.innerHTML.split('[')[0], 10) * parseInt(selectedValue.split('-')[0], 10)*parseInt(@ViewBag.StayLength,10);
+                labelOverallCost.value = number;
+
                 if ($('#MealsSelectedHousesMeals>option').length >= 1)
                 {
                     labelMealType.innerHTML = $('#ListBoxSelectedHousesMeals option:selected').text().split(';')[1].split('(')[0];
@@ -105,7 +116,7 @@
                     labelMealPrice.innerHTML = 'Cena posiłku';
                 }
 
-                
+
 
                 $('#MealsSelectedHouses')
                         .append($("<option></option>")
@@ -121,7 +132,7 @@
 
 <h2>Wybierz posiłki</h2>
 
-@using (Html.BeginForm("AddMeals", "ClientReservations",new { isMealsConfirmed=true}))
+@using (Html.BeginForm("AddMeals", "ClientReservations",new { isMealsConfirmed=true }))
 {
     @Html.AntiForgeryToken()
 
@@ -134,6 +145,14 @@
             @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("MealsSelectedHouses", Model["SelectedHouses"], new { id= "MealsSelectedHouses" })
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Liczba dni", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="text" id="mealsStayLength" name="mealsStayLength" readonly="readonly" value="@ViewBag.StayLength" />
             </div>
 
         </div>
@@ -153,7 +172,17 @@
                 @Html.Label("Cena posiłku", new { id = "labelMealPrice", style = "border: 1px solid black;font-weight: normal;" })
                 <input type="button" id="btnRemoveSelectedHouseMeal" value="Usuń zaznaczenie" />
             </div>
+
         </div>
+
+        <div id="DivMealsOverallCost">
+            @Html.Label("Całkowity koszt", htmlAttributes: new { @class = "control-label col-md-2" })
+            <input type="text" id="mealsOverallCost" name="mealsOverallCost" readonly="readonly" value="@ViewBag.OverallCost" />
+        </div>
+
+        
+
+        
 
         @Html.ListBox("ListBoxSelectedHousesMeals",Model["SelectedMeals"],new { id= "ListBoxSelectedHousesMeals", style="visibility:hidden"})
 
