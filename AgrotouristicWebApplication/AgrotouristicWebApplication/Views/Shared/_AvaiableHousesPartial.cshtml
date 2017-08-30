@@ -1,14 +1,41 @@
 ﻿@model IEnumerable<string>
+@using System.Text.RegularExpressions;
 
     <div>
         <h4>Rodzaje domków</h4>
             <div class="form-group">
-                <div>
-                    @foreach(string house in Model)
-                    {
-                        <p>@house.ToString()</p>
-                    }
-                </div>
+                    <table class="table">
+                        <tr>
+                            <th>
+                                @Html.DisplayName("LP")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Nazwa domku")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Cena")
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model.Select((value, i) => new { i, value }))
+                        {
+                            string houseName = item.value.Split('|')[0];
+                            string housePrice = Regex.Match(item.value.Split('|')[1], @"\(([^)]*)\)").Groups[1].Value;
+                            int index = item.i + 1;
+                            <tr>
+                                <td class="col-lg-1">
+                                    @index.ToString()
+                                </td>
+                                <td class="col-lg-2">
+                                    @houseName
+                                </td>
+                                <td class="col-lg-9">
+                                    @housePrice
+                                </td>
+                            </tr>
+                        }
+
+                    </table>
             </div>   
     </div>
 
