@@ -13,7 +13,9 @@ namespace Repository.IRepo
     {
         Reservation GetReservationById(int id);
         Reservation GetReservationBasedOnData(NewReservation reservation,string userId);
+        NewReservation RetreiveExistingReservation(Reservation reservation);
         List<House> GetHousesForReservation(int id);
+        List<Participant> CopyParticipantsData(List<Participant> tagetList, List<Participant> actualList);
         House GetHouseByName(string name);
         List<SelectListItem> GetNamesAvaiableHouses(List<House> houses);
         List<SelectListItem> GetNamesAvaiableMeals();
@@ -23,7 +25,10 @@ namespace Repository.IRepo
         List<Attraction> GetAttractionsForReservation(int id);
         List<User> GetWorkersAssignedToAttraction(int id);
         List<House> GetAvaiableHousesInTerm(DateTime startDate, DateTime endDate);
+        List<SelectListItem> GetSelectedHousesMeals(Dictionary<string, int> dictionary, bool longVersion);
         void SaveAssignedMealsToHouses(NewReservation reservation,List<string> selectedMeals);
+        void ChangeAssignedMeals(int id, NewReservation reservation);
+        void ChangeAssignedParticipants(int id,NewReservation reservation);
         void SaveSelectedHouses(NewReservation reservation,List<string> selectedHouses);
         void AddReservation(Reservation reservation);
         void SaveChanges();

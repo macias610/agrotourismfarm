@@ -36,6 +36,7 @@
                 $("#btnShowParticipants").click(function () {
                     var data = {
                         houseName: $('select[name="SelectedHousesParticipants"]').val(),
+                        reservationId: $('#reservationId').val(),
                         __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
                     };
                     $.ajax({
@@ -96,7 +97,7 @@
 
 <h2>Dodaj lokatorów</h2>
 
-@using (Html.BeginForm("AddParticipants","ClientReservations",new { isParticipantsConfirmed=true}))
+@using (Html.BeginForm((ViewBag.ReservationId != 0 ? "EditParticipants" : "AddParticipants"),"ClientReservations",new { isParticipantsConfirmed=true}))
 {
     @Html.AntiForgeryToken()
 
@@ -113,7 +114,6 @@
 
         </div>
 
-
         <div class="form-group">
             <div class="col-md-10">
                 <input type="button" id="btnShowParticipants" value="Pokaż" class="btn btn-default" />
@@ -122,7 +122,7 @@
             </div>
         </div>
 
-        <div >
+        <div>
             <table id="participantsTable">
                 <thead id="header-content" style="visibility:hidden">
                     <tr>
@@ -138,9 +138,11 @@
             </table>
         </div>
 
-        </div>
+        <input type="hidden" id="reservationId" name="reservationId" value="@ViewBag.ReservationId" />
+
+    </div>
 }
 
 <div>
-    @Html.ActionLink("Wróć", "Create")
+    @Html.ActionLink("Wróć", (ViewBag.ReservationId != 0) ? "Edit" : "Create", new { id = ViewBag.ReservationId })
 </div>
