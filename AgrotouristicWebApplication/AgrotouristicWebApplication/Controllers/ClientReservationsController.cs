@@ -112,11 +112,10 @@ namespace AgrotouristicWebApplication.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Klient")]
-        public ActionResult GetHouseParticipants(string houseName)
+        public ActionResult GetHouseParticipants(string houseName, int reservationId)
         {
-            NewReservation reservation = (NewReservation )Session["Reservation"];
+            NewReservation reservation =(NewReservation)Session["Reservation"];
             List<Participant> participants = reservation.AssignedParticipantsHouses[houseName];
-
             return PartialView("~/Views/Shared/_HouseParticipantsPartial.cshtml", participants);
         }
 
@@ -172,10 +171,12 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 { "AvaiableMeals",repository.GetNamesAvaiableMeals()},
                 { "SelectedHouses",reservation.AssignedHousesMeals.Keys.Select(key => new SelectListItem { Value = key, Text = key }).ToList()},
-                { "SelectedMeals",new List<SelectListItem>()}
+                { "SelectedMeals",new List<SelectListItem>()},
+                { "SelectedMealsListBox",new List<SelectListItem>()}
             };
             ViewBag.OverallCost = reservation.OverallCost;
             ViewBag.StayLength = reservation.EndDate.Subtract(reservation.StartDate).Days+1;
+            ViewBag.ReservationId = 0;
             return View("~/Views/ClientReservations/AddMeals.cshtml", dictionary);
         }
 
@@ -196,6 +197,7 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult AddParticipants()
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
+            ViewBag.ReservationId = 0;
             return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
         }
 
@@ -220,10 +222,13 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult ChangeHouseParticipants(string houseName, List<Participant> participants)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            reservation.AssignedParticipantsHouses[houseName] = participants;
+            if (reservation.AssignedParticipantsHouses.FirstOrDefault().Value.FirstOrDefault().Id != 0)
+                reservation.AssignedParticipantsHouses[houseName] = repository.CopyParticipantsData(reservation.AssignedParticipantsHouses[houseName], participants);
+            else
+                reservation.AssignedParticipantsHouses[houseName] = participants;
             Session["Reservation"] = reservation;
             return PartialView("~/Views/Shared/_HouseParticipantsPartial.cshtml",participants);
-        }
+        } 
 
         [Authorize(Roles ="Klient")]
         public ActionResult Create()
@@ -253,46 +258,115 @@ namespace AgrotouristicWebApplication.Controllers
                 repository.AddReservation(savedReservation);
                 repository.SaveChanges();
                 repository.SaveAssignedMealsAndHouses(savedReservation.Id, reservation);
-
+                Session.Remove("Reservation");
                 return RedirectToAction("Index");
             }
-
-            
             return View(reservation);
         }
 
-        // GET: Reservations/Edit/5
-        //public ActionResult Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Reservation reservation = db.Reservations.Find(id);
-        //    if (reservation == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    ViewBag.ClientId = new SelectList(db.Users, "Id", "Email", reservation.ClientId);
-        //    return View(reservation);
-        //}
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Reservation reservation = repository.GetReservationById((int)id);
+            if (reservation == null)
+            {
+                return HttpNotFound();
+            }
+            NewReservation editedReservation = null;
+            string action = (Request.UrlReferrer.Segments.Skip(2).Take(1).SingleOrDefault() ?? "Index").Trim('/');
+            List<string> actions = new List<string>()
+            {
+                "EditMeals","EditParticipants"
+            };
+            if (!actions.Contains(action))
+            {
+                Session.Remove("Reservation");
+                editedReservation = repository.RetreiveExistingReservation(reservation);
+                Session["Reservation"] = editedReservation;
+            }
+            else
+            {
+                editedReservation = (NewReservation)Session["Reservation"];
+            }
+            ViewBag.ReservationId = id;
+            return View(editedReservation);
+        }
+        [Authorize(Roles ="Klient")]
+        public ActionResult EditMeals(int id)
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
+            {
+                { "AvaiableMeals",repository.GetNamesAvaiableMeals()},
+                { "SelectedHouses",new List<SelectListItem>()},
+                { "SelectedMeals",repository.GetSelectedHousesMeals(reservation.AssignedHousesMeals,false)},
+                { "SelectedMealsListBox",repository.GetSelectedHousesMeals(reservation.AssignedHousesMeals,true)}
+            };
+            ViewBag.OverallCost = reservation.OverallCost;
+            ViewBag.StayLength = reservation.EndDate.Subtract(reservation.StartDate).Days + 1;
+            ViewBag.ReservationId = id;
+            return View("~/Views/ClientReservations/AddMeals.cshtml", dictionary);
+        }
 
-        // POST: Reservations/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "Id,StartDate,EndDate,DeadlinePayment,Status,OverallCost,ClientId")] Reservation reservation)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(reservation).State = EntityState.Modified;
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    ViewBag.ClientId = new SelectList(db.Users, "Id", "Email", reservation.ClientId);
-        //    return View(reservation);
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Klient")]
+        public ActionResult EditMeals(bool isMealsConfirmed)
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            reservation.OverallCost = Decimal.Parse(Request.Form["mealsOverallCost"]);
+            repository.SaveAssignedMealsToHouses(reservation, Request.Form.GetValues("ListBoxSelectedHousesMeals").ToList());
+            reservation.stagesConfirmation[2] = isMealsConfirmed;
+            Session["Reservation"] = reservation;
+            return RedirectToAction("Edit", new { id = Int32.Parse(Request.Form["reservationId"]) });
+        }
+
+        [Authorize(Roles ="Klient")]
+        public ActionResult EditParticipants(int id)
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            ViewBag.ReservationId = id;
+            return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
+        }
+
+        [HttpPost]
+        [Authorize(Roles="Klient")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditParticipants(bool isParticipantsConfirmed)
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            if (!repository.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
+            {
+                ViewBag.error = true;
+                return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
+            }
+            reservation.stagesConfirmation[3] = isParticipantsConfirmed;
+
+            return RedirectToAction("Edit", new { id = Int32.Parse(Request.Form["reservationId"]) });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Klient")]
+        public ActionResult Edit([Bind(Include = "StartDate,EndDate")] NewReservation reservation)
+        {
+            if (ModelState.IsValid)
+            {
+                reservation = (NewReservation)Session["Reservation"];
+                if(reservation.stagesConfirmation[2])
+                    repository.ChangeAssignedMeals(Int32.Parse(Request.Form["ReservationId"]), reservation);
+                if (reservation.stagesConfirmation[3])
+                    repository.ChangeAssignedParticipants(Int32.Parse(Request.Form["ReservationId"]), reservation);
+
+                Session.Remove("Reservation");
+                return RedirectToAction("Index");
+            }
+            ViewBag.ReservationId = Int32.Parse(Request.Form["ReservationId"]);
+            return View(reservation);
+        }
 
         // GET: Reservations/Delete/5
         //public ActionResult Delete(int? id)

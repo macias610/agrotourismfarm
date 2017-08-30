@@ -13,14 +13,23 @@
             var source = e.srcElement.id;
             if (source == 'MealsSelectedHousesMeals')
             {
-                var index = $('#MealsSelectedHousesMeals').get(0).selectedIndex;
-                var selectedValue = $('#ListBoxSelectedHousesMeals option:eq(' + index + ')').text();
-                labelMealType.innerHTML = selectedValue.split(';')[1].split('(')[0];
-
-                var regExp = /\(([^)]+)\)/;
-                var matches = regExp.exec((selectedValue.split(';')[1]));
-                labelMealPrice.innerHTML = matches[1];
+                detectChangeInSelectedHousesMeals();
             }
+        }
+    </script>
+
+    <script type="text/javascript">
+        function detectChangeInSelectedHousesMeals() {
+            var index = $('#MealsSelectedHousesMeals').get(0).selectedIndex;
+            var selectedValue = $('#ListBoxSelectedHousesMeals option:eq(' + index + ')').text();
+
+            var labelMealType = document.getElementById('labelMealType');
+            labelMealType.innerHTML = selectedValue.split(';')[1].split('(')[0];
+
+            var regExp = /\(([^)]+)\)/;
+            var matches = regExp.exec((selectedValue.split(';')[1]));
+            var labelMealPrice = document.getElementById('labelMealPrice');
+            labelMealPrice.innerHTML = matches[1];
         }
     </script>
 
@@ -39,6 +48,7 @@
                 else {
                     document.getElementById("btnRemoveSelectedHouseMeal").style.visibility = 'visible';
                     document.getElementById('btnConfirmHousesMeals').style.visibility = 'visible'
+                    detectChangeInSelectedHousesMeals();
                 }
             }
     </script>
@@ -132,7 +142,7 @@
 
 <h2>Wybierz posiłki</h2>
 
-@using (Html.BeginForm("AddMeals", "ClientReservations",new { isMealsConfirmed=true }))
+@using (Html.BeginForm((ViewBag.ReservationId!= 0?"EditMeals":"AddMeals"), "ClientReservations",new { isMealsConfirmed=true }))
 {
     @Html.AntiForgeryToken()
 
@@ -180,21 +190,19 @@
             <input type="text" id="mealsOverallCost" name="mealsOverallCost" readonly="readonly" value="@ViewBag.OverallCost" />
         </div>
 
-        
+        <input type="hidden" id="reservationId" name="reservationId" value="@ViewBag.ReservationId"/>
 
-        
-
-        @Html.ListBox("ListBoxSelectedHousesMeals",Model["SelectedMeals"],new { id= "ListBoxSelectedHousesMeals", style="visibility:hidden"})
+        @Html.ListBox("ListBoxSelectedHousesMeals",Model["SelectedMealsListBox"],new { id= "ListBoxSelectedHousesMeals", style="visibility:hidden"})
 
         <div class="form-group">
             <div class="col-md-10">
                 <input type="button" id="btnAddHouseMeal" value="Dodaj posiłek" class="btn btn-default" />
-                <input type="submit" id="btnConfirmHousesMeals" value="Potwierdź posiłki" class="btn btn-default" />
+                <input type="submit" id="btnConfirmHousesMeals" value="Potwierdź posiłki" class="btn btn-default" style="visibility:hidden" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Wróć", "Create")
+    @Html.ActionLink("Wróć", (ViewBag.ReservationId!=0)?"Edit":"Create",new { id= ViewBag.ReservationId})
 </div>
