@@ -182,7 +182,7 @@ namespace Repository.Repo
             Reservation savedReservation = new Reservation()
             {
                 ClientId = userId,
-                DeadlinePayment = DateTime.Now.AddDays(1),
+                DeadlinePayment = DateTime.Now.Date.AddDays(1),
                 StartDate = reservation.StartDate,
                 EndDate = reservation.EndDate,
                 Status = Reservation.states[0],
@@ -337,6 +337,24 @@ namespace Repository.Repo
                     participant.Surname = String.Empty;
                 }
             }
+        }
+
+        public List<Reservation> RemoveOutOfDateReservations(List<Reservation> reservations)
+        {
+            List<Reservation> result = new List<Reservation>();
+            foreach(Reservation reservation in reservations)
+            {
+                if(DateTime.Now.Date.CompareTo(reservation.DeadlinePayment)>0 && reservation.Status.Equals("oczekiwanie"))
+                {
+                    RemoveReservation(reservation);
+                }
+                else
+                {
+                    result.Add(reservation);
+                }
+            }
+            SaveChanges();
+            return result;
         }
     }
 }

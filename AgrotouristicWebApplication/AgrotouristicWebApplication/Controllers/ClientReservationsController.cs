@@ -28,7 +28,8 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult Index()
         {
             List<Reservation> reservations = repository.GetClientReservations(User.Identity.GetUserId()).ToList();
-            return View(reservations.ToList());
+            reservations=repository.RemoveOutOfDateReservations(reservations);
+            return View(reservations);
         }
 
         [Authorize(Roles ="Klient")]

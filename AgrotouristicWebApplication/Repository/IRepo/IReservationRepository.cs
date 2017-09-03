@@ -37,5 +37,6 @@ namespace Repository.IRepo
         IQueryable<Reservation> GetClientReservations(string id);
         void SaveAssignedMealsAndHouses(int id, NewReservation reservation);
         void RemoveReservation(Reservation reservation);
+        List<Reservation> RemoveOutOfDateReservations(List<Reservation> reservations);
     }
 }
