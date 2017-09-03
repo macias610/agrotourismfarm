@@ -33,7 +33,10 @@ namespace Repository.IRepo
         void AddReservation(Reservation reservation);
         void SaveChanges();
         bool ValidateFormularParticipants(Dictionary<string, List<Participant>> dictionary);
+        void ClearParticipantsFormular(NewReservation reservation);
         IQueryable<Reservation> GetClientReservations(string id);
         void SaveAssignedMealsAndHouses(int id, NewReservation reservation);
+        void RemoveReservation(Reservation reservation);
+        List<Reservation> RemoveOutOfDateReservations(List<Reservation> reservations);
     }
 }

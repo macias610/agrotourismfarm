@@ -31,7 +31,6 @@ namespace Repository.Models
         public DbSet<Meal> Meals { get; set; }
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Reservation_House> Reservation_House { get; set; }
-        public DbSet<Reservation_House_Participant> Reservation_House_Participant { get; set; }
         public DbSet<Attraction_Reservation> Attraction_Reservation { get; set; }
         public DbSet<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
 
@@ -43,20 +42,15 @@ namespace Repository.Models
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 
-            modelBuilder.Entity<Reservation>().HasRequired(x => x.Client)
-                                              .WithMany(x => x.Reservations)
-                                              .HasForeignKey(x => x.ClientId)
-                                              .WillCascadeOnDelete(true);
+            modelBuilder.Entity<Reservation_House>().HasRequired(x => x.Reservation)
+                                            .WithMany(x => x.Reservation_House)
+                                            .HasForeignKey(x => x.ReservationId)
+                                            .WillCascadeOnDelete(true);
 
-            modelBuilder.Entity<House>().HasRequired(x => x.HouseType)
-                                             .WithMany(x => x.House)
-                                             .HasForeignKey(x => x.HouseTypeId)
-                                             .WillCascadeOnDelete(true);
-
-            modelBuilder.Entity<Reservation_House>().HasRequired(x => x.Meal)
-                                              .WithMany(x => x.Reservation_House)
-                                              .HasForeignKey(x => x.MealId)
-                                              .WillCascadeOnDelete(true);
+            modelBuilder.Entity<Participant>().HasRequired(x => x.Reservation_House)
+                                            .WithMany(x => x.Participant)
+                                            .HasForeignKey(x => x.Reservation_HouseId)
+                                            .WillCascadeOnDelete(true);
 
         }
 

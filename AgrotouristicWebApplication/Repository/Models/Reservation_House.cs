@@ -9,7 +9,7 @@ namespace Repository.Models
     {
         public Reservation_House()
         {
-            this.Reservation_House_Participant = new HashSet<Reservation_House_Participant>();
+            this.Participant = new HashSet<Participant>();
         }
 
         public int Id { get; set; }
@@ -20,6 +20,6 @@ namespace Repository.Models
         public int MealId { get; set; }
         public virtual Meal Meal { get; set; }
 
-        public virtual ICollection<Reservation_House_Participant> Reservation_House_Participant { get; set; }
+        public virtual ICollection<Participant> Participant { get; set; }
     }
 }
