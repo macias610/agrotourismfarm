@@ -112,7 +112,7 @@ namespace AgrotouristicWebApplication.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Klient")]
-        public ActionResult GetHouseParticipants(string houseName, int reservationId)
+        public ActionResult GetHouseParticipants(string houseName)
         {
             NewReservation reservation =(NewReservation)Session["Reservation"];
             List<Participant> participants = reservation.AssignedParticipantsHouses[houseName];
@@ -198,6 +198,7 @@ namespace AgrotouristicWebApplication.Controllers
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
             ViewBag.ReservationId = 0;
+            repository.ClearParticipantsFormular(reservation);
             return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
         }
 
@@ -210,6 +211,7 @@ namespace AgrotouristicWebApplication.Controllers
             if(!repository.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
             {
                 ViewBag.error = true;
+                ViewBag.ReservationId = 0;
                 return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
             }
             reservation.stagesConfirmation[3] = isParticipantsConfirmed;
@@ -277,6 +279,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             NewReservation editedReservation = null;
             string action = (Request.UrlReferrer.Segments.Skip(2).Take(1).SingleOrDefault() ?? "Index").Trim('/');
+
             List<string> actions = new List<string>()
             {
                 "EditMeals","EditParticipants"
@@ -335,12 +338,13 @@ namespace AgrotouristicWebApplication.Controllers
         [HttpPost]
         [Authorize(Roles="Klient")]
         [ValidateAntiForgeryToken]
-        public ActionResult EditParticipants(bool isParticipantsConfirmed)
+        public ActionResult EditParticipants(bool isParticipantsConfirmed,int reservationId)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
             if (!repository.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
             {
                 ViewBag.error = true;
+                ViewBag.ReservationId = reservationId;
                 return View("~/Views/ClientReservations/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
             }
             reservation.stagesConfirmation[3] = isParticipantsConfirmed;
@@ -368,31 +372,32 @@ namespace AgrotouristicWebApplication.Controllers
             return View(reservation);
         }
 
-        // GET: Reservations/Delete/5
-        //public ActionResult Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Reservation reservation = db.Reservations.Find(id);
-        //    if (reservation == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(reservation);
-        //}
+        [Authorize(Roles ="Klient")]
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Reservation reservation = repository.GetReservationById((int)id);
+            if (reservation == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.NumberHouses = reservation.Reservation_House.Count;
+            return View(reservation);
+        }
 
-        //POST: Reservations/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult DeleteConfirmed(int id)
-        //{
-        //    Reservation reservation = db.Reservations.Find(id);
-        //    db.Reservations.Remove(reservation);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Klient")]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Reservation reservation = repository.GetReservationById(id);
+            repository.RemoveReservation(reservation);
+            repository.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
         protected override void Dispose(bool disposing)
         {

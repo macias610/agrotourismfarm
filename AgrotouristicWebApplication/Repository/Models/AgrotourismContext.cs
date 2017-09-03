@@ -31,7 +31,6 @@ namespace Repository.Models
         public DbSet<Meal> Meals { get; set; }
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Reservation_House> Reservation_House { get; set; }
-        public DbSet<Reservation_House_Participant> Reservation_House_Participant { get; set; }
         public DbSet<Attraction_Reservation> Attraction_Reservation { get; set; }
         public DbSet<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
 
@@ -48,17 +47,10 @@ namespace Repository.Models
                                             .HasForeignKey(x => x.ReservationId)
                                             .WillCascadeOnDelete(true);
 
-            modelBuilder.Entity<Reservation_House_Participant>().HasRequired(x => x.Reservation_House)
-                                            .WithMany(x => x.Reservation_House_Participant)
+            modelBuilder.Entity<Participant>().HasRequired(x => x.Reservation_House)
+                                            .WithMany(x => x.Participant)
                                             .HasForeignKey(x => x.Reservation_HouseId)
                                             .WillCascadeOnDelete(true);
-
-            modelBuilder.Entity<Reservation_House_Participant>().HasRequired(x => x.Participant)
-                                            .WithMany(x => x.Reservation_House_Participant)
-                                            .HasForeignKey(x => x.ParticipantId)
-                                            .WillCascadeOnDelete(true);
-
-            
 
         }
 

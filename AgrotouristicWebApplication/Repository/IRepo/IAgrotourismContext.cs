@@ -22,7 +22,6 @@ namespace Repository.IRepo
         DbSet<Meal> Meals { get; set; }
         DbSet<Participant> Participants { get; set; }
         DbSet<Reservation_House> Reservation_House { get; set; }
-        DbSet<Reservation_House_Participant> Reservation_House_Participant { get; set; }
         DbSet<Attraction_Reservation> Attraction_Reservation { get; set; }
         DbSet<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
 

@@ -102,7 +102,7 @@
             @Html.LabelFor(m => m.StartDate, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 <span class="editors">
-                    <input id="startdate" type="date" min='@DateTime.Now.AddDays(1).ToShortDateString()' onchange="handler(event)" />
+                    <input id="startdate" type="date" min='@DateTime.Now.AddDays(2).ToShortDateString()' onchange="handler(event)" />
                 </span>
                 @Html.ValidationMessageFor(m => m.StartDate, "", new { @class = "text-danger" })
             </div>
@@ -112,7 +112,7 @@
             @Html.LabelFor(m => m.EndDate, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 <span class="editors">
-                    <input id="enddate" type="date" min="@DateTime.Now.AddDays(2).ToShortDateString()" onchange="handler(event)" disabled />
+                    <input id="enddate" type="date" min="@DateTime.Now.AddDays(3).ToShortDateString()" onchange="handler(event)" disabled />
                 </span>
                 @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
             </div>
@@ -135,7 +135,7 @@
 }
 
 <div>
-    @Html.ActionLink("Wróć", "Index")
+    @Html.ActionLink("Wróć", "Create")
 </div>
 
 

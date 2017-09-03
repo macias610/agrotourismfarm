@@ -36,7 +36,6 @@
                 $("#btnShowParticipants").click(function () {
                     var data = {
                         houseName: $('select[name="SelectedHousesParticipants"]').val(),
-                        reservationId: $('#reservationId').val(),
                         __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
                     };
                     $.ajax({
@@ -97,7 +96,7 @@
 
 <h2>Dodaj lokatorów</h2>
 
-@using (Html.BeginForm((ViewBag.ReservationId != 0 ? "EditParticipants" : "AddParticipants"),"ClientReservations",new { isParticipantsConfirmed=true}))
+@using (Html.BeginForm((ViewBag.ReservationId != 0 ? "EditParticipants" : "AddParticipants"),"ClientReservations",new { isParticipantsConfirmed=true, reservationId= ViewBag.ReservationId != 0 ?ViewBag.ReservationId:0}))
 {
     @Html.AntiForgeryToken()
 

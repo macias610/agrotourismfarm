@@ -11,7 +11,7 @@ namespace Repository.Models
 
         public Participant()
         {
-            this.Reservation_House_Participant = new HashSet<Reservation_House_Participant>();
+
         }
 
         [Display(Name ="Id:")]
@@ -34,7 +34,8 @@ namespace Repository.Models
         [DisplayFormat(DataFormatString ="{0:dd-MM-yyyy}",ApplyFormatInEditMode =true)]
         public DateTime BirthDate { get; set; }
 
-        public virtual ICollection<Reservation_House_Participant> Reservation_House_Participant { get; set; }
+        public int Reservation_HouseId { get; set; }
+        public virtual Reservation_House Reservation_House { get; set; }
 
     }
 }
