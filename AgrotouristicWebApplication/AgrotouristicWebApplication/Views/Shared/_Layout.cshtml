@@ -25,11 +25,20 @@
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Klient"))
                     {
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Rezerwacje<span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Moje rezerwacje<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li>@Html.ActionLink("Dodaj", "Create", "ClientReservations")</li>
                                 <li>@Html.ActionLink("Lista", "Index", "ClientReservations")</li>
                                 <li>@Html.ActionLink("Historia","Index","History")</li>
+                            </ul>
+                        </li>
+                    }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Recepcjonista"))
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Rezerwacje<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>@Html.ActionLink("Lista", "Index", "ReceptionistReservations")</li>
                             </ul>
                         </li>
                     }
@@ -58,6 +67,7 @@
                             </ul>
                         </li>
                     }
+
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

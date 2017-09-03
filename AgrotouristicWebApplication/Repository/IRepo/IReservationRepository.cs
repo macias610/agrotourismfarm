@@ -12,6 +12,8 @@ namespace Repository.IRepo
     public interface IReservationRepository
     {
         Reservation GetReservationById(int id);
+        IQueryable<Reservation> GetReservations();
+        IQueryable<Reservation> GetReservationsByState(string state);
         Reservation GetReservationBasedOnData(NewReservation reservation,string userId);
         NewReservation RetreiveExistingReservation(Reservation reservation);
         List<House> GetHousesForReservation(int id);

@@ -1,0 +1,54 @@
+﻿@model IEnumerable<SelectListItem>
+@using Repository.Models
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function handler(e) {
+            var source = e.srcElement.id;
+            if (source == 'StatusReservations') {
+                $.ajax({
+                    type: "POST",
+                    url: "/ReceptionistReservations/GetReservationsByState",
+                    data: '{state: "' + $('select[name="StatusReservations"]').val() + '"  }',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (response) {
+                        $('#selectedStatusReservations').html(response)
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        }
+    </script>
+
+</head>
+
+<h2>Lista rezerwacji użytkowników</h2>
+<div>
+    <div class="form-group">
+        @Html.Label("Statusy rezerwacji", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("StatusReservations", Model, new { id = "StatusReservations", onchange = "handler(event)" })
+        </div>
+
+    </div>
+
+    <div id="selectedStatusReservations">
+
+    </div>
+</div>
+
+
+

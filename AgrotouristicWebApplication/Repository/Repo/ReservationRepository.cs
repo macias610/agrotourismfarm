@@ -220,8 +220,6 @@ namespace Repository.Repo
             }
         }
 
-
-
         public NewReservation RetreiveExistingReservation(Reservation reservation)
         {
             NewReservation exisitingReservation = new NewReservation();
@@ -355,6 +353,26 @@ namespace Repository.Repo
             }
             SaveChanges();
             return result;
+        }
+
+        public IQueryable<Reservation> GetReservations()
+        {
+            IQueryable<Reservation> reservations = db.Reservations.AsNoTracking();
+            return reservations;
+        }
+
+        public IQueryable<Reservation> GetReservationsByState(string state)
+        {
+            IQueryable<Reservation> reservations=null;
+            if (state.Equals("wszystkie"))
+            {
+                reservations = db.Reservations.AsNoTracking();
+            }
+            else
+            {
+                reservations = db.Reservations.Where(x => x.Status.Equals(state)).AsNoTracking();
+            }
+            return reservations;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Repository.Models
     public class Reservation
     {
 
-        public static List<string> states = new List<string>(new string[] { "oczekiwanie", "zarezerwowano","zakończona" });
+        public static List<string> states = new List<string>(new string[] { "wszystkie","oczekiwanie", "zarezerwowano","zakończona" });
 
         public Reservation()
         {
