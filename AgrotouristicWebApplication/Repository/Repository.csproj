@@ -217,6 +217,7 @@
     <Compile Include="Repo\ReservationRepository.cs" />
     <Compile Include="Repo\RoleComparer.cs" />
     <Compile Include="Repo\UserRepository.cs" />
+    <Compile Include="ViewModels\EditionStatusReservation.cs" />
     <Compile Include="ViewModels\HouseDetails.cs" />
     <Compile Include="ViewModels\NewReservation.cs" />
     <Compile Include="ViewModels\ReservationAttractionDetails.cs" />

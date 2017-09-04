@@ -185,7 +185,7 @@ namespace Repository.Repo
                 DeadlinePayment = DateTime.Now.Date.AddDays(1),
                 StartDate = reservation.StartDate,
                 EndDate = reservation.EndDate,
-                Status = Reservation.states[0],
+                Status = Reservation.States[0],
                 OverallCost = reservation.OverallCost
             };
             return savedReservation;
@@ -219,8 +219,6 @@ namespace Repository.Repo
 
             }
         }
-
-
 
         public NewReservation RetreiveExistingReservation(Reservation reservation)
         {
@@ -355,6 +353,31 @@ namespace Repository.Repo
             }
             SaveChanges();
             return result;
+        }
+
+        public IQueryable<Reservation> GetReservations()
+        {
+            IQueryable<Reservation> reservations = db.Reservations.AsNoTracking();
+            return reservations;
+        }
+
+        public IQueryable<Reservation> GetReservationsByState(string state)
+        {
+            IQueryable<Reservation> reservations = null;
+            if (state.Equals("wszystkie"))
+            {
+                reservations = db.Reservations.AsNoTracking();
+            }
+            else
+            {
+                reservations = db.Reservations.Where(x => x.Status.Equals(state)).AsNoTracking();
+            }
+            return reservations;
+        }
+
+        public void UpdateReservation(Reservation reservation)
+        {
+            db.Entry(reservation).State = EntityState.Modified;
         }
     }
 }

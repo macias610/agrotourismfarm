@@ -251,6 +251,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MealsController.cs" />
     <Compile Include="Controllers\ClientReservationsController.cs" />
+    <Compile Include="Controllers\ReceptionistReservationsController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\RoleUsersController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -425,6 +426,11 @@
     <Content Include="Views\Shared\_HouseParticipantsPartial.cshtml" />
     <Content Include="Views\Shared\_ReservationDetailsPartial.cshtml" />
     <Content Include="Views\Shared\_AvaiableHousesPartial.cshtml" />
+    <Content Include="Views\ReceptionistReservations\Delete.cshtml" />
+    <Content Include="Views\ReceptionistReservations\Details.cshtml" />
+    <Content Include="Views\ReceptionistReservations\Edit.cshtml" />
+    <Content Include="Views\ReceptionistReservations\Index.cshtml" />
+    <Content Include="Views\Shared\_SelectedStatusReservationsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

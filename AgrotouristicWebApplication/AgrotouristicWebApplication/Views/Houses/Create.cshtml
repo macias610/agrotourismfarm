@@ -3,12 +3,12 @@
 <head>
     @Scripts.Render("~/bundles/jquery")
     <script>
-    $(function() {
-        $("form").submit(function() {
-            var selTypeText = $("#SelectedTypeId option:selected").text();
-            $("#SelectedTypeText").val(selTypeText);
+        $(function() {
+            $("form").submit(function() {
+                var selTypeText = $("#SelectedTypeId option:selected").text();
+                $("#SelectedTypeText").val(selTypeText);
+            });
         });
-    });
     </script>
 </head>
 
