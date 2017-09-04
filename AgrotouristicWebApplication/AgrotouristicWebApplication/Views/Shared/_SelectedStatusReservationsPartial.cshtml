@@ -60,9 +60,9 @@
                 @Html.DisplayFor(modelItem => value.OverallCost)
             </td>
             <td>
-                @Html.ActionLink("Edytuj", "Edit", new { id = value.Id }) |
+                @Html.ActionLink("Zmień status", "Edit", new { id = value.Id }) |
                 @Html.ActionLink("Szczegóły", "Details", new { id = value.Id })
-                @if (value.Status.Equals("Zakończona"))
+                @if (value.Status.Equals("zakończona"))
                 {
                     @Html.ActionLink("Usuń", "Delete", new { id = value.Id })
                 }

@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
+using Repository.ViewModels;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -22,8 +23,8 @@ namespace AgrotouristicWebApplication.Controllers
         // GET: ReceptionistReservations
         public ActionResult Index()
         {
-            List<string> states = Reservation.states.ToList();
-            List<SelectListItem> list = states.Select(state => new SelectListItem { Text = state, Value = state, Selected = true }).ToList();
+            List<string> optionStates = Reservation.OptionStates.ToList();
+            List<SelectListItem> list = optionStates.Select(optionState => new SelectListItem { Text = optionState, Value = optionState, Selected = optionState.Equals("-")?true:false }).ToList();
             return View(list);
         }
 
@@ -50,38 +51,57 @@ namespace AgrotouristicWebApplication.Controllers
         //    return View(reservation);
         //}
 
-        // GET: ReceptionistReservations/Edit/5
-        //public ActionResult Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Reservation reservation = db.Reservations.Find(id);
-        //    if (reservation == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    ViewBag.ClientId = new SelectList(db.Users, "Id", "Email", reservation.ClientId);
-        //    return View(reservation);
-        //}
+        [Authorize(Roles ="Recepcjonista")]
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Reservation editedReservation = repository.GetReservationById((int)id);
+            if (editedReservation == null)
+            {
+                return HttpNotFound();
+            }
+            EditionStatusReservation reservation = new EditionStatusReservation()
+            {
+                Id=editedReservation.Id,
+                Name=editedReservation.Client.Name,
+                Surname=editedReservation.Client.Surname,
+                StartDate=editedReservation.StartDate,
+                EndDate=editedReservation.EndDate,
+                Status=editedReservation.Status,
+                States = Reservation.States.Select(state=>new SelectListItem { Text=state,Value=state,Selected=state.Equals(editedReservation.Status)?true:false}).ToList()
+            };
+            return View(reservation);
+        }
 
-        // POST: ReceptionistReservations/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "Id,StartDate,EndDate,DeadlinePayment,Status,OverallCost,ClientId")] Reservation reservation)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(reservation).State = EntityState.Modified;
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    ViewBag.ClientId = new SelectList(db.Users, "Id", "Email", reservation.ClientId);
-        //    return View(reservation);
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Recepcjonista")]
+        public ActionResult Edit([Bind(Include = "Id,Name,Surname,StartDate,EndDate,Status")] EditionStatusReservation reservation)
+        {
+            Reservation editedReservation = repository.GetReservationById(reservation.Id);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    editedReservation.Status = reservation.Status;
+                    repository.UpdateReservation(editedReservation);
+                    repository.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch 
+                {
+                    ViewBag.exception = true;
+                    reservation.States = Reservation.States.Select(state => new SelectListItem { Text = state, Value = state, Selected = state.Equals(editedReservation.Status) ? true : false }).ToList();
+                    return View(reservation);
+                }
+                
+            }
+            reservation.States = Reservation.States.Select(state => new SelectListItem { Text = state, Value = state, Selected = state.Equals(editedReservation.Status) ? true : false }).ToList();
+            return View(reservation);
+        }
 
         // GET: ReceptionistReservations/Delete/5
         //public ActionResult Delete(int? id)

@@ -36,6 +36,7 @@ namespace Repository.IRepo
         void SaveChanges();
         bool ValidateFormularParticipants(Dictionary<string, List<Participant>> dictionary);
         void ClearParticipantsFormular(NewReservation reservation);
+        void UpdateReservation(Reservation reservation);
         IQueryable<Reservation> GetClientReservations(string id);
         void SaveAssignedMealsAndHouses(int id, NewReservation reservation);
         void RemoveReservation(Reservation reservation);
