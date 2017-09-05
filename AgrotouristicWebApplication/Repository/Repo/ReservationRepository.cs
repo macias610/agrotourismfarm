@@ -263,5 +263,11 @@ namespace Repository.Repo
                                                    select archiveReservation).AsNoTracking();
             return archiveReservations;
         }
+
+        public Reservation_History GetReservationHistoryById(int id)
+        {
+            Reservation_History reservationHistory = db.Reservations_History.Find(id);
+            return reservationHistory;
+        }
     }
 }
