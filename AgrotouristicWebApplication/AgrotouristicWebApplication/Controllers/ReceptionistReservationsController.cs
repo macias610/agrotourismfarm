@@ -20,7 +20,7 @@ namespace AgrotouristicWebApplication.Controllers
             this.repository = repository;
         }
 
-        // GET: ReceptionistReservations
+        [Authorize(Roles ="Recepcjonista")]
         public ActionResult Index()
         {
             List<string> optionStates = Reservation.OptionStates.ToList();

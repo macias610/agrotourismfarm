@@ -12,34 +12,22 @@ namespace Repository.IRepo
     public interface IReservationRepository
     {
         Reservation GetReservationById(int id);
-        IQueryable<Reservation> GetReservations();
         IQueryable<Reservation> GetReservationsByState(string state);
         Reservation GetReservationBasedOnData(NewReservation reservation,string userId);
-        NewReservation RetreiveExistingReservation(Reservation reservation);
-        List<House> GetHousesForReservation(int id);
-        List<Participant> CopyParticipantsData(List<Participant> tagetList, List<Participant> actualList);
-        House GetHouseByName(string name);
-        List<SelectListItem> GetNamesAvaiableHouses(List<House> houses);
-        List<SelectListItem> GetNamesAvaiableMeals();
-        Meal GetHouseMealForReservation(int reservationId, int houseId);
-        List<Participant> GetParticipantsHouseForReservation(int reservationId, int houseId);
+        NewReservation RetreiveExistingReservation(Reservation reservation);    
         Attraction_Reservation GetDetailsAboutReservedAttraction(int id);
         List<Attraction> GetAttractionsForReservation(int id);
         List<User> GetWorkersAssignedToAttraction(int id);
-        List<House> GetAvaiableHousesInTerm(DateTime startDate, DateTime endDate);
-        List<SelectListItem> GetSelectedHousesMeals(Dictionary<string, int> dictionary, bool longVersion);
-        void SaveAssignedMealsToHouses(NewReservation reservation,List<string> selectedMeals);
+        List<Reservation> RemoveOutOfDateReservations(List<Reservation> reservations);
+
         void ChangeAssignedMeals(int id, NewReservation reservation);
         void ChangeAssignedParticipants(int id,NewReservation reservation);
-        void SaveSelectedHouses(NewReservation reservation,List<string> selectedHouses);
         void AddReservation(Reservation reservation);
-        void SaveChanges();
-        bool ValidateFormularParticipants(Dictionary<string, List<Participant>> dictionary);
-        void ClearParticipantsFormular(NewReservation reservation);
+        void SaveChanges();   
         void UpdateReservation(Reservation reservation);
         IQueryable<Reservation> GetClientReservations(string id);
         void SaveAssignedMealsAndHouses(int id, NewReservation reservation);
         void RemoveReservation(Reservation reservation);
-        List<Reservation> RemoveOutOfDateReservations(List<Reservation> reservations);
+        
     }
 }

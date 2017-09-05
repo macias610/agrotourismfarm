@@ -1,0 +1,147 @@
+﻿@model Dictionary<string,List<Participant>>
+@using Repository.Models
+@{
+    ViewBag.Title = "AddParticipants";
+}
+
+@if (ViewBag.error == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Formularz jest niekompletny.
+    </div>
+}
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function handler(e) {
+            setVisibility('hidden')
+        }
+    </script>
+
+    <script type="text/javascript">
+            function setVisibility(state) {
+                document.getElementById('header-content').style.visibility = state;
+                document.getElementById("participantsTable").style.visibility = state;
+                document.getElementById("btnSaveHouseParticipants").style.visibility = state;
+                document.getElementById("btnConfirmParticipants").style.visibility = state;    
+            }
+    </script>
+
+
+    <script type="text/javascript">
+            $(function () {
+                $("#btnShowParticipants").click(function () {
+                    var data = {
+                        houseName: $('select[name="SelectedHousesParticipants"]').val(),
+                        __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/ReservationDetails/GetHouseParticipants",
+                        data: data,
+                        dataType: "text",
+                        success: function (response) {
+                            $('#assignedParticipants').html(response)
+                            setVisibility('visible')
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                });
+            });
+    </script>
+
+    <script type="text/javascript">
+            $(function () {
+                $("#btnSaveHouseParticipants").click(function () {
+                    var list = $("#participantsTable :input").serializeArray();
+                    var jsonArray = [];
+                    for (var i = 0; i < list.length; i+=3) {
+                        jsonArray.push({ Name: list[i].value, Surname: list[i+1].value, BirthDate: list[i+2].value });
+                    }
+                    var data = JSON.stringify({
+                        houseName: $('select[name="SelectedHousesParticipants"]').val(),
+                        participants: jsonArray,
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: "/ReservationDetails/ChangeHouseParticipants",
+                        data: data,
+                        headers: {
+                            '__RequestVerificationToken': $("[name='__RequestVerificationToken']").val()
+                        },
+                        contentType: "application/json; charset=utf-8",
+                        success: function (response) {
+                            $('assignedParticipants').html(response)
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                });
+            });
+    </script>
+
+</head>
+
+<h2>Dodaj lokatorów</h2>
+
+@using (Html.BeginForm((ViewBag.ReservationId != 0 ? "EditParticipants" : "AddParticipants"),"ReservationDetails",new { isParticipantsConfirmed=true, reservationId= ViewBag.ReservationId != 0 ?ViewBag.ReservationId:0}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Domki</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("SelectedHousesParticipants", Model.Keys.Select(elem => new SelectListItem { Value = elem.ToString(), Text = elem.ToString() }).ToList(),new { onchange = "handler(event)" })
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="button" id="btnShowParticipants" value="Pokaż" class="btn btn-default" />
+                <input type="button" id="btnSaveHouseParticipants" value="Zapisz lokatorów domku" class="btn btn-default" style="visibility:hidden"/>
+                <input type="submit" id="btnConfirmParticipants" value="Potwierdź wszystkich lokatorów" class="btn btn-default" style="visibility:hidden"/>
+            </div>
+        </div>
+
+        <div>
+            <table id="participantsTable">
+                <thead id="header-content" style="visibility:hidden">
+                    <tr>
+                        <th>LP</th>
+                        <th>Imię</th>
+                        <th>Nazwisko</th>
+                        <th>Data urodzenia</th>
+                    </tr>
+                </thead>
+                <tbody id="assignedParticipants">
+
+                </tbody>
+            </table>
+        </div>
+
+        <input type="hidden" id="reservationId" name="reservationId" value="@ViewBag.ReservationId" />
+
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Wróć", (ViewBag.ReservationId != 0) ? "Edit" : "Create","ClientReservations", new { id = (ViewBag.ReservationId != 0 ? ViewBag.ReservationId : null) },null)
+</div>

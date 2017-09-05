@@ -23,7 +23,7 @@
                 $("#btnGetHouseDetails").click(function () {
                     $.ajax({
                         type: "POST",
-                        url: "/ClientReservations/GetHouseDetails",
+                        url: "/ReservationDetails/GetHouseDetails",
                         data: '{id: "' + $("#idValue").val() + '",houseName:"' + $("#SelectedHouseDetails option:selected").text() + '" }',
                         contentType: "application/json; charset=utf-8",
                         dataType: "text",
@@ -47,7 +47,7 @@
                 $("#btnGetDetailsReservation").click(function () {
                     $.ajax({
                         type: "POST",
-                        url: "/ClientReservations/GetReservationDetails",
+                        url: "/ReservationDetails/GetReservationDetails",
                         data: '{id: "' + $("#idValue").val() + '" }',
                         contentType: "application/json; charset=utf-8",
                         dataType: "text",
