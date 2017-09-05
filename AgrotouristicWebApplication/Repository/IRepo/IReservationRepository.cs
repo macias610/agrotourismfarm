@@ -28,6 +28,7 @@ namespace Repository.IRepo
         void SaveChanges();   
         void UpdateReservation(Reservation reservation);
         IQueryable<Reservation> GetClientReservations(string id);
+        IQueryable<Reservation_History> GetClientArchiveReservations(string id);
         void SaveAssignedMealsAndHouses(int id, NewReservation reservation);
         void RemoveReservation(Reservation reservation);
         

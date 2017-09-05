@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Repository.Models.Reservation_History>
+@using Repository.Models
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Lista archiwalnych rezerwacji</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("LP")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model.Select((value, i) => new { i, value }))
+{ 
+    Reservation_History value = item.value;
+    int index = item.i + 1;
+    <tr>
+        <td>
+            @index.ToString()
+        </td>
+        <td>
+            @value.StartDate.ToShortDateString()
+        </td>
+        <td>
+            @value.EndDate.ToShortDateString()
+        </td>
+        <td>
+            @Html.ActionLink("Szczegóły", "Details", new { id=value.Id }) |
+            @Html.ActionLink("Usuń", "Delete", new { id=value.Id })
+        </td>
+    </tr>
+}
+
+</table>
