@@ -1,0 +1,73 @@
+﻿@model Repository.Models.Reservation_History
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Szczegóły</h2>
+
+<div>
+    <h4>Archiwalna rezerwacja</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Client.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Client.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Client.Surname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Client.Surname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OverallCost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OverallCost)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReservedHouses)
+        </dt>
+
+        <dd>
+            @MvcHtmlString.Create(Model.ReservedHouses.Replace(Environment.NewLine, "<br />"))
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReservedAttractions)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReservedAttractions)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Wróć", "Index")
+</p>

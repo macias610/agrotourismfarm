@@ -255,5 +255,19 @@ namespace Repository.Repo
             };
             return reservationHistory;
         }
+
+        public IQueryable<Reservation_History> GetClientArchiveReservations(string id)
+        {
+            IQueryable<Reservation_History> archiveReservations = (from archiveReservation in db.Reservations_History
+                                                   where archiveReservation.ClientId.Equals(id)
+                                                   select archiveReservation).AsNoTracking();
+            return archiveReservations;
+        }
+
+        public Reservation_History GetReservationHistoryById(int id)
+        {
+            Reservation_History reservationHistory = db.Reservations_History.Find(id);
+            return reservationHistory;
+        }
     }
 }

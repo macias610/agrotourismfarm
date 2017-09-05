@@ -245,6 +245,7 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AttractionsController.cs" />
+    <Compile Include="Controllers\ClientArchiveReservationsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HousesController.cs" />
     <Compile Include="Controllers\HouseTypesController.cs" />
@@ -431,6 +432,9 @@
     <Content Include="Views\ReceptionistReservations\Index.cshtml" />
     <Content Include="Views\Shared\_SelectedStatusReservationsPartial.cshtml" />
     <Content Include="Views\ReceptionistReservations\Delete.cshtml" />
+    <Content Include="Views\ClientArchiveReservations\Delete.cshtml" />
+    <Content Include="Views\ClientArchiveReservations\Details.cshtml" />
+    <Content Include="Views\ClientArchiveReservations\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
