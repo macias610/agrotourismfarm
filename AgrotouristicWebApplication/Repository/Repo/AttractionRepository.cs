@@ -24,7 +24,7 @@ namespace Repository.Repo
 
         public int countReservationsWithGivenAttraction(int id)
         {
-            int reservations = (from reservation in db.Attraction_Reservation
+            int reservations = (from reservation in db.Attractions_Reservations
                                 where reservation.AttractionId.Equals(id)
                                 select reservation.Id).ToList().Count;
             return reservations;

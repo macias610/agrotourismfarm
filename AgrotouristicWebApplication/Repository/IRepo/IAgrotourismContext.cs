@@ -21,9 +21,10 @@ namespace Repository.IRepo
         DbSet<HouseType> HouseTypes { get; set; }
         DbSet<Meal> Meals { get; set; }
         DbSet<Participant> Participants { get; set; }
-        DbSet<Reservation_House> Reservation_House { get; set; }
-        DbSet<Attraction_Reservation> Attraction_Reservation { get; set; }
-        DbSet<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
+        DbSet<Reservation_House> Reservation_Houses { get; set; }
+        DbSet<Reservation_History> Reservations_History { get; set; }
+        DbSet<Attraction_Reservation> Attractions_Reservations { get; set; }
+        DbSet<Attraction_Reservation_Worker> Attractions_Reservations_Workers { get; set; }
 
         DbEntityEntry Entry(object entity);
 

@@ -25,7 +25,7 @@ namespace Repository.Repo
 
         public int countHousesWithGivenMeal(int id)
         {
-            int houses = (from house in db.Reservation_House
+            int houses = (from house in db.Reservation_Houses
                                 where house.MealId.Equals(id)
                                 select house.Id).ToList().Count;
             return houses;
