@@ -30,9 +30,10 @@ namespace Repository.Models
         public DbSet<HouseType> HouseTypes { get; set; }
         public DbSet<Meal> Meals { get; set; }
         public DbSet<Participant> Participants { get; set; }
-        public DbSet<Reservation_House> Reservation_House { get; set; }
-        public DbSet<Attraction_Reservation> Attraction_Reservation { get; set; }
-        public DbSet<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
+        public DbSet<Reservation_House> Reservation_Houses { get; set; }
+        public DbSet<Reservation_History> Reservations_History { get; set; }
+        public DbSet<Attraction_Reservation> Attractions_Reservations { get; set; }
+        public DbSet<Attraction_Reservation_Worker> Attractions_Reservations_Workers { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

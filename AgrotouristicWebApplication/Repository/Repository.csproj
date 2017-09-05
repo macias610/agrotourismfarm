@@ -198,9 +198,14 @@
     <Compile Include="Migrations\201709030847337_removed_table_ReservationHouseParticipant_changed_delete_on_cascade.Designer.cs">
       <DependentUpon>201709030847337_removed_table_ReservationHouseParticipant_changed_delete_on_cascade.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709050958545_added_Reservation_History_table.cs" />
+    <Compile Include="Migrations\201709050958545_added_Reservation_History_table.Designer.cs">
+      <DependentUpon>201709050958545_added_Reservation_History_table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AgrotourismContext.cs" />
     <Compile Include="Models\HouseType.cs" />
+    <Compile Include="Models\Reservation_History.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Attraction.cs" />
     <Compile Include="Models\Attraction_Reservation.cs" />
@@ -254,6 +259,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709030847337_removed_table_ReservationHouseParticipant_changed_delete_on_cascade.resx">
       <DependentUpon>201709030847337_removed_table_ReservationHouseParticipant_changed_delete_on_cascade.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709050958545_added_Reservation_History_table.resx">
+      <DependentUpon>201709050958545_added_Reservation_History_table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

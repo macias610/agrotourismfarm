@@ -95,7 +95,7 @@ namespace Repository.Repo
 
         public void setAvailabilityHouse(House house)
         {
-            List<int> reservationsIdForHouse = (from reservation in db.Reservation_House
+            List<int> reservationsIdForHouse = (from reservation in db.Reservation_Houses
                                                 where reservation.HouseId.Equals(house.Id)
                                                 select reservation.ReservationId).ToList();
 

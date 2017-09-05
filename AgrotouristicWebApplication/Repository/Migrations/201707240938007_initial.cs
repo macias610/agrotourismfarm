@@ -86,7 +86,7 @@ namespace Repository.Migrations
                 .Index(t => t.ClientId);
             
             CreateTable(
-                "dbo.Attraction_Reservation",
+                "dbo.Attractions_Reservations",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -115,7 +115,7 @@ namespace Repository.Migrations
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
-                "dbo.Attraction_Reservation_Worker",
+                "dbo.Attractions_Reservations_Workers",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -124,13 +124,13 @@ namespace Repository.Migrations
                         Worker_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Attraction_Reservation", t => t.Attraction_ReservationId)
+                .ForeignKey("dbo.Attractions_Reservations", t => t.Attraction_ReservationId)
                 .ForeignKey("dbo.Worker", t => t.Worker_Id)
                 .Index(t => t.Attraction_ReservationId)
                 .Index(t => t.Worker_Id);
             
             CreateTable(
-                "dbo.Reservation_House",
+                "dbo.Reservation_Houses",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -177,7 +177,7 @@ namespace Repository.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Participant", t => t.ParticipantId)
-                .ForeignKey("dbo.Reservation_House", t => t.Reservation_HouseId)
+                .ForeignKey("dbo.Reservation_Houses", t => t.Reservation_HouseId)
                 .Index(t => t.ParticipantId)
                 .Index(t => t.Reservation_HouseId);
             
@@ -235,28 +235,28 @@ namespace Repository.Migrations
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
-            DropForeignKey("dbo.Reservation_House_Participant", "Reservation_HouseId", "dbo.Reservation_House");
+            DropForeignKey("dbo.Reservation_House_Participant", "Reservation_HouseId", "dbo.Reservation_Houses");
             DropForeignKey("dbo.Reservation_House_Participant", "ParticipantId", "dbo.Participant");
-            DropForeignKey("dbo.Reservation_House", "ReservationId", "dbo.Reservation");
-            DropForeignKey("dbo.Reservation_House", "MealId", "dbo.Meal");
-            DropForeignKey("dbo.Reservation_House", "HouseId", "dbo.House");
+            DropForeignKey("dbo.Reservation_Houses", "ReservationId", "dbo.Reservation");
+            DropForeignKey("dbo.Reservation_Houses", "MealId", "dbo.Meal");
+            DropForeignKey("dbo.Reservation_Houses", "HouseId", "dbo.House");
             DropForeignKey("dbo.Reservation", "ClientId", "dbo.Client");
-            DropForeignKey("dbo.Attraction_Reservation", "ReservationId", "dbo.Reservation");
-            DropForeignKey("dbo.Attraction_Reservation_Worker", "Worker_Id", "dbo.Worker");
-            DropForeignKey("dbo.Attraction_Reservation_Worker", "Attraction_ReservationId", "dbo.Attraction_Reservation");
-            DropForeignKey("dbo.Attraction_Reservation", "AttractionId", "dbo.Attraction");
+            DropForeignKey("dbo.Attractions_Reservations", "ReservationId", "dbo.Reservation");
+            DropForeignKey("dbo.Attractions_Reservations_Workers", "Worker_Id", "dbo.Worker");
+            DropForeignKey("dbo.Attractions_Reservations_Workers", "Attraction_ReservationId", "dbo.Attractions_Reservations");
+            DropForeignKey("dbo.Attractions_Reservations", "AttractionId", "dbo.Attraction");
             DropIndex("dbo.Worker", new[] { "Id" });
             DropIndex("dbo.Client", new[] { "Id" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.Reservation_House_Participant", new[] { "Reservation_HouseId" });
             DropIndex("dbo.Reservation_House_Participant", new[] { "ParticipantId" });
-            DropIndex("dbo.Reservation_House", new[] { "MealId" });
-            DropIndex("dbo.Reservation_House", new[] { "ReservationId" });
-            DropIndex("dbo.Reservation_House", new[] { "HouseId" });
-            DropIndex("dbo.Attraction_Reservation_Worker", new[] { "Worker_Id" });
-            DropIndex("dbo.Attraction_Reservation_Worker", new[] { "Attraction_ReservationId" });
-            DropIndex("dbo.Attraction_Reservation", new[] { "ReservationId" });
-            DropIndex("dbo.Attraction_Reservation", new[] { "AttractionId" });
+            DropIndex("dbo.Reservation_Houses", new[] { "MealId" });
+            DropIndex("dbo.Reservation_Houses", new[] { "ReservationId" });
+            DropIndex("dbo.Reservation_Houses", new[] { "HouseId" });
+            DropIndex("dbo.Attractions_Reservations_Workers", new[] { "Worker_Id" });
+            DropIndex("dbo.Attractions_Reservations_Workers", new[] { "Attraction_ReservationId" });
+            DropIndex("dbo.Attractions_Reservations", new[] { "ReservationId" });
+            DropIndex("dbo.Attractions_Reservations", new[] { "AttractionId" });
             DropIndex("dbo.Reservation", new[] { "ClientId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
@@ -270,10 +270,10 @@ namespace Repository.Migrations
             DropTable("dbo.Reservation_House_Participant");
             DropTable("dbo.Meal");
             DropTable("dbo.House");
-            DropTable("dbo.Reservation_House");
-            DropTable("dbo.Attraction_Reservation_Worker");
+            DropTable("dbo.Reservation_Houses");
+            DropTable("dbo.Attractions_Reservations_Workers");
             DropTable("dbo.Attraction");
-            DropTable("dbo.Attraction_Reservation");
+            DropTable("dbo.Attractions_Reservations");
             DropTable("dbo.Reservation");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetUserLogins");

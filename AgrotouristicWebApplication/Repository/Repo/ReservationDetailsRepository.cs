@@ -21,7 +21,7 @@ namespace Repository.Repo
 
         public List<House> GetHousesForReservation(int id)
         {
-            List<House> houses = (from resHouse in db.Reservation_House
+            List<House> houses = (from resHouse in db.Reservation_Houses
                                   where resHouse.ReservationId.Equals(id)
                                   join house in db.Houses on resHouse.HouseId equals house.Id
                                   select house).ToList();
@@ -30,7 +30,7 @@ namespace Repository.Repo
         }
         public Meal GetHouseMealForReservation(int reservationId, int houseId)
         {
-            Meal meal = (from resHouse in db.Reservation_House
+            Meal meal = (from resHouse in db.Reservation_Houses
                          where resHouse.HouseId.Equals(houseId)
                          && resHouse.ReservationId.Equals(reservationId)
                          join m in db.Meals on resHouse.MealId equals m.Id
@@ -39,7 +39,7 @@ namespace Repository.Repo
         }
         public List<Participant> GetParticipantsHouseForReservation(int reservationId, int houseId)
         {
-            List<Participant> participants = (from resHouse in db.Reservation_House
+            List<Participant> participants = (from resHouse in db.Reservation_Houses
                                               where resHouse.HouseId.Equals(houseId)
                                               && resHouse.ReservationId.Equals(reservationId)
                                               join participant in db.Participants on resHouse.Id equals participant.Reservation_HouseId
@@ -53,7 +53,7 @@ namespace Repository.Repo
                                               | (endDate.CompareTo(reservation.StartDate) >= 0 & endDate.CompareTo(reservation.EndDate) < 0)
                                               | (reservation.StartDate.CompareTo(startDate) >= 0 & reservation.StartDate.CompareTo(endDate) < 0)
                                               | (reservation.EndDate.CompareTo(startDate) >= 0 & reservation.EndDate.CompareTo(endDate) < 0)
-                                              join resHouse in db.Reservation_House on reservation.Id equals resHouse.ReservationId
+                                              join resHouse in db.Reservation_Houses on reservation.Id equals resHouse.ReservationId
                                               select resHouse.HouseId).ToList();
 
             List<House> houses = db.Houses.Include("HouseType").ToList();

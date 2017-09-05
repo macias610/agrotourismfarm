@@ -33,7 +33,7 @@ namespace Repository.Repo
 
         public List<Attraction> GetAttractionsForReservation(int id)
         {
-            List<Attraction> attractions = (from attrRes in db.Attraction_Reservation
+            List<Attraction> attractions = (from attrRes in db.Attractions_Reservations
                                             where attrRes.ReservationId.Equals(id)
                                             join attraction in db.Attractions on attrRes.AttractionId equals attraction.Id
                                             select attraction).ToList();
@@ -50,7 +50,7 @@ namespace Repository.Repo
 
         public Attraction_Reservation GetDetailsAboutReservedAttraction(int id)
         {
-            Attraction_Reservation attractionReservation = (from attrRes in db.Attraction_Reservation
+            Attraction_Reservation attractionReservation = (from attrRes in db.Attractions_Reservations
                                                             where attrRes.AttractionId.Equals(id)
                                                             select attrRes).FirstOrDefault();
             return attractionReservation;
@@ -64,7 +64,7 @@ namespace Repository.Repo
 
         public List<User> GetWorkersAssignedToAttraction(int id)
         {
-            List<User> workers = (from attrResWor in db.Attraction_Reservation_Worker
+            List<User> workers = (from attrResWor in db.Attractions_Reservations_Workers
                                   where attrResWor.Attraction_ReservationId.Equals(id)
                                   join worker in db.ApplicationUsers on attrResWor.WorkerId equals worker.Id
                                   select worker).ToList();
@@ -107,7 +107,7 @@ namespace Repository.Repo
                     MealId = item.Value,
                     ReservationId = id
                 };
-                db.Reservation_House.Add(reservationHouse);
+                db.Reservation_Houses.Add(reservationHouse);
                 db.SaveChanges();
                 SaveAssignedHouseParticipants(reservationHouse.Id, reservation.AssignedParticipantsHouses[item.Key]);
 
@@ -120,7 +120,7 @@ namespace Repository.Repo
             exisitingReservation.StartDate = reservation.StartDate;
             exisitingReservation.EndDate = reservation.EndDate;
             exisitingReservation.OverallCost = reservation.OverallCost;
-            List<string> selectedHousesMeals = (from reservationHouse in db.Reservation_House
+            List<string> selectedHousesMeals = (from reservationHouse in db.Reservation_Houses
                                                 where reservationHouse.ReservationId.Equals(reservation.Id)
                                                 join house in db.Houses on reservationHouse.HouseId equals house.Id
                                                 join houseType in db.HouseTypes on house.HouseTypeId equals houseType.Id
@@ -129,7 +129,7 @@ namespace Repository.Repo
             {
                 exisitingReservation.AssignedHousesMeals.Add(selectHouseMeal.Split(';')[0] + ';', Int32.Parse(selectHouseMeal.Split(';')[1]));
             }
-            List<string> selectedHousesIdResHouses = (from reservationHouse in db.Reservation_House
+            List<string> selectedHousesIdResHouses = (from reservationHouse in db.Reservation_Houses
                                                       where reservationHouse.ReservationId.Equals(reservation.Id)
                                                       join house in db.Houses on reservationHouse.HouseId equals house.Id
                                                       join houseType in db.HouseTypes on house.HouseTypeId equals houseType.Id
@@ -151,7 +151,7 @@ namespace Repository.Repo
             {
                 string houseName = Regex.Match(item.Key, @"\(([^)]*)\)").Groups[1].Value;
                 int houseId = db.Houses.Where(house => house.Name.Equals(houseName)).FirstOrDefault().Id;
-                Reservation_House reservationHouse = (from resHouse in db.Reservation_House
+                Reservation_House reservationHouse = (from resHouse in db.Reservation_Houses
                                                       where resHouse.ReservationId.Equals(id)
                                                       && resHouse.HouseId.Equals(houseId)
                                                       select resHouse).FirstOrDefault();
@@ -171,7 +171,7 @@ namespace Repository.Repo
                 string houseName = Regex.Match(item.Key, @"\(([^)]*)\)").Groups[1].Value;
                 int houseId = db.Houses.Where(house => house.Name.Equals(houseName)).FirstOrDefault().Id;
 
-                List<int> participantsId = (from resHouse in db.Reservation_House
+                List<int> participantsId = (from resHouse in db.Reservation_Houses
                                                   where resHouse.ReservationId.Equals(id)
                                                   && resHouse.HouseId.Equals(houseId)
                                                   join participant in db.Participants on resHouse.Id equals participant.Reservation_HouseId
