@@ -19,10 +19,12 @@ namespace Repository.IRepo
         List<Attraction> GetAttractionsForReservation(int id);
         List<User> GetWorkersAssignedToAttraction(int id);
         List<Reservation> RemoveOutOfDateReservations(List<Reservation> reservations);
+        Reservation_History GetReservationHistoryBasedReservation(Reservation reservation);
 
         void ChangeAssignedMeals(int id, NewReservation reservation);
         void ChangeAssignedParticipants(int id,NewReservation reservation);
         void AddReservation(Reservation reservation);
+        void AddReservationHistory(Reservation_History reservationHistory);
         void SaveChanges();   
         void UpdateReservation(Reservation reservation);
         IQueryable<Reservation> GetClientReservations(string id);

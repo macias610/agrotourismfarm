@@ -36,20 +36,20 @@ namespace AgrotouristicWebApplication.Controllers
             return PartialView("~/Views/Shared/_SelectedStatusReservationsPartial.cshtml", reservations);
         }
 
-        // GET: ReceptionistReservations/Details/5
-        //public ActionResult Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Reservation reservation = db.Reservations.Find(id);
-        //    if (reservation == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(reservation);
-        //}
+        [Authorize(Roles ="Recepcjonista")]
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Reservation reservation = repository.GetReservationById((int)id);
+            if (reservation == null)
+            {
+                return HttpNotFound();
+            }
+            return View("~/Views/ClientReservations/Details.cshtml",reservation);
+        }
 
         [Authorize(Roles ="Recepcjonista")]
         public ActionResult Edit(int? id)
@@ -103,31 +103,34 @@ namespace AgrotouristicWebApplication.Controllers
             return View(reservation);
         }
 
-        // GET: ReceptionistReservations/Delete/5
-        //public ActionResult Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Reservation reservation = db.Reservations.Find(id);
-        //    if (reservation == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(reservation);
-        //}
+        [Authorize(Roles ="Recepcjonista")]
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Reservation reservation = repository.GetReservationById((int)id);
+            if (reservation == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.NumberHouses = reservation.Reservation_House.Count;
+            return View(reservation);
+        }
 
-        // POST: ReceptionistReservations/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult DeleteConfirmed(int id)
-        //{
-        //    Reservation reservation = db.Reservations.Find(id);
-        //    db.Reservations.Remove(reservation);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //}
+        [Authorize(Roles ="Recepcjonista")]
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Reservation reservation = repository.GetReservationById(id);
+            Reservation_History reservationHistory = repository.GetReservationHistoryBasedReservation(reservation);
+            repository.AddReservationHistory(reservationHistory);
+            repository.RemoveReservation(reservation);
+            repository.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
         protected override void Dispose(bool disposing)
         {

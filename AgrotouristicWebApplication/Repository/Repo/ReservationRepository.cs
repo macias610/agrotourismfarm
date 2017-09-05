@@ -229,5 +229,31 @@ namespace Repository.Repo
         {
             db.Entry(reservation).State = EntityState.Modified;
         }
+
+        public void AddReservationHistory(Reservation_History reservationHistory)
+        {
+            db.Reservations_History.Add(reservationHistory);
+        }
+
+        public Reservation_History GetReservationHistoryBasedReservation(Reservation reservation)
+        {
+            string result=String.Empty;
+            foreach(Reservation_House reservatonHouse in reservation.Reservation_House.ToList())
+            {
+                result += reservatonHouse.House.HouseType.Type + "(" + reservatonHouse.House.Name + ");";
+            }
+            result = result.Remove(result.Length - 1);
+
+            Reservation_History reservationHistory = new Reservation_History()
+            {
+                ClientId=reservation.ClientId,
+                StartDate=reservation.StartDate,
+                EndDate=reservation.EndDate,
+                OverallCost=reservation.OverallCost,
+                ReservedHouses= result,
+                ReservedAttractions ="Brak"
+            };
+            return reservationHistory;
+        }
     }
 }
