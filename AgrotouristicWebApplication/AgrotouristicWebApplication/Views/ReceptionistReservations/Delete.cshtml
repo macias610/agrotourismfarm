@@ -4,19 +4,27 @@
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
+<h2>Usuń</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3></h3>
 <div>
-    <h4>Reservation</h4>
+    <h4>Rezerwacja</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Client.Email)
+            @Html.DisplayNameFor(model => model.Client.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Client.Email)
+            @Html.DisplayFor(model => model.Client.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Client.Surname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Client.Surname)
         </dd>
 
         <dt>
@@ -36,19 +44,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.DeadlinePayment)
+            @Html.DisplayName("Liczba domków")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.DeadlinePayment)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Status)
+            <input type="text" readonly="readonly" value="@ViewBag.NumberHouses"/>
         </dd>
 
         <dt>
@@ -65,8 +65,8 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Usuń" class="btn btn-default" /> |
+            @Html.ActionLink("Wróć", "Index")
         </div>
     }
 </div>
