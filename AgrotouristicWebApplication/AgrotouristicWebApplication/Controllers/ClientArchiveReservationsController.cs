@@ -44,32 +44,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(reservationHistory);
         }
 
-            // GET: ClientArchiveReservations/Delete/5
-            //public ActionResult Delete(int? id)
-            //{
-            //    if (id == null)
-            //    {
-            //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //    }
-            //    Reservation_History reservation_History = db.Reservations_History.Find(id);
-            //    if (reservation_History == null)
-            //    {
-            //        return HttpNotFound();
-            //    }
-            //    return View(reservation_History);
-            //}
-
-            // POST: ClientArchiveReservations/Delete/5
-            //[HttpPost, ActionName("Delete")]
-            //[ValidateAntiForgeryToken]
-            //public ActionResult DeleteConfirmed(int id)
-            //{
-            //    Reservation_History reservation_History = db.Reservations_History.Find(id);
-            //    db.Reservations_History.Remove(reservation_History);
-            //    db.SaveChanges();
-            //    return RedirectToAction("Index");
-            //}
-
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
