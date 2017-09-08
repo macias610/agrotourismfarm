@@ -4,6 +4,7 @@ using Repository.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -105,7 +106,6 @@ namespace Repository.Repo
             List<SelectListItem> list = result.Select(item => new SelectListItem { Text = longVersion ? item : item.Split(';')[0] + ';', Value = longVersion ? item : item.Split(';')[0] + ';', Selected = true }).ToList();
             return list;
         }
-
         public void SaveSelectedHouses(NewReservation reservation, List<string> selectedHouses)
         {
             foreach (string house in selectedHouses)
@@ -153,6 +153,74 @@ namespace Repository.Repo
                 }
             }
             return true;
+        }
+
+        public Dictionary<DateTime, List<string>> InitializeDictionaryForAssignedAttractions(DateTime startDate, DateTime endDate)
+        {
+            Dictionary<DateTime, List<string>> result = new Dictionary<DateTime, List<string>>();
+            for(DateTime start=startDate;start.CompareTo(endDate)<=0;start=start.AddDays(1))
+            {
+                result.Add(start, new List<string>());
+            }
+            return result;
+        }
+
+        public List<SelectListItem> GetWeeksFromSelectedTerm(DateTime startDate, DateTime endDate)
+        {
+            List<string> list = new List<string>();
+            list.Add("-");
+            int counter = 0;
+            for (DateTime start = startDate, tmp = startDate;tmp.CompareTo(endDate)<=0;tmp=tmp.AddDays(1),counter++)
+            {
+                if(counter==6 || tmp.CompareTo(endDate)==0)
+                {
+                    counter = 0;
+                    list.Add(start.ToShortDateString() + ";" + tmp.ToShortDateString());
+                    start = tmp.AddDays(1);
+                }
+            }
+            List<SelectListItem> selectList = list.Select(item => new SelectListItem { Text = item, Value = item, Selected = item.Equals("-") ? true : false }).ToList();
+            return selectList;
+        }
+
+        public List<SelectListItem> GetAvaiableDatesInWeek(string term)
+        {
+            List<DateTime> result = new List<DateTime>();
+            for (DateTime start = DateTime.Parse(term.Split(';')[0]); start.CompareTo(DateTime.Parse(term.Split(';')[1])) <= 0; start = start.AddDays(1))
+            {
+                result.Add(start);
+            }
+            List<SelectListItem> selectList = result.Select(item => new SelectListItem { Text = item.ToShortDateString(), Value = item.ToShortDateString(), Selected = true }).ToList();
+            return selectList;
+        }
+
+        public List<SelectListItem> GetAvaiableAttractions()
+        {
+            List<string> namesAttractions = (from attraction in db.Attractions
+                                             select attraction.Name).ToList();
+            List<SelectListItem> selectList = namesAttractions.Select(item => new SelectListItem { Text = item, Value = item, Selected = true }).ToList();
+            return selectList;
+        }
+
+        public List<SelectListItem> GetParticipantsQuantity(int quantity)
+        {
+            List<string> list = new List<string>();
+            for(int i=2;i<=quantity;i++)
+            {
+                list.Add(i.ToString());
+            }
+            List<SelectListItem> selectList = list.Select(item => new SelectListItem { Text = item, Value = item, Selected = true }).ToList();
+            return selectList;
+        }
+
+        public Dictionary<DateTime, List<string>> GetAttractionsInGivenWeek(string term, Dictionary<DateTime, List<string>> dictionary)
+        {
+            Dictionary<DateTime, List<string>> result = new Dictionary<DateTime, List<string>>();
+            for (DateTime start = DateTime.Parse(term.Split(';')[0]); start.CompareTo(DateTime.Parse(term.Split(';')[1])) <= 0; start = start.AddDays(1))
+            {
+                result.Add(start, dictionary[start]);
+            }
+            return result;
         }
     }
 }

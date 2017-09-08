@@ -3,8 +3,8 @@ using Repository.Models;
 using Repository.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace AgrotouristicWebApplication.Controllers
@@ -56,7 +56,6 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new EmptyResult();
             }
-
             Session["Reservation"] = new NewReservation()
             {
                 StartDate = startDate,
@@ -170,6 +169,40 @@ namespace AgrotouristicWebApplication.Controllers
             }
             reservation.stagesConfirmation[3] = isParticipantsConfirmed;
             return RedirectToAction("Create","ClientReservations");
+        }
+
+        [Authorize(Roles ="Klient")]
+        public ActionResult AddAttractions()
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            reservation.AssignedAttractions = repository.InitializeDictionaryForAssignedAttractions(reservation.StartDate, reservation.EndDate);
+            List<SelectListItem> weeks = repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
+            Session["Reservation"] = reservation;
+            return View("~/Views/ReservationDetails/AddAttractions.cshtml", weeks);
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="Klient")]
+        [ValidateAntiForgeryToken]
+        public ActionResult GetAttractionsForTerm(string term)
+        {
+            if(term.Equals("-"))
+            {
+                return new EmptyResult();
+            }
+            else
+            {
+                NewReservation reservation = (NewReservation)Session["Reservation"];
+                ReservationAttractions reservationAttractions = new ReservationAttractions()
+                {
+                    DaysOfWeek = repository.GetAvaiableDatesInWeek(term),
+                    AvaiableAttractions = repository.GetAvaiableAttractions(),
+                    ParticipantsQuantity = repository.GetParticipantsQuantity(reservation.AssignedParticipantsHouses.SelectMany(x=>x.Value).Where(item => !(item.Name.Equals("Brak"))).Count()),
+                    AssignedAttractions = repository.GetAttractionsInGivenWeek(term,reservation.AssignedAttractions),
+                    OverallCost = reservation.OverallCost
+                };
+                return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsPartial.cshtml", reservationAttractions);
+            }
         }
 
         [HttpPost]

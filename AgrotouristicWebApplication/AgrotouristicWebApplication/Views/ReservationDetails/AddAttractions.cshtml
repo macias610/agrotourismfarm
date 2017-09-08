@@ -1,0 +1,68 @@
+﻿@model IEnumerable<SelectListItem>
+
+@{
+    ViewBag.Title = "AddAttractions";
+}
+
+<h2>Warsztaty</h2>
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function handler(e) {
+            var source = e.srcElement.id;
+            if (source == 'AttractionsAvaiableWeeks')
+            {
+                var data = {
+                    term: $('select[name="AttractionsAvaiableWeeks"]').val(),
+                    __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/ReservationDetails/GetAttractionsForTerm",
+                    data: data,
+                    dataType: "text",
+                    success: function (response) {
+                        $('#AttractionsTimeTable').html(response);
+
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        }
+    </script>
+
+</head>
+
+<h2>Wybierz warsztaty</h2>
+
+@using (Html.BeginForm("AddAttractions", "ReservationDetails", new { isAttractionsConfirmed = true }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.Label("Terminy", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("AttractionsAvaiableWeeks", Model, new { id = "AttractionsAvaiableWeeks", onchange = "handler(event)" })
+        </div>    
+    </div>
+
+    <div id="AttractionsTimeTable">
+
+    </div>
+
+}
+
+<div style="clear:both">
+    @Html.ActionLink("Wróć", "Create", "ClientReservations")
+</div>
+

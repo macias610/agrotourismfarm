@@ -2,6 +2,7 @@
 using Repository.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,13 @@ namespace Repository.IRepo
         List<SelectListItem> GetNamesAvaiableMeals();
         List<Participant> CopyParticipantsData(List<Participant> tagetList, List<Participant> actualList);
         List<SelectListItem> GetSelectedHousesMeals(Dictionary<string, int> dictionary, bool longVersion);
+        Dictionary<DateTime, List<string>> InitializeDictionaryForAssignedAttractions(DateTime startDate, DateTime endDate);
+        List<SelectListItem> GetWeeksFromSelectedTerm(DateTime startDate, DateTime endDate);
+        List<SelectListItem> GetAvaiableDatesInWeek(string term);
+        List<SelectListItem> GetAvaiableAttractions();
+        List<SelectListItem> GetParticipantsQuantity(int quantity);
+        Dictionary<DateTime, List<string>> GetAttractionsInGivenWeek(string term, Dictionary<DateTime, List<string>> dictionary);
+
 
         void SaveSelectedHouses(NewReservation reservation, List<string> selectedHouses);
         void SaveAssignedMealsToHouses(NewReservation reservation, List<string> selectedMeals);
