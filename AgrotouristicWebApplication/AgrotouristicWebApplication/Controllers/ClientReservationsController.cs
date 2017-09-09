@@ -62,7 +62,7 @@ namespace AgrotouristicWebApplication.Controllers
             string action = (Request.UrlReferrer.Segments.Skip(2).Take(1).SingleOrDefault() ?? "Index").Trim('/');
             List<string> actions = new List<string>()
             {
-                "AddTerm","AddHouses","AddMeals","AddParticipants"
+                "AddTerm","AddHouses","AddMeals","AddParticipants","AddAttractions"
             };
             if(!actions.Contains(action))
             {

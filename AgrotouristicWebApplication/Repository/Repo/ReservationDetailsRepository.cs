@@ -170,9 +170,10 @@ namespace Repository.Repo
             List<string> list = new List<string>();
             list.Add("-");
             int counter = 0;
+            int daysToDisplay = 6;
             for (DateTime start = startDate, tmp = startDate;tmp.CompareTo(endDate)<=0;tmp=tmp.AddDays(1),counter++)
             {
-                if(counter==6 || tmp.CompareTo(endDate)==0)
+                if(counter==daysToDisplay || tmp.CompareTo(endDate)==0)
                 {
                     counter = 0;
                     list.Add(start.ToShortDateString() + ";" + tmp.ToShortDateString());
@@ -219,6 +220,23 @@ namespace Repository.Repo
             for (DateTime start = DateTime.Parse(term.Split(';')[0]); start.CompareTo(DateTime.Parse(term.Split(';')[1])) <= 0; start = start.AddDays(1))
             {
                 result.Add(start, dictionary[start]);
+            }
+            return result;
+        }
+
+        public int GetMaxRowsToTableAttractions(Dictionary<DateTime, List<string>> dictionary)
+        {
+            int result = 0;
+            foreach(KeyValuePair<DateTime,List<string>> item in dictionary)
+            {
+                if(item.Value.Count>result)
+                {
+                    result = item.Value.Count;
+                }
+            }
+            if(result==0)
+            {
+                result++;
             }
             return result;
         }

@@ -27,6 +27,7 @@ namespace Repository.IRepo
         List<SelectListItem> GetAvaiableAttractions();
         List<SelectListItem> GetParticipantsQuantity(int quantity);
         Dictionary<DateTime, List<string>> GetAttractionsInGivenWeek(string term, Dictionary<DateTime, List<string>> dictionary);
+        int GetMaxRowsToTableAttractions(Dictionary<DateTime, List<string>> dictionary);
 
 
         void SaveSelectedHouses(NewReservation reservation, List<string> selectedHouses);

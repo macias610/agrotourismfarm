@@ -199,8 +199,12 @@ namespace AgrotouristicWebApplication.Controllers
                     AvaiableAttractions = repository.GetAvaiableAttractions(),
                     ParticipantsQuantity = repository.GetParticipantsQuantity(reservation.AssignedParticipantsHouses.SelectMany(x=>x.Value).Where(item => !(item.Name.Equals("Brak"))).Count()),
                     AssignedAttractions = repository.GetAttractionsInGivenWeek(term,reservation.AssignedAttractions),
-                    OverallCost = reservation.OverallCost
+                    OverallCost = reservation.OverallCost,
+                    MaxRows = repository.GetMaxRowsToTableAttractions(reservation.AssignedAttractions)
                 };
+                //DateTime dd = DateTime.Parse("2017-09-26");
+                //reservationAttractions.AssignedAttractions[dd].Add("Jazda konna,5");
+                //reservationAttractions.MaxRows = repository.GetMaxRowsToTableAttractions(reservation.AssignedAttractions);
                 return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsPartial.cshtml", reservationAttractions);
             }
         }

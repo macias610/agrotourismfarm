@@ -10,6 +10,17 @@ namespace Repository.ViewModels
 {
     public class ReservationAttractions
     {
+        public static Dictionary<string, string> Days = new Dictionary<string, string>()
+        {
+            {"Monday","Poniedziałek"},
+            {"Tuesday","Wtorek" },
+            {"Wednesday","Środa" },
+            {"Thursday","Czwartek" },
+            {"Friday","Piątek" },
+            {"Saturday","Sobota" },
+            {"Sunday","Niedziela" }
+        };
+
         public decimal OverallCost { get; set; }
 
         public List<SelectListItem> DaysOfWeek { get; set; }
@@ -19,5 +30,7 @@ namespace Repository.ViewModels
         public List<SelectListItem> ParticipantsQuantity { get; set; }
 
         public Dictionary<DateTime,List<string>> AssignedAttractions { get; set; }
+
+        public int MaxRows { get; set; }
     }
 }
