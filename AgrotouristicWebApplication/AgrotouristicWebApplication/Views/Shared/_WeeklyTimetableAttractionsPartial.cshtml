@@ -1,8 +1,12 @@
 ﻿@model Repository.ViewModels.ReservationAttractions
 @using Repository.ViewModels
+@using Newtonsoft.Json
+@using System.Collections
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -16,8 +20,57 @@
 
                 var selectedDate = $td.find("[name^='Term']").val();
 
-                alert(selectedDate);
+                document.getElementById("AddedItem").value = selectedDate+';'+selectedAttractions+','+selectedParticipants;
+
+                $("#AddedItem").value(selectedDate+';'+selectedAttractions+','+selectedParticipants);
+
             });
+        });
+    </script>
+              
+            @foreach(KeyValuePair<DateTime,List<string>> item in Model.AssignedAttractions)
+            {
+                <script type="text/javascript">
+                    var dictionary ={};
+                     $(function () {
+                         dictionary[@Html.Raw(JsonConvert.SerializeObject(item.Key.ToShortDateString()))] = @Html.Raw(JsonConvert.SerializeObject(item.Value));
+                     });
+                </script>
+            }           
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var table = document.getElementById('TimeTableAttractions');
+            var rowLength = table.rows[0].length;
+            var row = table.rows[0];
+            for (var y = 1; y < row.cells.length; y++) {
+                var $td = $(row.cells[y]).closest("td");
+                var date = $td.find("[name^='Term']").val();
+                if(dictionary[date].length > 0)
+                {
+                    var listToRemove = dictionary[date];
+                    var quantity = parseInt(@Model.ParticipantsQuantity.Last().Value.ToString(),10);
+                    for(var i in listToRemove)
+                    {
+                        quantity = quantity - parseInt(listToRemove[i].split(',')[1],10);
+                    }
+                    
+                    $td.find("[name^='AttractionsQuantityParticipants'] > option").each(function() {
+                        if(parseInt(this.value,10)>quantity)
+                        {
+                            $td.find("[name^='AttractionsQuantityParticipants'] option[value='"+ this.value +"']").eq(0).remove();
+                        }
+                    });
+                    for (var i in listToRemove) {
+                        $td.find("[name^='AttractionsAvaiable'] option[value='"+ listToRemove[i].split(',')[0] +"']").eq(0).remove();
+                    }
+
+                    if(quantity <2)
+                    {
+                        $td.find("[name^='ButtonSelect']").attr('disabled','disabled');
+                    }
+                }              
+            }
         });
     </script>
 
@@ -49,7 +102,7 @@
 
     <div style="clear:both"/>
 
-    <table class="table" border="1">
+    <table class="table" border="1" id="TimeTableAttractions">
         <thead>
             <tr>
                 <td>
@@ -82,7 +135,7 @@
                             @Html.DropDownList("AttractionsQuantityParticipants", Model.ParticipantsQuantity)
                         </p>
                         <p>
-                            <input type="button" value="Wybierz" />
+                            <input type="button" name="ButtonSelect" value="Wybierz" />
                         </p>
                     </td>
                 }
@@ -111,6 +164,8 @@
             }
         </tbody>
     </table>
+
+    <input type="hidden" id="AddedItem" value="" onchange = "handler(event)"/>
 
 
 </div>

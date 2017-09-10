@@ -36,6 +36,31 @@
                     }
                 });
             }
+            else if(source == 'AddedItem')
+            {
+                var data = {
+                    term: $('select[name="AttractionsAvaiableWeeks"]').val(),
+                    date: $('#AddedItem').value().split(';')[0],
+                    attraction: $('#AddedItem').value().split(';')[1],
+                    __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/ReservationDetails/AddSelectedAttraction",
+                    data: data,
+                    dataType: "text",
+                    success: function (response) {
+                        $('#AttractionsTimeTable').html(response);
+
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
         }
     </script>
 

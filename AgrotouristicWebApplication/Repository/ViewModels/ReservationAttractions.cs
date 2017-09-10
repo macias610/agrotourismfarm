@@ -27,7 +27,7 @@ namespace Repository.ViewModels
 
         public List<SelectListItem> AvaiableAttractions { get; set; }
 
-        public List<SelectListItem> ParticipantsQuantity { get; set; }
+        public List<SelectListItem> ParticipantsQuantity {get;set;}
 
         public Dictionary<DateTime,List<string>> AssignedAttractions { get; set; }
 
