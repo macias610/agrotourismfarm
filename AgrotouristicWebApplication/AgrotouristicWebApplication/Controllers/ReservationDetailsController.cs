@@ -23,9 +23,11 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult GetReservationDetails(int id)
         {
             List<House> houses = repository.GetHousesForReservation(id);
+            Reservation reservation = repository.GetReservationById(id);
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
-                { "Houses",houses.Select(house => new SelectListItem { Value = house.Name , Text = house.Name }).ToList()}
+                { "Houses",houses.Select(house => new SelectListItem { Value = house.Name , Text = house.Name }).ToList()},
+                { "Weeks",repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate)}
             };
             return PartialView("~/Views/Shared/_ReservationDetailsPartial.cshtml", dictionary);
         }
@@ -214,8 +216,35 @@ namespace AgrotouristicWebApplication.Controllers
                     OverallCost = reservation.OverallCost,
                     MaxRows = repository.GetMaxRowsToTableAttractions(repository.GetAttractionsInGivenWeek(term, reservation.AssignedAttractions))
                 };
+                ViewBag.IsOnlyToRead = false;
                 return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsPartial.cshtml", reservationAttractions);
             }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Klient")]
+        [ValidateAntiForgeryToken]
+        public ActionResult RetreiveAttractionsForTerm(string term,int id)
+        {
+            ReservationAttractions reservationAttractions = null;
+            if (term.Equals("-"))
+            {
+                return new EmptyResult();
+            }
+            else
+            {
+                reservationAttractions = new ReservationAttractions()
+                {
+                    DaysOfWeek = repository.GetAvaiableDatesInWeek(term),
+                    AvaiableAttractions = repository.GetAvaiableAttractions(),
+                    ParticipantsQuantity = repository.GetParticipantsQuantity(repository.RetreiveHouseParticipants(id).SelectMany(x => x.Value).Where(item => !(item.Name.Equals("Brak"))).Count()),
+                    AssignedAttractions = repository.RetreiveAttractionsInGivenWeek(term,id),
+                    OverallCost = 0,
+                    MaxRows = repository.GetMaxRowsToTableAttractions(repository.GetAttractionsInGivenWeek(term, repository.RetreiveAttractionsInGivenWeek(term, id)))
+                };
+            }
+            ViewBag.IsOnlyToRead = true;
+            return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsPartial.cshtml", reservationAttractions);
         }
 
         [HttpPost]
@@ -242,6 +271,7 @@ namespace AgrotouristicWebApplication.Controllers
                 OverallCost = reservation.OverallCost,
                 MaxRows = repository.GetMaxRowsToTableAttractions(reservation.AssignedAttractions)
             };
+            ViewBag.IsOnlyToRead = false;
             return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsPartial.cshtml", reservationAttractions);
         }
 

@@ -81,14 +81,16 @@
                         Terminy
                     </p>
                     <br/>
-                    <br/>
-                    <p>
-                        Warsztat
-                    </p>
-                    <p>
-                        Liczba uczestników
-                    </p>
-                    
+                    @if (ViewBag.IsOnlyToRead == false)
+                    {
+                        <br />
+                        <p>
+                            Warsztat
+                        </p>
+                        <p>
+                            Liczba uczestników
+                        </p>
+                    }
                 </td>
                 @foreach(DateTime date in Model.AssignedAttractions.Keys.ToList())
                 {
@@ -99,15 +101,18 @@
                         <p>
                             <input type="text" name="DayOfWeek" readonly="readonly" value="@(ReservationAttractions.Days[date.DayOfWeek.ToString()])" style="width:90px;border:0"/>  
                         </p>
-                        <p>
-                            @Html.DropDownList("AttractionsAvaiableAttractions", Model.AvaiableAttractions)
-                        </p>
-                        <p>
-                            @Html.DropDownList("AttractionsQuantityParticipants", Model.ParticipantsQuantity)
-                        </p>
-                        <p>
-                            <input type="button" name="ButtonSelect" value="Wybierz" />
-                        </p>
+                        @if (ViewBag.IsOnlyToRead == false)
+                        {
+                            <p>
+                                @Html.DropDownList("AttractionsAvaiableAttractions", Model.AvaiableAttractions)
+                            </p>
+                            <p>
+                                @Html.DropDownList("AttractionsQuantityParticipants", Model.ParticipantsQuantity)
+                            </p>
+                            <p>
+                                <input type="button" name="ButtonSelect" value="Wybierz" />
+                            </p>
+                        } 
                     </td>
                 }
             </tr>
@@ -127,7 +132,11 @@
                             {
                                 <p>@Model.AssignedAttractions[date][i].Split(',')[0]</p>
                                 <p>@Model.AssignedAttractions[date][i].Split(',')[1]</p>
-                                <p><input type="button" name="ButtonRemove" value="Usuń warsztat"/></p>
+
+                                if (ViewBag.IsOnlyToRead == false)
+                                {
+                                    <p><input type="button" name="ButtonRemove" value="Usuń warsztat" /></p>
+                                }
                             }
                         </td>
                     }
@@ -136,8 +145,6 @@
             }
         </tbody>
     </table>
-
-    
 
 
 </div>

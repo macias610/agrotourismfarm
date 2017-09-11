@@ -12,6 +12,7 @@ namespace Repository.IRepo
 {
     public interface IReservationDetailsRepository
     {
+        Reservation GetReservationById(int id);
         List<House> GetHousesForReservation(int id);
         Meal GetHouseMealForReservation(int reservationId, int houseId);
         List<Participant> GetParticipantsHouseForReservation(int reservationId, int houseId);
@@ -27,6 +28,8 @@ namespace Repository.IRepo
         List<SelectListItem> GetAvaiableAttractions();
         List<SelectListItem> GetParticipantsQuantity(int quantity);
         Dictionary<DateTime, List<string>> GetAttractionsInGivenWeek(string term, Dictionary<DateTime, List<string>> dictionary);
+        Dictionary<DateTime, List<string>> RetreiveAttractionsInGivenWeek(string term, int id);
+        Dictionary<string, List<Participant>> RetreiveHouseParticipants(int id);
         int GetMaxRowsToTableAttractions(Dictionary<DateTime, List<string>> dictionary);
 
 

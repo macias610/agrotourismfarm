@@ -240,5 +240,52 @@ namespace Repository.Repo
             }
             return result;
         }
+
+        public Reservation GetReservationById(int id)
+        {
+            Reservation reservation = db.Reservations.Find(id);
+            return reservation;
+        }
+
+        public Dictionary<DateTime, List<string>> RetreiveAttractionsInGivenWeek(string term, int id)
+        {
+            DateTime start = DateTime.Parse(term.Split(';')[0]);
+            DateTime end = DateTime.Parse(term.Split(';')[1]);
+            List<Attraction_Reservation> attractionsReservation = (from attrRes in db.Attractions_Reservations
+                                                                   where attrRes.ReservationId.Equals(id)
+                                                                   && attrRes.TermAffair.CompareTo(start) >= 0
+                                                                   && attrRes.TermAffair.CompareTo(end) <= 0
+                                                                   select attrRes).ToList();
+
+            Dictionary<DateTime, List<string>> dictionary = new Dictionary<DateTime, List<string>>();
+            for(DateTime st=start;st<=end;st=st.AddDays(1))
+            {
+                dictionary.Add(st, new List<string>());
+            }
+            HashSet<DateTime> dates = new HashSet<DateTime>();
+            attractionsReservation.ForEach(item => dates.Add(item.TermAffair));
+            foreach(DateTime date in dates)
+            {
+                List<string> result = new List<string>();
+                attractionsReservation.Where(x => x.TermAffair.Equals(date)).ToList().ForEach(x => result.Add(x.Attraction.Name + ',' + x.QuantityParticipant));
+                dictionary[date]=result;
+            }
+            return dictionary;
+        }
+
+        public Dictionary<string, List<Participant>> RetreiveHouseParticipants(int id)
+        {
+            List<Reservation_House> reservationHouses = (from resHou in db.Reservation_Houses
+                                                         where resHou.ReservationId.Equals(id)
+                                                         select resHou).ToList();
+            Dictionary<string, List<Participant>> dictionary = new Dictionary<string, List<Participant>>();
+            foreach(Reservation_House resHouse in reservationHouses)
+            {
+                string houseName = resHouse.House.HouseType.Type + '(' + resHouse.House.Name + ");";
+                List<Participant> participants = resHouse.Participant.ToList();
+                dictionary.Add(houseName, participants);
+            }
+            return dictionary;
+        }
     }
 }

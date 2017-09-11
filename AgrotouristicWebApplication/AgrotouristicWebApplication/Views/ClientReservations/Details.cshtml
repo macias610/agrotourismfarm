@@ -13,33 +13,57 @@
 
     <script type="text/javascript">
         function handler(e) {
-            document.getElementById('DetailsSelectHouse').style.visibility = 'hidden';
+            document.getElementById('DetailsSelectHouseorAttractions').style.visibility = 'hidden';
         }
     </script>
 
 
     <script type="text/javascript">
-            $(function () {
-                $("#btnGetHouseDetails").click(function () {
-                    $.ajax({
-                        type: "POST",
-                        url: "/ReservationDetails/GetHouseDetails",
-                        data: '{id: "' + $("#idValue").val() + '",houseName:"' + $("#SelectedHouseDetails option:selected").text() + '" }',
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "text",
-                        success: function (response) {
-                            document.getElementById('DetailsSelectHouse').style.visibility = 'visible';
-                            $('#DetailsSelectHouse').html(response)
-                        },
-                        failure: function (response) {
-                            alert(response.responseText);
-                        },
-                        error: function (response) {
-                            alert(response.responseText);
-                        }
-                    });
+        $(document).on("click", "input[type='button']", function () {
+            if ($(this).attr('id') == 'btnGetHouseDetails') {
+                $.ajax({
+                    type: "POST",
+                    url: "/ReservationDetails/GetHouseDetails",
+                    data: '{id: "' + $("#idValue").val() + '",houseName:"' + $("#SelectedHouseDetails option:selected").text() + '" }',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (response) {
+                        document.getElementById('DetailsSelectHouseorAttractions').style.visibility = 'visible';
+                        $('#DetailsSelectHouseorAttractions').html(response)
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
                 });
-            });
+            }
+            else if ($(this).attr('id') == 'btnGetAttractionsDetails') {
+                var data = {
+                    term: $('select[name="SelectedWeekAttractions"]').val(),
+                    id: $("#idValue").val(),
+                    __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/ReservationDetails/RetreiveAttractionsForTerm",
+                    data: data,
+                    dataType: "text",
+                    success: function (response) {
+                        document.getElementById('DetailsSelectHouseorAttractions').style.visibility = 'visible';
+                        $('#DetailsSelectHouseorAttractions').html(response);
+
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        });
     </script>
 
     <script type="text/javascript">
@@ -55,12 +79,14 @@
                             $('#DetailsReservation').html(response)
                             document.getElementById('DetailsReservation').style.visibility = 'visible';
                             document.getElementById('btnGetHouseDetails').style.visibility = 'visible';
+                            document.getElementById('btnGetAttractionsDetails').style.visibility = 'visible';
                         },
                         failure: function (response) {
                             alert(response.responseText);
                         },
                         error: function (response) {
                             alert(response.responseText);
+                            
                         }
                     });
                 });
@@ -139,13 +165,15 @@
     <div id="DetailsReservation" style="visibility:hidden">
 
     </div>
-    <input type="button" id="btnGetHouseDetails" value="Wyświetl" style="visibility:hidden;display:flex"/>
-    <div id="DetailsSelectHouse" style="visibility:hidden">
+    
+    
+    <div id="DetailsSelectHouseorAttractions" style="visibility:hidden;clear:both">
 
     </div>
     
 
-    <p>
+
+    <p style="clear:both">
         @Html.ActionLink("Wróć", "Index")
     </p>
     </div>
