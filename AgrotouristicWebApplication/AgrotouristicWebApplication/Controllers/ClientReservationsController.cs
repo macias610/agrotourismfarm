@@ -80,10 +80,16 @@ namespace AgrotouristicWebApplication.Controllers
             if (ModelState.IsValid)
             {
                 reservation = (NewReservation )Session["Reservation"];
+
                 Reservation savedReservation = repository.GetReservationBasedOnData(reservation, User.Identity.GetUserId());
                 repository.AddReservation(savedReservation);
                 repository.SaveChanges();
                 repository.SaveAssignedMealsAndHouses(savedReservation.Id, reservation);
+                if(reservation.AssignedAttractions.Any(pair => pair.Value != null && pair.Value.Any()))
+                {
+                    repository.SaveAssignedAttractions(savedReservation.Id, reservation);
+                }
+
                 Session.Remove("Reservation");
                 return RedirectToAction("Index");
             }

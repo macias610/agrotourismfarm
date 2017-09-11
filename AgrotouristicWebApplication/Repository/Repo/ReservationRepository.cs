@@ -269,5 +269,33 @@ namespace Repository.Repo
             Reservation_History reservationHistory = db.Reservations_History.Find(id);
             return reservationHistory;
         }
+
+        public void SaveAssignedAttractions(int id, NewReservation reservation)
+        {
+            Dictionary<DateTime, List<string>> dictionary = reservation.AssignedAttractions.Where(x => x.Value.Any()).ToDictionary(t => t.Key, t => t.Value);
+
+            foreach(KeyValuePair<DateTime,List<string>> item in dictionary)
+            {
+                foreach(string attr in item.Value)
+                {
+                    string attractionName = attr.Split(',')[0];
+                    int quantityParticipants = Int32.Parse(attr.Split(',')[1]);
+                    Attraction_Reservation attractionReservation = new Attraction_Reservation()
+                    {
+                        AttractionId = (from attraction in db.Attractions
+                                        where attraction.Name.Equals(attractionName)
+                                        select attraction.Id).FirstOrDefault(),
+                        ReservationId = id,
+                        TermAffair = item.Key,
+                        QuantityParticipant = quantityParticipants,
+                        OverallCost = quantityParticipants*(from attraction in db.Attractions
+                                       where attraction.Name.Equals(attractionName)
+                                       select attraction.Price).FirstOrDefault()
+                    };
+                    db.Attractions_Reservations.Add(attractionReservation);
+                }
+                SaveChanges();
+            }
+        }
     }
 }

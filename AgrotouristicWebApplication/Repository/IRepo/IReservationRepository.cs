@@ -31,6 +31,7 @@ namespace Repository.IRepo
         IQueryable<Reservation> GetClientReservations(string id);
         IQueryable<Reservation_History> GetClientArchiveReservations(string id);
         void SaveAssignedMealsAndHouses(int id, NewReservation reservation);
+        void SaveAssignedAttractions(int id, NewReservation reservation);
         void RemoveReservation(Reservation reservation);
         
     }
