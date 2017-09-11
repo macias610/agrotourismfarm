@@ -1,32 +1,11 @@
 ﻿@model Repository.ViewModels.ReservationAttractions
 @using Repository.ViewModels
 @using Newtonsoft.Json
-@using System.Collections
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("thead td input[type='button']").click(function () {
-
-                var $td = $(this).closest("td");
-
-                var selectedAttractions = $td.find("[name^='AttractionsAvaiableAttractions']").val();
-
-                var selectedParticipants = $td.find("[name^='AttractionsQuantityParticipants']").val();
-
-                var selectedDate = $td.find("[name^='Term']").val();
-
-                document.getElementById("AddedItem").value = selectedDate+';'+selectedAttractions+','+selectedParticipants;
-
-                $("#AddedItem").value(selectedDate+';'+selectedAttractions+','+selectedParticipants);
-
-            });
-        });
-    </script>
               
             @foreach(KeyValuePair<DateTime,List<string>> item in Model.AssignedAttractions)
             {
@@ -36,7 +15,7 @@
                          dictionary[@Html.Raw(JsonConvert.SerializeObject(item.Key.ToShortDateString()))] = @Html.Raw(JsonConvert.SerializeObject(item.Value));
                      });
                 </script>
-            }           
+            }         
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -74,31 +53,23 @@
         });
     </script>
 
+    <script type="text/javascript">
+        $(document).ready(function () {
+            for(var key in dictionary)
+            {
+                if(dictionary[key].length>0)
+                {
+                    $('#btnConfirmAttractions').attr('style','visibility:visible');
+                    break;
+                }
+            }
+        });
+    </script>  
+
 </head>
 
 <div id="TimeTableDetails" class="form-horizontal">
-    <div class="form-inline" style="clear:both">
-        @Html.Label("Dzień", htmlAttributes: new { @class = "control-label col-md-1" })
-        <div class="col-md-2">
-            @Html.DropDownList("AttractionsDaysOfWeek", Model.DaysOfWeek, new { id = "AttractionsDaysOfWeek" })
-        </div>
-    </div>
-
-    <div class="form-inline">
-        @Html.Label("Warsztat", htmlAttributes: new { @class = "control-label col-md-1" })
-        <div class="col-md-2">
-            @Html.DropDownList("AttractionsAvaiableAttractions", Model.AvaiableAttractions, new { id = "AttractionsAvaiableAttractions" })
-        </div>
-    </div>
-
-    <div class="form-inline">
-        @Html.Label("Liczba uczestników", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-1">
-            @Html.DropDownList("AttractionsQuantityParticipants", Model.ParticipantsQuantity, new { id = "AttractionsQuantityParticipants" })
-        </div>
-    </div>
-
-    <input type="button" id="btnSaveAttraction" value="Wybierz" class="btn btn-default" style="display:inline-flex" />
+    
 
     <div style="clear:both"/>
 
@@ -156,6 +127,7 @@
                             {
                                 <p>@Model.AssignedAttractions[date][i].Split(',')[0]</p>
                                 <p>@Model.AssignedAttractions[date][i].Split(',')[1]</p>
+                                <p><input type="button" name="ButtonRemove" value="Usuń warsztat"/></p>
                             }
                         </td>
                     }
@@ -165,7 +137,7 @@
         </tbody>
     </table>
 
-    <input type="hidden" id="AddedItem" value="" onchange = "handler(event)"/>
+    
 
 
 </div>

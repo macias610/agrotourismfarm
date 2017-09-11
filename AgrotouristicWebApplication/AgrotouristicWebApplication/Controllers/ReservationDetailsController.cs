@@ -168,6 +168,7 @@ namespace AgrotouristicWebApplication.Controllers
                 return View("~/Views/ReservationDetails/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
             }
             reservation.stagesConfirmation[3] = isParticipantsConfirmed;
+            Session["Reservation"] = reservation;
             return RedirectToAction("Create","ClientReservations");
         }
 
@@ -179,6 +180,17 @@ namespace AgrotouristicWebApplication.Controllers
             List<SelectListItem> weeks = repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
             Session["Reservation"] = reservation;
             return View("~/Views/ReservationDetails/AddAttractions.cshtml", weeks);
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="Klient")]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddAttractions(bool isAttractionsConfirmed)
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            reservation.stagesConfirmation[4] = isAttractionsConfirmed;
+            Session["Reservation"] = reservation;
+            return RedirectToAction("Create", "ClientReservations");
         }
 
         [HttpPost]
@@ -200,13 +212,8 @@ namespace AgrotouristicWebApplication.Controllers
                     ParticipantsQuantity = repository.GetParticipantsQuantity(reservation.AssignedParticipantsHouses.SelectMany(x=>x.Value).Where(item => !(item.Name.Equals("Brak"))).Count()),
                     AssignedAttractions = repository.GetAttractionsInGivenWeek(term,reservation.AssignedAttractions),
                     OverallCost = reservation.OverallCost,
-                    MaxRows = repository.GetMaxRowsToTableAttractions(reservation.AssignedAttractions)
+                    MaxRows = repository.GetMaxRowsToTableAttractions(repository.GetAttractionsInGivenWeek(term, reservation.AssignedAttractions))
                 };
-                DateTime dd = DateTime.Parse("2017-09-19");
-                DateTime dd2 = DateTime.Parse("2017-09-23");
-                reservationAttractions.AssignedAttractions[dd].Add("Garncarstwo,2");
-                reservationAttractions.AssignedAttractions[dd2].Add("Jazda konna,2");
-                reservationAttractions.MaxRows = repository.GetMaxRowsToTableAttractions(reservation.AssignedAttractions);
                 return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsPartial.cshtml", reservationAttractions);
             }
         }
@@ -214,9 +221,18 @@ namespace AgrotouristicWebApplication.Controllers
         [HttpPost]
         [Authorize(Roles ="Klient")]
         [ValidateAntiForgeryToken]
-        public ActionResult AddSelectedAttraction(string term,DateTime date,string attraction)
+        public ActionResult ChangeSelectedAttraction(string term,DateTime date,string attraction)
         {
             NewReservation reservation = (NewReservation)Session["Reservation"];
+            if(attraction.Split(';')[1].Equals("Add"))
+            {
+                reservation.AssignedAttractions[date].Add(attraction.Split(';')[0]);
+            }
+            else if(attraction.Split(';')[1].Equals("Remove"))
+            {
+                reservation.AssignedAttractions[date].Remove(attraction.Split(';')[0]);
+            }
+            Session["Reservation"] = reservation;
             ReservationAttractions reservationAttractions = new ReservationAttractions()
             {
                 DaysOfWeek = repository.GetAvaiableDatesInWeek(term),
@@ -226,9 +242,6 @@ namespace AgrotouristicWebApplication.Controllers
                 OverallCost = reservation.OverallCost,
                 MaxRows = repository.GetMaxRowsToTableAttractions(reservation.AssignedAttractions)
             };
-            reservation.AssignedAttractions[date].Add(attraction);
-            reservationAttractions.AssignedAttractions[date].Add(attraction);
-            Session["Reservation"] = reservation;
             return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsPartial.cshtml", reservationAttractions);
         }
 
