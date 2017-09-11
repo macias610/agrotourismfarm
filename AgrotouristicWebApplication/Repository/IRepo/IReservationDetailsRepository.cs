@@ -19,6 +19,7 @@ namespace Repository.IRepo
         List<House> GetAvaiableHousesInTerm(DateTime startDate, DateTime endDate);
         List<SelectListItem> GetNamesAvaiableHouses(List<House> houses);
         House GetHouseByName(string name);
+        Attraction GetAttractionByName(string name);
         List<SelectListItem> GetNamesAvaiableMeals();
         List<Participant> CopyParticipantsData(List<Participant> tagetList, List<Participant> actualList);
         List<SelectListItem> GetSelectedHousesMeals(Dictionary<string, int> dictionary, bool longVersion);

@@ -181,6 +181,7 @@ namespace AgrotouristicWebApplication.Controllers
             reservation.AssignedAttractions = repository.InitializeDictionaryForAssignedAttractions(reservation.StartDate, reservation.EndDate);
             List<SelectListItem> weeks = repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
             Session["Reservation"] = reservation;
+            ViewBag.OverallCost = reservation.OverallCost;
             return View("~/Views/ReservationDetails/AddAttractions.cshtml", weeks);
         }
 
@@ -256,10 +257,15 @@ namespace AgrotouristicWebApplication.Controllers
             if(attraction.Split(';')[1].Equals("Add"))
             {
                 reservation.AssignedAttractions[date].Add(attraction.Split(';')[0]);
+                decimal price = repository.GetAttractionByName(attraction.Split(',')[0]).Price * Int32.Parse(attraction.Split(';')[0].Split(',')[1]);
+                reservation.OverallCost += price;
             }
             else if(attraction.Split(';')[1].Equals("Remove"))
             {
                 reservation.AssignedAttractions[date].Remove(attraction.Split(';')[0]);
+                decimal price = repository.GetAttractionByName(attraction.Split(',')[0]).Price * Int32.Parse(attraction.Split(';')[0].Split(',')[1]);
+                reservation.OverallCost -= price;
+                
             }
             Session["Reservation"] = reservation;
             ReservationAttractions reservationAttractions = new ReservationAttractions()
@@ -272,6 +278,7 @@ namespace AgrotouristicWebApplication.Controllers
                 MaxRows = repository.GetMaxRowsToTableAttractions(reservation.AssignedAttractions)
             };
             ViewBag.IsOnlyToRead = false;
+            ViewBag.OverallCost = reservation.OverallCost;
             return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsPartial.cshtml", reservationAttractions);
         }
 

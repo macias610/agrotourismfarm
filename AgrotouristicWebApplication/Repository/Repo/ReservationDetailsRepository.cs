@@ -224,6 +224,7 @@ namespace Repository.Repo
             return result;
         }
 
+
         public int GetMaxRowsToTableAttractions(Dictionary<DateTime, List<string>> dictionary)
         {
             int result = 0;
@@ -286,6 +287,14 @@ namespace Repository.Repo
                 dictionary.Add(houseName, participants);
             }
             return dictionary;
+        }
+
+        public Attraction GetAttractionByName(string name)
+        {
+            Attraction attraction = (from attr in db.Attractions
+                                     where attr.Name.Equals(name)
+                                     select attr).FirstOrDefault();
+            return attraction;
         }
     }
 }

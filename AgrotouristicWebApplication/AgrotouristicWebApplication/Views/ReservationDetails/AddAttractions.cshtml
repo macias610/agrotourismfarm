@@ -63,6 +63,7 @@
                     success: function (response) {
                         $('#AttractionsTimeTable').html(response);
                         $('#btnConfirmAttractions').attr('style', 'visibility:hidden');
+
                     },
                     failure: function (response) {
                         alert(response.responseText);
@@ -74,8 +75,8 @@
                 $td.empty();
 
             }
-            
-            
+
+
         });
     </script>
 
@@ -122,13 +123,22 @@
         @Html.Label("Terminy", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.DropDownList("AttractionsAvaiableWeeks", Model, new { id = "AttractionsAvaiableWeeks", onchange = "handler(event)" })
-        </div>    
+        </div>  
+
         <div class="form-group">
             <div class="col-md-10">
                 <input type="submit" id="btnConfirmAttractions" value="Potwierdź warsztaty" class="btn btn-default" style="visibility:hidden" />
             </div>
         </div>
+
+        <div id="DivAttractionsOverallCost">
+            @Html.Label("Całkowity koszt", htmlAttributes: new { @class = "control-label col-md-2" })
+            <input type="text" id="attractionsOverallCost" name="attractionsOverallCost" readonly="readonly" value="@ViewBag.OverallCost" />
+        </div>  
+
     </div>
+
+    
 
     <div id="AttractionsTimeTable">
 

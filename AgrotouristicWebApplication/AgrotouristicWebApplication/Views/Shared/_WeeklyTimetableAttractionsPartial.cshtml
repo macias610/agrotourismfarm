@@ -19,6 +19,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $('#attractionsOverallCost').val(@ViewBag.OverallCost);
             var table = document.getElementById('TimeTableAttractions');
             var rowLength = table.rows[0].length;
             var row = table.rows[0];
@@ -33,7 +34,7 @@
                     {
                         quantity = quantity - parseInt(listToRemove[i].split(',')[1],10);
                     }
-                    
+
                     $td.find("[name^='AttractionsQuantityParticipants'] > option").each(function() {
                         if(parseInt(this.value,10)>quantity)
                         {
@@ -48,7 +49,7 @@
                     {
                         $td.find("[name^='ButtonSelect']").attr('disabled','disabled');
                     }
-                }              
+                }
             }
         });
     </script>
