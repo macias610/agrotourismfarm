@@ -142,6 +142,23 @@ namespace Repository.Repo
                                                   select participant).ToList();
                 exisitingReservation.AssignedParticipantsHouses.Add(selectHouseIdResHou.Split(';')[0] + ';', participants);
             }
+            Dictionary<DateTime, List<string>> dictionary = new Dictionary<DateTime, List<string>>();
+            for (DateTime st = reservation.StartDate; st <= reservation.EndDate; st = st.AddDays(1))
+            {
+                dictionary.Add(st, new List<string>());
+            }
+            List<Attraction_Reservation> attractionsReservation = (from attrRes in db.Attractions_Reservations
+                                                                   where attrRes.ReservationId.Equals(reservation.Id)
+                                                                   select attrRes).ToList();
+            HashSet<DateTime> dates = new HashSet<DateTime>();
+            attractionsReservation.ForEach(item => dates.Add(item.TermAffair));
+            foreach (DateTime date in dates)
+            {
+                List<string> result = new List<string>();
+                attractionsReservation.Where(x => x.TermAffair.Equals(date)).ToList().ForEach(x => result.Add(x.Attraction.Name + ',' + x.QuantityParticipant));
+                dictionary[date] = result;
+            }
+            exisitingReservation.AssignedAttractions = dictionary;
             return exisitingReservation;
         }
 
@@ -186,6 +203,62 @@ namespace Repository.Repo
                     SaveChanges();
                 }
             }
+        }
+
+        public void ChangeAssignedAttractions(int id, NewReservation reservation)
+        {
+            List<Attraction_Reservation> attractionsReservation = (from attrRes in db.Attractions_Reservations
+                                                                  where attrRes.ReservationId.Equals(id)
+                                                                  select attrRes).ToList();
+            Dictionary<DateTime, List<string>> dictionary = new Dictionary<DateTime, List<string>>();
+            for(DateTime date=reservation.AssignedAttractions.Keys.First();date<=reservation.AssignedAttractions.Keys.Last();date=date.AddDays(1))
+            {
+                dictionary.Add(date, new List<string>());
+            }
+            attractionsReservation.ForEach(item => dictionary[item.TermAffair].Add(item.Attraction.Name + ',' + item.QuantityParticipant));
+
+            List<string> attractionsToRemove = new List<string>();
+
+            foreach(KeyValuePair<DateTime,List<string>> item in dictionary)
+            {
+                List<Attraction_Reservation> attractionsReservationInDay = attractionsReservation.Where(elem => elem.TermAffair.Equals(item.Key)).ToList();
+                List<string> oldAttractions = item.Value;
+                List<string> newAttractions = reservation.AssignedAttractions[item.Key];
+                List<string> toRemove = oldAttractions.Where(elem =>!(newAttractions.Contains(elem))).ToList();
+                foreach(string attractionToRemove in toRemove)
+                {
+                    Attraction_Reservation attractionReservation = attractionsReservationInDay.Where(elem => elem.Attraction.Name.Equals(attractionToRemove.Split(',')[0])).FirstOrDefault();
+                    attractionsReservationInDay.Remove(attractionReservation);
+                    db.Attractions_Reservations.Remove(attractionReservation);
+                }
+            }
+            SaveChanges();
+            foreach (KeyValuePair<DateTime, List<string>> item in reservation.AssignedAttractions.Where(pair => pair.Value.Any()))
+            {
+                List<string> oldAttractions = dictionary[item.Key];
+                List<string> newAttractions = item.Value;
+                List<string> toAdd = newAttractions.Where(elem => !(oldAttractions.Contains(elem))).ToList();
+                foreach(string attractionToAdd in toAdd)
+                {
+                    string attractionName = attractionToAdd.Split(',')[0];
+                    Attraction attraction = (from attr in db.Attractions
+                                             where attr.Name.Equals(attractionName)
+                                             select attr).FirstOrDefault();
+                    Attraction_Reservation attractionReservation = new Attraction_Reservation()
+                    {
+                        AttractionId = attraction.Id,
+                        ReservationId=id,
+                        TermAffair=item.Key,
+                        QuantityParticipant = Int32.Parse(attractionToAdd.Split(',')[1]),
+                        OverallCost = attraction.Price * Int32.Parse(attractionToAdd.Split(',')[1])
+                    };
+                    db.Attractions_Reservations.Add(attractionReservation);
+                }
+            }
+            Reservation editedReservation = GetReservationById(id);
+            editedReservation.OverallCost = reservation.OverallCost;
+            db.Entry(editedReservation).State = EntityState.Modified;
+            SaveChanges();
         }
 
         public void RemoveReservation(Reservation reservation)
@@ -280,22 +353,22 @@ namespace Repository.Repo
                 {
                     string attractionName = attr.Split(',')[0];
                     int quantityParticipants = Int32.Parse(attr.Split(',')[1]);
+                    Attraction attraction = (from attract in db.Attractions
+                                             where attract.Name.Equals(attractionName)
+                                             select attract).FirstOrDefault();
                     Attraction_Reservation attractionReservation = new Attraction_Reservation()
                     {
-                        AttractionId = (from attraction in db.Attractions
-                                        where attraction.Name.Equals(attractionName)
-                                        select attraction.Id).FirstOrDefault(),
+                        AttractionId = attraction.Id,
                         ReservationId = id,
                         TermAffair = item.Key,
                         QuantityParticipant = quantityParticipants,
-                        OverallCost = quantityParticipants*(from attraction in db.Attractions
-                                       where attraction.Name.Equals(attractionName)
-                                       select attraction.Price).FirstOrDefault()
+                        OverallCost = quantityParticipants*attraction.Price
                     };
                     db.Attractions_Reservations.Add(attractionReservation);
                 }
                 SaveChanges();
             }
         }
+
     }
 }

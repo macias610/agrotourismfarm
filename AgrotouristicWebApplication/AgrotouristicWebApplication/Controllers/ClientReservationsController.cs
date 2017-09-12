@@ -113,7 +113,7 @@ namespace AgrotouristicWebApplication.Controllers
 
             List<string> actions = new List<string>()
             {
-                "EditMeals","EditParticipants"
+                "EditMeals","EditParticipants","EditAttractions"
             };
             if (!actions.Contains(action))
             {
@@ -141,6 +141,8 @@ namespace AgrotouristicWebApplication.Controllers
                     repository.ChangeAssignedMeals(Int32.Parse(Request.Form["ReservationId"]), reservation);
                 if (reservation.stagesConfirmation[3])
                     repository.ChangeAssignedParticipants(Int32.Parse(Request.Form["ReservationId"]), reservation);
+                if (reservation.stagesConfirmation[4])
+                    repository.ChangeAssignedAttractions(Int32.Parse(Request.Form["ReservationId"]), reservation);
 
                 Session.Remove("Reservation");
                 return RedirectToAction("Index");

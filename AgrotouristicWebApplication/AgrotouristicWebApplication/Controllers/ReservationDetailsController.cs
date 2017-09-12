@@ -355,6 +355,26 @@ namespace AgrotouristicWebApplication.Controllers
             return RedirectToAction("Edit","ClientReservations", new { id = Int32.Parse(Request.Form["reservationId"]) });
         }
 
+        [Authorize(Roles ="Klient")]
+        public ActionResult EditAttractions(int id)
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            List<SelectListItem> weeks = repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
+            ViewBag.OverallCost = reservation.OverallCost;
+            ViewBag.ReservationId = id;
+            return View("~/Views/ReservationDetails/AddAttractions.cshtml", weeks);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Klient")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditAttractions(bool isAttractionsConfirmed)
+        {
+            NewReservation reservation = (NewReservation)Session["Reservation"];
+            reservation.stagesConfirmation[4] = isAttractionsConfirmed;
+            Session["Reservation"] = reservation;
+            return RedirectToAction("Edit", "ClientReservations", new { id = Int32.Parse(Request.Form["reservationId"]) });
+        }
 
     }
 }

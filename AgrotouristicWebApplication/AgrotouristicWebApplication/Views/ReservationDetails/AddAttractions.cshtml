@@ -113,7 +113,7 @@
 
 <h2>Wybierz warsztaty</h2>
 
-@using (Html.BeginForm("AddAttractions", "ReservationDetails", new { isAttractionsConfirmed = true }))
+@using (Html.BeginForm((ViewBag.ReservationId != 0 ? "EditAttractions" : "AddAttractions"), "ReservationDetails", new { isAttractionsConfirmed = true }))
 {
     @Html.AntiForgeryToken()
 
@@ -144,10 +144,11 @@
 
     </div>
 
+    <input type="hidden" id="reservationId" name="reservationId" value="@ViewBag.ReservationId" />
 
 }
 
 <div style="clear:both">
-    @Html.ActionLink("Wróć", "Create", "ClientReservations")
+    @Html.ActionLink("Wróć", (ViewBag.ReservationId != 0) ? "Edit" : "Create", "ClientReservations", new { id = (ViewBag.ReservationId != 0 ? ViewBag.ReservationId : null) }, null)
 </div>
 
