@@ -41,6 +41,7 @@ namespace AgrotouristicWebApplication.Controllers
                 return HttpNotFound();
             }
             reservationHistory.ReservedHouses=reservationHistory.ReservedHouses.Replace(";", Environment.NewLine);
+            reservationHistory.ReservedAttractions = reservationHistory.ReservedAttractions.Replace(";", Environment.NewLine);
             return View(reservationHistory);
         }
 

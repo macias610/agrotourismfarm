@@ -310,21 +310,39 @@ namespace Repository.Repo
 
         public Reservation_History GetReservationHistoryBasedReservation(Reservation reservation)
         {
-            string result=String.Empty;
-            foreach(Reservation_House reservatonHouse in reservation.Reservation_House.ToList())
-            {
-                result += reservatonHouse.House.HouseType.Type + "(" + reservatonHouse.House.Name + ");";
-            }
-            result = result.Remove(result.Length - 1);
+            string reservedHouses=String.Empty;
+            string reservedAttractions = String.Empty;
 
+            foreach(Reservation_House reservationHouse in reservation.Reservation_House.ToList())
+            {
+                reservedHouses += reservationHouse.House.HouseType.Type + "(" + reservationHouse.House.Name + ");";
+            }
+            reservedHouses = reservedHouses.Remove(reservedHouses.Length - 1);
+
+            if (reservation.Attraction_Reservation.Count > 0)
+            {
+                HashSet<string> set = new HashSet<string>();
+                foreach (Attraction_Reservation reservationAttraction in reservation.Attraction_Reservation.ToList())
+                {
+                    set.Add(reservationAttraction.Attraction.Name);
+                }
+                foreach (string item in set)
+                {
+                    reservedAttractions += item + ';';
+                }
+                reservedAttractions = reservedAttractions.Remove(reservedAttractions.Length - 1);
+            }
+            else
+                reservedAttractions = "Brak";
+            
             Reservation_History reservationHistory = new Reservation_History()
             {
                 ClientId=reservation.ClientId,
                 StartDate=reservation.StartDate,
                 EndDate=reservation.EndDate,
                 OverallCost=reservation.OverallCost,
-                ReservedHouses= result,
-                ReservedAttractions ="Brak"
+                ReservedHouses= reservedHouses,
+                ReservedAttractions =reservedAttractions
             };
             return reservationHistory;
         }

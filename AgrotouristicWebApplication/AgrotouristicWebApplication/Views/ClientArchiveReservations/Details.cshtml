@@ -63,7 +63,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ReservedAttractions)
+            @MvcHtmlString.Create(Model.ReservedAttractions.Replace(Environment.NewLine, "<br />"))
         </dd>
 
     </dl>
