@@ -53,6 +53,11 @@ namespace Repository.Models
                                             .HasForeignKey(x => x.Reservation_HouseId)
                                             .WillCascadeOnDelete(true);
 
+            modelBuilder.Entity<Attraction_Reservation>().HasRequired(x => x.Reservation)
+                                            .WithMany(x => x.Attraction_Reservation)
+                                            .HasForeignKey(x => x.ReservationId)
+                                            .WillCascadeOnDelete(true);
+
         }
 
     }

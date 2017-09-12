@@ -1,0 +1,154 @@
+﻿@model IEnumerable<SelectListItem>
+
+@{
+    ViewBag.Title = "AddAttractions";
+}
+
+<h2>Warsztaty</h2>
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(document).on("click", "input[type='button']", function () {
+
+            if ($(this).attr('name') == 'ButtonSelect')
+            {
+                var $td = $(this).closest("td");
+                var selectedAttraction = $td.find("[name^='AttractionsAvaiableAttractions']").val();
+                var selectedParticipants = $td.find("[name^='AttractionsQuantityParticipants']").val();
+                var selectedDate = $td.find("[name^='Term']").val();
+
+                var data = {
+                    term: $('select[name="AttractionsAvaiableWeeks"]').val(),
+                    date: selectedDate,
+                    attraction: selectedAttraction + ',' + selectedParticipants+";Add",
+                    __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/ReservationDetails/ChangeSelectedAttraction",
+                    data: data,
+                    dataType: "text",
+                    success: function (response) {
+                        $('#AttractionsTimeTable').html(response);
+                        $('#btnConfirmAttractions').attr('style', 'visibility:hidden');
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+            if ($(this).attr('name') == 'ButtonRemove')
+            {
+                var $td = $(this).closest('td');
+                var selectedAttraction=$td.find('p').first().text();
+                var selectedParticipants = $td.children('p').eq(1).text();
+                var selectedDate = $('#TimeTableAttractions thead tr').eq(0).find('td').eq(($(this).closest('td').index())).find("[name^='Term']").val();
+                var data = {
+                    term: $('select[name="AttractionsAvaiableWeeks"]').val(),
+                    date: selectedDate,
+                    attraction: selectedAttraction + ',' + selectedParticipants + ";Remove",
+                    __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/ReservationDetails/ChangeSelectedAttraction",
+                    data: data,
+                    dataType: "text",
+                    success: function (response) {
+                        $('#AttractionsTimeTable').html(response);
+                        $('#btnConfirmAttractions').attr('style', 'visibility:hidden');
+
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+                $td.empty();
+
+            }
+
+
+        });
+    </script>
+
+    <script type="text/javascript">
+        function handler(e) {
+            var source = e.srcElement.id;
+            if (source == 'AttractionsAvaiableWeeks')
+            {
+                var data = {
+                    term: $('select[name="AttractionsAvaiableWeeks"]').val(),
+                    __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/ReservationDetails/GetAttractionsForTerm",
+                    data: data,
+                    dataType: "text",
+                    success: function (response) {
+                        $('#AttractionsTimeTable').html(response);
+
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        }
+    </script>
+
+</head>
+
+<h2>Wybierz warsztaty</h2>
+
+@using (Html.BeginForm((ViewBag.ReservationId != 0 ? "EditAttractions" : "AddAttractions"), "ReservationDetails", new { isAttractionsConfirmed = true, reservationId = ViewBag.ReservationId != 0 ? ViewBag.ReservationId : 0 }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.Label("Terminy", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("AttractionsAvaiableWeeks", Model, new { id = "AttractionsAvaiableWeeks", onchange = "handler(event)" })
+        </div>  
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" id="btnConfirmAttractions" value="Potwierdź warsztaty" class="btn btn-default" style="visibility:hidden" />
+            </div>
+        </div>
+
+        <div id="DivAttractionsOverallCost">
+            @Html.Label("Całkowity koszt", htmlAttributes: new { @class = "control-label col-md-2" })
+            <input type="text" id="attractionsOverallCost" name="attractionsOverallCost" readonly="readonly" value="@ViewBag.OverallCost" />
+        </div>  
+
+    </div>
+
+    
+
+    <div id="AttractionsTimeTable">
+
+    </div>
+
+    <input type="hidden" id="reservationId" name="reservationId" value="@ViewBag.ReservationId" />
+
+}
+
+<div style="clear:both">
+    @Html.ActionLink("Wróć", (ViewBag.ReservationId != 0) ? "Edit" : "Create", "ClientReservations", new { id = (ViewBag.ReservationId != 0 ? ViewBag.ReservationId : null) }, null)
+</div>
+

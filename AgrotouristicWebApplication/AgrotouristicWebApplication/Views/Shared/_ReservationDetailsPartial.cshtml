@@ -1,10 +1,23 @@
 ﻿@model Dictionary<string,List<SelectListItem>>
 
-<div>
-    <div class="form-group">
-        @Html.Label("Domki", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
+<section >
+    <div >
+        @Html.Label("Domki", htmlAttributes: new { @class = "control-label col-md-1" })
+        <div class="col-md-1" >
             @Html.DropDownList("SelectedHouseDetails", Model["Houses"], new { id= "SelectedHouseDetails", onchange = "handler(event)" })
         </div>
+        <div class="col-md-1">
+            <input type="button" id="btnGetHouseDetails" value="Wyświetl" style="visibility:hidden;display:inline-block" />
+        </div> 
     </div>
-</div>
+
+    <div >
+        @Html.Label("Warsztaty(terminy)", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-2">
+            @Html.DropDownList("SelectedWeekAttractions", Model["Weeks"], new { id = "SelectedWeekAttractions", onchange = "handler(event)" })
+        </div>
+        <div class="col-md-1">
+            <input type="button" id="btnGetAttractionsDetails" value="Wyświetl" style="visibility:hidden;display:inline-block" />
+        </div>
+    </div>
+</section>

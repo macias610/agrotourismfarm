@@ -24,6 +24,7 @@ namespace Repository.IRepo
 
         void ChangeAssignedMeals(int id, NewReservation reservation);
         void ChangeAssignedParticipants(int id,NewReservation reservation);
+        void ChangeAssignedAttractions(int id, NewReservation reservation);
         void AddReservation(Reservation reservation);
         void AddReservationHistory(Reservation_History reservationHistory);
         void SaveChanges();   
@@ -31,6 +32,7 @@ namespace Repository.IRepo
         IQueryable<Reservation> GetClientReservations(string id);
         IQueryable<Reservation_History> GetClientArchiveReservations(string id);
         void SaveAssignedMealsAndHouses(int id, NewReservation reservation);
+        void SaveAssignedAttractions(int id, NewReservation reservation);
         void RemoveReservation(Reservation reservation);
         
     }

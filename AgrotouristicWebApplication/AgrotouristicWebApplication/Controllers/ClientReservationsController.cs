@@ -62,7 +62,7 @@ namespace AgrotouristicWebApplication.Controllers
             string action = (Request.UrlReferrer.Segments.Skip(2).Take(1).SingleOrDefault() ?? "Index").Trim('/');
             List<string> actions = new List<string>()
             {
-                "AddTerm","AddHouses","AddMeals","AddParticipants"
+                "AddTerm","AddHouses","AddMeals","AddParticipants","AddAttractions"
             };
             if(!actions.Contains(action))
             {
@@ -80,10 +80,16 @@ namespace AgrotouristicWebApplication.Controllers
             if (ModelState.IsValid)
             {
                 reservation = (NewReservation )Session["Reservation"];
+
                 Reservation savedReservation = repository.GetReservationBasedOnData(reservation, User.Identity.GetUserId());
                 repository.AddReservation(savedReservation);
                 repository.SaveChanges();
                 repository.SaveAssignedMealsAndHouses(savedReservation.Id, reservation);
+                if(reservation.AssignedAttractions.Any(pair => pair.Value != null && pair.Value.Any()))
+                {
+                    repository.SaveAssignedAttractions(savedReservation.Id, reservation);
+                }
+
                 Session.Remove("Reservation");
                 return RedirectToAction("Index");
             }
@@ -107,7 +113,7 @@ namespace AgrotouristicWebApplication.Controllers
 
             List<string> actions = new List<string>()
             {
-                "EditMeals","EditParticipants"
+                "EditMeals","EditParticipants","EditAttractions"
             };
             if (!actions.Contains(action))
             {
@@ -135,6 +141,8 @@ namespace AgrotouristicWebApplication.Controllers
                     repository.ChangeAssignedMeals(Int32.Parse(Request.Form["ReservationId"]), reservation);
                 if (reservation.stagesConfirmation[3])
                     repository.ChangeAssignedParticipants(Int32.Parse(Request.Form["ReservationId"]), reservation);
+                if (reservation.stagesConfirmation[4])
+                    repository.ChangeAssignedAttractions(Int32.Parse(Request.Form["ReservationId"]), reservation);
 
                 Session.Remove("Reservation");
                 return RedirectToAction("Index");

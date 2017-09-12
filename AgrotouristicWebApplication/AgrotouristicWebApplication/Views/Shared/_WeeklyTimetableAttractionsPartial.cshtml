@@ -1,0 +1,152 @@
+﻿@model Repository.ViewModels.ReservationAttractions
+@using Repository.ViewModels
+@using Newtonsoft.Json
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+              
+            @foreach(KeyValuePair<DateTime,List<string>> item in Model.AssignedAttractions)
+            {
+                <script type="text/javascript">
+                    var dictionary ={};
+                     $(function () {
+                         dictionary[@Html.Raw(JsonConvert.SerializeObject(item.Key.ToShortDateString()))] = @Html.Raw(JsonConvert.SerializeObject(item.Value));
+                     });
+                </script>
+            }         
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#attractionsOverallCost').val(@ViewBag.OverallCost);
+            var table = document.getElementById('TimeTableAttractions');
+            var rowLength = table.rows[0].length;
+            var row = table.rows[0];
+            for (var y = 1; y < row.cells.length; y++) {
+                var $td = $(row.cells[y]).closest("td");
+                var date = $td.find("[name^='Term']").val();
+                if(dictionary[date].length > 0)
+                {
+                    var listToRemove = dictionary[date];
+                    var quantity = parseInt(@Model.ParticipantsQuantity.Last().Value.ToString(),10);
+                    for(var i in listToRemove)
+                    {
+                        quantity = quantity - parseInt(listToRemove[i].split(',')[1],10);
+                    }
+
+                    $td.find("[name^='AttractionsQuantityParticipants'] > option").each(function() {
+                        if(parseInt(this.value,10)>quantity)
+                        {
+                            $td.find("[name^='AttractionsQuantityParticipants'] option[value='"+ this.value +"']").eq(0).remove();
+                        }
+                    });
+                    for (var i in listToRemove) {
+                        $td.find("[name^='AttractionsAvaiable'] option[value='"+ listToRemove[i].split(',')[0] +"']").eq(0).remove();
+                    }
+
+                    if(quantity <2)
+                    {
+                        $td.find("[name^='ButtonSelect']").attr('disabled','disabled');
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            for(var key in dictionary)
+            {
+                if(dictionary[key].length>0)
+                {
+                    $('#btnConfirmAttractions').attr('style','visibility:visible');
+                    break;
+                }
+            }
+        });
+    </script>  
+
+</head>
+
+<div id="TimeTableDetails" class="form-horizontal">
+    
+
+    <div style="clear:both"/>
+
+    <table class="table" border="1" id="TimeTableAttractions">
+        <thead>
+            <tr>
+                <td>
+                    <p>
+                        Terminy
+                    </p>
+                    <br/>
+                    @if (ViewBag.IsOnlyToRead == false)
+                    {
+                        <br />
+                        <p>
+                            Warsztat
+                        </p>
+                        <p>
+                            Liczba uczestników
+                        </p>
+                    }
+                </td>
+                @foreach(DateTime date in Model.AssignedAttractions.Keys.ToList())
+                {
+                    <td>
+                        <p>
+                            <input type="text" name="Term" readonly="readonly" value="@date.ToShortDateString()" style="width:90px;border:0"/>        
+                        </p>
+                        <p>
+                            <input type="text" name="DayOfWeek" readonly="readonly" value="@(ReservationAttractions.Days[date.DayOfWeek.ToString()])" style="width:90px;border:0"/>  
+                        </p>
+                        @if (ViewBag.IsOnlyToRead == false)
+                        {
+                            <p>
+                                @Html.DropDownList("AttractionsAvaiableAttractions", Model.AvaiableAttractions)
+                            </p>
+                            <p>
+                                @Html.DropDownList("AttractionsQuantityParticipants", Model.ParticipantsQuantity)
+                            </p>
+                            <p>
+                                <input type="button" name="ButtonSelect" value="Wybierz" />
+                            </p>
+                        } 
+                    </td>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for(int i=0;i<Model.MaxRows;i++)
+            {
+                <tr>
+                    <td>
+                        <p>Atrakcja:</p>
+                        <p>Liczba osób:</p>
+                    </td>
+                    @foreach (DateTime date in Model.AssignedAttractions.Keys.ToList())
+                    {
+                        <td>
+                            @if(i<Model.AssignedAttractions[date].Count)
+                            {
+                                <p>@Model.AssignedAttractions[date][i].Split(',')[0]</p>
+                                <p>@Model.AssignedAttractions[date][i].Split(',')[1]</p>
+
+                                if (ViewBag.IsOnlyToRead == false)
+                                {
+                                    <p><input type="button" name="ButtonRemove" value="Usuń warsztat" /></p>
+                                }
+                            }
+                        </td>
+                    }
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+</div>
+
