@@ -182,6 +182,7 @@ namespace AgrotouristicWebApplication.Controllers
             List<SelectListItem> weeks = repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
             Session["Reservation"] = reservation;
             ViewBag.OverallCost = reservation.OverallCost;
+            ViewBag.ReservationId = 0;
             return View("~/Views/ReservationDetails/AddAttractions.cshtml", weeks);
         }
 

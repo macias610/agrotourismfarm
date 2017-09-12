@@ -113,7 +113,7 @@
 
 <h2>Wybierz warsztaty</h2>
 
-@using (Html.BeginForm((ViewBag.ReservationId != 0 ? "EditAttractions" : "AddAttractions"), "ReservationDetails", new { isAttractionsConfirmed = true }))
+@using (Html.BeginForm((ViewBag.ReservationId != 0 ? "EditAttractions" : "AddAttractions"), "ReservationDetails", new { isAttractionsConfirmed = true, reservationId = ViewBag.ReservationId != 0 ? ViewBag.ReservationId : 0 }))
 {
     @Html.AntiForgeryToken()
 

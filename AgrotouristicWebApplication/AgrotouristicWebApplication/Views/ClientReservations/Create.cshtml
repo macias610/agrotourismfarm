@@ -7,9 +7,6 @@
 <head>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
-
-
-
     @if (Model != null)
     {
                 if(Model.StartDate != null)
@@ -34,19 +31,36 @@
                                     document.getElementById('mealsSection').disabled = 'true';
                                 });
                             </script>
-                    if(Model.AssignedParticipantsHouses.Keys.ToList().Count >=1 && Model.stagesConfirmation[3]==true)
-                    {
+                            if(Model.AssignedParticipantsHouses.Keys.ToList().Count >=1 && Model.stagesConfirmation[3]==true)
+                            {
                                 <script>
                                     $(function () {
                                         document.getElementById('participantsSection').disabled = 'true';
                                     });
                                 </script>
+                                if(Model.AssignedAttractions.Keys.ToList().Count >=1 && Model.stagesConfirmation[4]==true)
+                                {
+                                    <script>
+                                        $(function () {
+                                            document.getElementById('attractionsSection').disabled = 'true';
+                                        });
+                                    </script>
+                                }
+                                else
+                                {
+                                    <script>
+                                        $(function () {
+                                            $('#attractionsSection').prop('disabled', false);
+                                        });
+                                    </script>
+                                }
                             }
                             else
                             {
                                 <script>
                                     $(function () {
                                         $('#participantsSection').prop('disabled', false);
+                                        document.getElementById('attractionsSection').disabled = 'true';
                                     });
                                 </script>
                             }
@@ -57,6 +71,7 @@
                                 $(function () {
                                     $('#mealsSection').prop('disabled', false);
                                     document.getElementById('participantsSection').disabled = 'true';
+                                    document.getElementById('attractionsSection').disabled = 'true';
                                 });
                             </script>
                         }
@@ -68,6 +83,7 @@
                                 $('#housesSection').prop('disabled', false);
                                 document.getElementById('mealsSection').disabled = 'true';
                                 document.getElementById('participantsSection').disabled = 'true';
+                                document.getElementById('attractionsSection').disabled = 'true';
                             });
                         </script>
                     }
@@ -80,6 +96,7 @@
                             document.getElementById('housesSection').disabled = 'true';
                             document.getElementById('mealsSection').disabled = 'true';
                             document.getElementById('participantsSection').disabled = 'true';
+                            document.getElementById('attractionsSection').disabled = 'true';
                         });
                     </script>
 
@@ -116,7 +133,7 @@
             
             <input type="button" id="participantsSection" value="Uczestnicy" onclick="location.href='@Url.Action("AddParticipants", "ReservationDetails")'" disabled="disabled" />
 
-            <input type="button" id="=attractionsSection" value="Warsztaty" onclick="location.href='@Url.Action("AddAttractions","ReservationDetails")'" />
+            <input type="button" id="attractionsSection" value="Warsztaty" onclick="location.href='@Url.Action("AddAttractions","ReservationDetails")'" disabled="disabled" />
     </div>
 
     <div id="content">
