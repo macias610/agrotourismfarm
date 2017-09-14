@@ -96,5 +96,16 @@ namespace Repository.Repo
             listResult.ForEach(x => result += x);
             return result;
         }
+
+        public void RemoveAssignedInstructorAttraction(int id)
+        {
+            Attraction_Reservation_Worker attractionReservationWorker = db.Attractions_Reservations_Workers.Find(id);
+            db.Attractions_Reservations_Workers.Remove(attractionReservationWorker);
+        }
+
+        public void SaveChanges()
+        {
+            db.SaveChanges();
+        }
     }
 }

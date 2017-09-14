@@ -14,5 +14,8 @@ namespace Repository.IRepo
         Dictionary<DateTime, List<string>> GetAttractionsInstructorsInGivenWeek(string term);
         int GetMaxRowsToTableAttractions(Dictionary<DateTime, List<string>> dictionary);
         string GetWorkersForReservedAttraction(int id);
+        void RemoveAssignedInstructorAttraction(int id);
+        void SaveChanges();
+
     }
 }

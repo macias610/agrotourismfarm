@@ -65,10 +65,10 @@
                                 foreach (string item in @Model.AssignedAttractions[date][i].Split('(')[1].Split(')')[0].Split(';').ToList().Where(x=>!x.IsEmpty()).ToList())
                                 {
                                     <div style="border:dashed;border-width:1px;">
-                                        @item.Split('|')[0]
+                                        <input type="hidden" name="EmailInstructor" value="@item.Split('|')[0]" />
                                         <p>@item.Split('|')[1].Split('-')[0]</p>
-                                        <input type="hidden" value="@item.Split('|')[1].Split('-')[1]"/>
-                                        <p><input type="button" value="Usuń"/></p>
+                                        <input type="hidden" name="IDInstructor" value="@item.Split('|')[1].Split('-')[1]"/>
+                                        <p><input type="button" name="ButtonRemoveInstructor" value="Usuń"/></p>
                                     </div>
                                 }
 

@@ -49,6 +49,21 @@ namespace AgrotouristicWebApplication.Controllers
             return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsInstructorsPartial.cshtml", attractionInstructors);
         }
 
+        [HttpPost]
+        [Authorize(Roles ="Recepcjonista")]
+        public ActionResult RemoveAssignedInstructorAttraction(int id,string term)
+        {
+            repository.RemoveAssignedInstructorAttraction(id);
+            repository.SaveChanges();
+            AttractionInstructors attractionInstructors = new AttractionInstructors()
+            {
+                DaysOfWeek = repository.GetAvaiableDatesInWeek(term),
+                AssignedAttractions = repository.GetAttractionsInstructorsInGivenWeek(term),
+                MaxRows = repository.GetMaxRowsToTableAttractions(repository.GetAttractionsInstructorsInGivenWeek(term))
+            };
+            return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsInstructorsPartial.cshtml", attractionInstructors);
+        }
+
         //public ActionResult Details(int? id)
         //{
         //    if (id == null)

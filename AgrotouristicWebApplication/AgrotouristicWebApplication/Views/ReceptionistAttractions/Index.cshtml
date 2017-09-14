@@ -9,6 +9,41 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
+        $(document).on("click", "input[type='button']", function () {
+
+            if ($(this).attr('name') == 'ButtonRemoveInstructor')
+            {
+                var $div = $(this).closest('div');
+
+                console.log($('select[name="WeeksAtrractionsReservation"]').val());
+                console.log($div.find("[name^='IDInstructor']").val());
+
+                var data = {
+                    id: $div.find("[name^='IDInstructor']").val(),
+                    term: $('select[name="WeeksAtrractionsReservation"]').val()
+                };
+                $div.remove();
+                $.ajax({
+                    type: "POST",
+                    url: "/ReceptionistAttractions/RemoveAssignedInstructorAttraction",
+                    data: data,
+                    dataType: "text",
+                    success: function (response) {
+                        $('#selectedWeekAttractionsReservation').html(response);
+                        
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
         function handler(e) {
             var source = e.srcElement.id;
             if (source == 'WeeksAtrractionsReservation') {
@@ -31,7 +66,6 @@
             }
         }
     </script>
-
 </head>
 
 <h2>Wykaz najbliższych tygodni rezerwacji warsztatów</h2>
