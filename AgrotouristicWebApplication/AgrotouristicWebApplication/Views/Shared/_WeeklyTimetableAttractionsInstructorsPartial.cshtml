@@ -59,16 +59,24 @@
                         <td>
                             @if (i < Model.AssignedAttractions[date].Count)
                             {
-                                <p>@Model.AssignedAttractions[date][i].Split('(')[0].Split(',')[0]</p>
-                                <p>@Model.AssignedAttractions[date][i].Split('(')[0].Split(',')[1]</p>
-                                <p><input type="button" value="Dodaj"/></p>
-                                foreach (string item in @Model.AssignedAttractions[date][i].Split('(')[1].Split(')')[0].Split(';').ToList().Where(x=>!x.IsEmpty()).ToList())
+                                <p>@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[1].Split(',')[0]</p>
+                                <p>@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[1].Split(',')[1]</p>
+
+                                if (date.CompareTo(DateTime.Now.Date) > 0)
+                                {
+                                    <p><input type="button" name="ButtonAddInstructor" value="Dodaj" onclick="location.href='@Url.Action("AddInstructor", "ReceptionistAttractions",new {id=@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[0],attractionName= @Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[1].Split(',')[0] })'" /></p>
+                                }
+
+                                foreach (string item in @Model.AssignedAttractions[date][i].Split('(')[1].Split(')')[0].Split(';').ToList().Where(x => !x.IsEmpty()).ToList())
                                 {
                                     <div style="border:dashed;border-width:1px;">
                                         <input type="hidden" name="EmailInstructor" value="@item.Split('|')[0]" />
                                         <p>@item.Split('|')[1].Split('-')[0]</p>
                                         <input type="hidden" name="IDInstructor" value="@item.Split('|')[1].Split('-')[1]"/>
-                                        <p><input type="button" name="ButtonRemoveInstructor" value="Usuń"/></p>
+                                        @if (date.CompareTo(DateTime.Now.Date) > 0)
+                                        {
+                                            <p><input type="button" name="ButtonRemoveInstructor" value="Usuń" onclick="location.href='@Url.Action("RemoveInstructor", "ReceptionistAttractions",new {id=@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[0],name=@item.Split('|')[1].Split('-')[0]+"("+@item.Split('|')[0] +")",reservationAttractionWorkerId=@item.Split('|')[1].Split('-')[1]})'" /></p>
+                                        }
                                     </div>
                                 }
 
@@ -80,6 +88,5 @@
             }
         </tbody>
     </table>
-
 
 </div>

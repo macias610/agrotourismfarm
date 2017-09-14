@@ -62,7 +62,7 @@ namespace Repository.Repo
             foreach (DateTime date in dates)
             {
                 List<string> result = new List<string>();
-                attractionsReservation.Where(x => x.TermAffair.Equals(date)).ToList().ForEach(x => result.Add(x.Attraction.Name + ',' + x.QuantityParticipant + "(" + GetWorkersForReservedAttraction(x.Id) +")"));
+                attractionsReservation.Where(x => x.TermAffair.Equals(date)).ToList().ForEach(x => result.Add(x.Id+";"+ x.Attraction.Name + ',' + x.QuantityParticipant + "(" + GetWorkersForReservedAttraction(x.Id) +")"));
                 dictionary[date] = result;
             }
             return dictionary;
@@ -97,15 +97,52 @@ namespace Repository.Repo
             return result;
         }
 
-        public void RemoveAssignedInstructorAttraction(int id)
+        public void RemoveAssignedInstructorAttraction(Attraction_Reservation_Worker attractionReservationWorker)
         {
-            Attraction_Reservation_Worker attractionReservationWorker = db.Attractions_Reservations_Workers.Find(id);
             db.Attractions_Reservations_Workers.Remove(attractionReservationWorker);
         }
 
         public void SaveChanges()
         {
             db.SaveChanges();
+        }
+
+        public Attraction_Reservation GetAttractionReservationById(int id)
+        {
+            Attraction_Reservation attractionReservation = db.Attractions_Reservations.Find(id);
+            return attractionReservation;
+        }
+
+        public List<SelectListItem> GetAvaiableInstructors(int id, string attractionName)
+        {
+            List<User> allInstructorsByProfession = (from instructor in db.ApplicationUsers
+                                                     where instructor.Profession.Equals(attractionName)
+                                                     select instructor).ToList();
+            List<string> allIDInstructorsAlreadyAssigned = (from attrRes in db.Attractions_Reservations
+                                                            where attrRes.Id.Equals(id)
+                                                            join attrResWork in db.Attractions_Reservations_Workers on attrRes.Id equals attrResWork.Attraction_ReservationId
+                                                            select attrResWork.WorkerId).ToList();
+            List<User> result = new List<User>();
+            foreach(User worker in allInstructorsByProfession)
+            {
+                if(!allIDInstructorsAlreadyAssigned.Contains(worker.Id))
+                {
+                    result.Add(worker);
+                }
+            }
+            List<SelectListItem> selectListItem = result.Select(item => new SelectListItem { Text = item.Name + "," + item.Surname + "(" + item.UserName + ")", Value = item.Id, Selected = result.First().Equals(item) ? true : false }).ToList();
+            return selectListItem;
+        }
+
+        public void AssignInstructorToAttraction(Attraction_Reservation_Worker attractionReservationWorker)
+        {
+            db.Attractions_Reservations_Workers.Add(attractionReservationWorker);
+        }
+
+        public Attraction_Reservation_Worker GetAttractionReservationWorkerById(int id)
+        {
+            Attraction_Reservation_Worker attractionReservationWorker = db.Attractions_Reservations_Workers.Find(id);
+            return attractionReservationWorker;
         }
     }
 }

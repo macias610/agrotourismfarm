@@ -31,9 +31,9 @@ namespace Repository.Repo
             }
         }
 
-        public List<Attraction> GetAttractionsForReservation(int id)
+        public List<Models.Attraction> GetAttractionsForReservation(int id)
         {
-            List<Attraction> attractions = (from attrRes in db.Attractions_Reservations
+            List<Models.Attraction> attractions = (from attrRes in db.Attractions_Reservations
                                             where attrRes.ReservationId.Equals(id)
                                             join attraction in db.Attractions on attrRes.AttractionId equals attraction.Id
                                             select attraction).ToList();
@@ -241,7 +241,7 @@ namespace Repository.Repo
                 foreach(string attractionToAdd in toAdd)
                 {
                     string attractionName = attractionToAdd.Split(',')[0];
-                    Attraction attraction = (from attr in db.Attractions
+                    Models.Attraction attraction = (from attr in db.Attractions
                                              where attr.Name.Equals(attractionName)
                                              select attr).FirstOrDefault();
                     Attraction_Reservation attractionReservation = new Attraction_Reservation()
@@ -371,7 +371,7 @@ namespace Repository.Repo
                 {
                     string attractionName = attr.Split(',')[0];
                     int quantityParticipants = Int32.Parse(attr.Split(',')[1]);
-                    Attraction attraction = (from attract in db.Attractions
+                    Models.Attraction attraction = (from attract in db.Attractions
                                              where attract.Name.Equals(attractionName)
                                              select attract).FirstOrDefault();
                     Attraction_Reservation attractionReservation = new Attraction_Reservation()

@@ -447,12 +447,10 @@
     <Content Include="Views\ClientArchiveReservations\Index.cshtml" />
     <Content Include="Views\ReservationDetails\AddAttractions.cshtml" />
     <Content Include="Views\Shared\_WeeklyTimetableAttractionsPartial.cshtml" />
-    <Content Include="Views\ReceptionistAttractions\Create.cshtml" />
-    <Content Include="Views\ReceptionistAttractions\Delete.cshtml" />
-    <Content Include="Views\ReceptionistAttractions\Details.cshtml" />
-    <Content Include="Views\ReceptionistAttractions\Edit.cshtml" />
     <Content Include="Views\ReceptionistAttractions\Index.cshtml" />
     <Content Include="Views\Shared\_WeeklyTimetableAttractionsInstructorsPartial.cshtml" />
+    <Content Include="Views\ReceptionistAttractions\AddInstructor.cshtml" />
+    <Content Include="Views\ReceptionistAttractions\RemoveInstructor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
