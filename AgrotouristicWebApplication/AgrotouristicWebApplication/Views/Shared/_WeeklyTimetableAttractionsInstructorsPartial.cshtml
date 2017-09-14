@@ -1,0 +1,85 @@
+﻿@model Repository.ViewModels.AttractionInstructors
+@using Repository.ViewModels
+@using Newtonsoft.Json
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    @foreach (KeyValuePair<DateTime, List<string>> item in Model.AssignedAttractions)
+    {
+        <script type="text/javascript">
+                    var dictionary ={};
+                     $(function () {
+                         dictionary[@Html.Raw(JsonConvert.SerializeObject(item.Key.ToShortDateString()))] = @Html.Raw(JsonConvert.SerializeObject(item.Value));
+                     });
+        </script>
+    }
+
+</head>
+
+<div id="TimeTableDetails" class="form-horizontal">
+
+
+    <div style="clear:both" />
+
+    <table class="table" border="1" id="TimeTableAttractions">
+        <thead>
+            <tr>
+                <td>
+                    <p>
+                        Terminy
+                    </p>
+                    <br />
+                </td>
+                @foreach (DateTime date in Model.AssignedAttractions.Keys.ToList())
+                {
+                    <td>
+                        <p>
+                            <input type="text" name="Term" readonly="readonly" value="@date.ToShortDateString()" style="width:90px;border:0" />
+                        </p>
+                        <p>
+                            <input type="text" name="DayOfWeek" readonly="readonly" value="@(ReservationAttractions.Days[date.DayOfWeek.ToString()])" style="width:90px;border:0" />
+                        </p>
+                    </td>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.MaxRows; i++)
+            {
+                <tr>
+                    <td>
+                        <p>Atrakcja:</p>
+                        <p>Liczba osób:</p>
+                    </td>
+                    @foreach (DateTime date in Model.AssignedAttractions.Keys.ToList())
+                    {
+                        <td>
+                            @if (i < Model.AssignedAttractions[date].Count)
+                            {
+                                <p>@Model.AssignedAttractions[date][i].Split('(')[0].Split(',')[0]</p>
+                                <p>@Model.AssignedAttractions[date][i].Split('(')[0].Split(',')[1]</p>
+                                <p><input type="button" value="Dodaj"/></p>
+                                foreach (string item in @Model.AssignedAttractions[date][i].Split('(')[1].Split(')')[0].Split(';').ToList().Where(x=>!x.IsEmpty()).ToList())
+                                {
+                                    <div style="border:dashed;border-width:1px;">
+                                        @item.Split('|')[0]
+                                        <p>@item.Split('|')[1].Split('-')[0]</p>
+                                        <input type="hidden" value="@item.Split('|')[1].Split('-')[1]"/>
+                                        <p><input type="button" value="Usuń"/></p>
+                                    </div>
+                                }
+
+                            }
+                        </td>
+                    }
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+</div>

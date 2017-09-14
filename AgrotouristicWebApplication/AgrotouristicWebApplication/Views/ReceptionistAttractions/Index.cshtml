@@ -1,0 +1,52 @@
+﻿@model IEnumerable<SelectListItem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function handler(e) {
+            var source = e.srcElement.id;
+            if (source == 'WeeksAtrractionsReservation') {
+                $.ajax({
+                    type: "POST",
+                    url: "/ReceptionistAttractions/GetAttractionsInWeek",
+                    data: '{term: "' + $('select[name="WeeksAtrractionsReservation"]').val() + '"  }',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (response) {
+                        $('#selectedWeekAttractionsReservation').html(response)
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        }
+    </script>
+
+</head>
+
+<h2>Wykaz najbliższych tygodni rezerwacji warsztatów</h2>
+<div>
+    <div class="form-group">
+        @Html.Label("Tygodnie rezerwacji", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("WeeksAtrractionsReservation", Model, new { id = "WeeksAtrractionsReservation", onchange = "handler(event)" })
+        </div>
+
+    </div>
+
+    <div id="selectedWeekAttractionsReservation">
+
+    </div>
+</div>
+
+

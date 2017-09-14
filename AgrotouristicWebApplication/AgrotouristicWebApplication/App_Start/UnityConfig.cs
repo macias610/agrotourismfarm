@@ -51,6 +51,7 @@ namespace AgrotouristicWebApplication.App_Start
             container.RegisterType<IAttractionRepository, AttractionRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IReservationRepository, ReservationRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IReservationDetailsRepository, ReservationDetailsRepository>(new PerRequestLifetimeManager());
+            container.RegisterType<IReservedAttractionsRepository, ReservedAttractionsRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IAgrotourismContext, AgrotourismContext>(new PerRequestLifetimeManager());
         }
     }
