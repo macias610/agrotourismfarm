@@ -1,0 +1,75 @@
+﻿@model Repository.ViewModels.AttractionNewInstructor
+
+@{
+    ViewBag.Title = "AddInstructor";
+}
+
+@if (ViewBag.exception == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Wystąpił błąd.
+    </div>
+}
+
+<script type="text/javascript">
+        function handler(e) {
+            var source = e.srcElement.id;
+            if (source == 'AssignInstructorToAttaction')
+            {
+                $('#IdInstructor').val($('#AssignInstructorToAttaction option:selected').val())
+            }
+        }
+</script>
+
+<h2>Dodaj instruktora</h2>
+
+@using (Html.BeginForm("AddInstructor", "ReceptionistAttractions",new { idAttractionReservation = Model.AttractionReservationID }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Atrakcja</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TermAffair, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="text" readonly="readonly" value="@Model.TermAffair.ToShortDateString()"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AttractionName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="text" readonly="readonly" value="@Model.AttractionName" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.QuantityParticipant, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="text" readonly="readonly" value="@Model.QuantityParticipant" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model=>model.AvaiableInstructors, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("AssignInstructorToAttaction",Model.AvaiableInstructors,new { id= "AssignInstructorToAttaction",onchange="handler(event)" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Dodaj" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" value="@Model.AvaiableInstructors.ToArray().FirstOrDefault(item=>item.Selected).Value" name="IdInstructor" id="IdInstructor"/>
+}
+
+<div>
+    @Html.ActionLink("Wróć", "Index")
+</div>

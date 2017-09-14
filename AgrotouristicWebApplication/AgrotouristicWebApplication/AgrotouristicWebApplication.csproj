@@ -260,6 +260,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MealsController.cs" />
     <Compile Include="Controllers\ClientReservationsController.cs" />
+    <Compile Include="Controllers\ReceptionistAttractionsController.cs" />
     <Compile Include="Controllers\ReceptionistReservationsController.cs" />
     <Compile Include="Controllers\ReservationDetailsController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
@@ -446,6 +447,10 @@
     <Content Include="Views\ClientArchiveReservations\Index.cshtml" />
     <Content Include="Views\ReservationDetails\AddAttractions.cshtml" />
     <Content Include="Views\Shared\_WeeklyTimetableAttractionsPartial.cshtml" />
+    <Content Include="Views\ReceptionistAttractions\Index.cshtml" />
+    <Content Include="Views\Shared\_WeeklyTimetableAttractionsInstructorsPartial.cshtml" />
+    <Content Include="Views\ReceptionistAttractions\AddInstructor.cshtml" />
+    <Content Include="Views\ReceptionistAttractions\RemoveInstructor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

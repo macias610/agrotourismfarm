@@ -1,0 +1,68 @@
+﻿@model Repository.ViewModels.AttractionRemovedInstructor
+
+@{
+    ViewBag.Title = "RemoveInstructor";
+}
+
+@if (ViewBag.exception == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Wystąpił błąd.
+    </div>
+}
+
+<h3>Jesteś pewien?</h3>
+<div>
+    <h4>Usuń instruktora z warsztatu</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TermAffair)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TermAffair)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttractionName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AttractionName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.QuantityParticipant)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.QuantityParticipant)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Instructor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Instructor)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm("RemoveInstructor","ReceptionistAttractions",new { id=Model.AttractionReservationWorkerID}))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Usuń" class="btn btn-default" /> |
+            @Html.ActionLink("Wróć", "Index")
+        </div>
+
+        <input type="hidden" name="attractionReservationId" value="@Model.AttractionReservationID" id="attractionReservationId"/>
+        <input type="hidden" name="instructorName" value="@Model.Instructor" id="instructorName"/>
+        <input type="hidden" name="attractionReservationWorkerId" value="@Model.AttractionReservationWorkerID" id="attractionReservationWorkerId"/>
+    }
+</div>
+
+

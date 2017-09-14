@@ -291,7 +291,7 @@ namespace Repository.Repo
 
         public Attraction GetAttractionByName(string name)
         {
-            Attraction attraction = (from attr in db.Attractions
+            Models.Attraction attraction = (from attr in db.Attractions
                                      where attr.Name.Equals(name)
                                      select attr).FirstOrDefault();
             return attraction;

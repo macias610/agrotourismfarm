@@ -16,7 +16,7 @@ namespace Repository.IRepo
         Reservation GetReservationBasedOnData(NewReservation reservation,string userId);
         NewReservation RetreiveExistingReservation(Reservation reservation);    
         Attraction_Reservation GetDetailsAboutReservedAttraction(int id);
-        List<Attraction> GetAttractionsForReservation(int id);
+        List<Models.Attraction> GetAttractionsForReservation(int id);
         List<User> GetWorkersAssignedToAttraction(int id);
         List<Reservation> RemoveOutOfDateReservations(List<Reservation> reservations);
         Reservation_History GetReservationHistoryBasedReservation(Reservation reservation);
