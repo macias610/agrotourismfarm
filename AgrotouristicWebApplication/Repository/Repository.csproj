@@ -235,7 +235,7 @@
     <Compile Include="ViewModels\EditionStatusReservation.cs" />
     <Compile Include="ViewModels\HouseDetails.cs" />
     <Compile Include="ViewModels\NewReservation.cs" />
-    <Compile Include="ViewModels\AttractionRemovedInstructor.cs" />
+    <Compile Include="ViewModels\AttractionInstructorDetails.cs" />
     <Compile Include="ViewModels\ReservationAttractions.cs" />
     <Compile Include="ViewModels\ReservationHouseDetails.cs" />
     <Compile Include="ViewModels\RoleUser.cs" />

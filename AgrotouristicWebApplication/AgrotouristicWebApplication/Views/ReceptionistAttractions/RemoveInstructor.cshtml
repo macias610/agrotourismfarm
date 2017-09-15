@@ -1,4 +1,4 @@
-﻿@model Repository.ViewModels.AttractionRemovedInstructor
+﻿@model Repository.ViewModels.AttractionInstructorDetails
 
 @{
     ViewBag.Title = "RemoveInstructor";
@@ -21,7 +21,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.TermAffair)
+            @Convert.ToString(string.Format("{0:dd/MM/yyyy}", Model.TermAffair.Date))
         </dd>
 
         <dt>

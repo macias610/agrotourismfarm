@@ -1,0 +1,57 @@
+﻿@model Repository.ViewModels.AttractionInstructorDetails
+
+@{
+    ViewBag.Title = "RemoveInstructor";
+}
+
+@if (ViewBag.exception == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Wystąpił błąd.
+    </div>
+}
+
+
+<div>
+    <h2>Szczegóły warsztatu</h2>
+    <h4>Warsztat</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TermAffair)
+        </dt>
+
+        <dd>
+            @Convert.ToString(string.Format("{0:dd/MM/yyyy}", Model.TermAffair.Date))
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttractionName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AttractionName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.QuantityParticipant)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.QuantityParticipant)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Instruktorzy:")
+        </dt>
+
+        <dd>
+            @MvcHtmlString.Create(Model.Instructor.Replace(Environment.NewLine, "<br />"))
+        </dd>
+
+    </dl>
+
+    <div class="form-actions no-color">
+        @Html.ActionLink("Wróć", "Index")
+    </div>
+</div>

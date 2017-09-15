@@ -1,0 +1,53 @@
+﻿@model IEnumerable<SelectListItem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<head>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script type="text/javascript">
+        function handler(e) {
+            var source = e.srcElement.id;
+            if (source == 'WeekInstructorClasses') {
+                $.ajax({
+                    type: "POST",
+                    url: "/InstructorAttractions/GetClassesInWeek",
+                    data: '{term: "' + $('select[name="WeekInstructorClasses"]').val() + '"  }',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (response) {
+                        $('#selectedWeekClasses').html(response)
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        }
+    </script>
+</head>
+
+<h2>Wykaz zajęć w najbliższych tygodniach</h2>
+<div>
+    <div class="form-group">
+        @Html.Label("Tygodnie rezerwacji", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("WeekInstructorClasses", Model, new { id = "WeekInstructorClasses", onchange = "handler(event)" })
+        </div>
+
+    </div>
+
+    <div id="selectedWeekClasses">
+
+    </div>
+
+</div>
+
+
