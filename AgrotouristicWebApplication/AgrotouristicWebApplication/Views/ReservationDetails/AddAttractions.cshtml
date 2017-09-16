@@ -33,7 +33,11 @@
                     dataType: "text",
                     success: function (response) {
                         $('#AttractionsTimeTable').html(response);
-                        $('#btnConfirmAttractions').attr('style', 'visibility:hidden');
+                        if (@ViewBag.ReservationId == 0)
+                        {
+                            $('#btnConfirmAttractions').attr('style', 'visibility:hidden');
+                        }
+
                     },
                     failure: function (response) {
                         alert(response.responseText);
@@ -62,7 +66,10 @@
                     dataType: "text",
                     success: function (response) {
                         $('#AttractionsTimeTable').html(response);
-                        $('#btnConfirmAttractions').attr('style', 'visibility:hidden');
+                        if (@ViewBag.ReservationId == 0)
+                        {
+                            $('#btnConfirmAttractions').attr('style', 'visibility:hidden');
+                        }
 
                     },
                     failure: function (response) {
