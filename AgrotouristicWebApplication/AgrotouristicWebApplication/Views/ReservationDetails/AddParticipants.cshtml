@@ -63,8 +63,8 @@
                 $("#btnSaveHouseParticipants").click(function () {
                     var list = $("#participantsTable :input").serializeArray();
                     var jsonArray = [];
-                    for (var i = 0; i < list.length; i+=3) {
-                        jsonArray.push({ Name: list[i].value, Surname: list[i+1].value, BirthDate: list[i+2].value });
+                    for (var i = 0; i < list.length; i+=2) {
+                        jsonArray.push({ Name: list[i].value, Surname: list[i+1].value });
                     }
                     var data = JSON.stringify({
                         houseName: $('select[name="SelectedHousesParticipants"]').val(),
