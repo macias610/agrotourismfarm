@@ -89,7 +89,6 @@ namespace Repository.Repo
             {
                 targetList.ElementAt(i).Name = actualList[i].Name;
                 targetList.ElementAt(i).Surname = actualList[i].Surname;
-                targetList.ElementAt(i).BirthDate = actualList[i].BirthDate;
             }
             return targetList;
         }
