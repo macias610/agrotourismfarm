@@ -51,6 +51,8 @@ namespace Repository.Repo
             List<Attraction_Reservation> attractionsReservation = (from attrRes in db.Attractions_Reservations
                                                                    where attrRes.TermAffair.CompareTo(start) >= 0
                                                                    && attrRes.TermAffair.CompareTo(end) <= 0
+                                                                   join reservation in db.Reservations on attrRes.ReservationId equals reservation.Id
+                                                                   where !reservation.Status.Equals("oczekiwanie")
                                                                    select attrRes).ToList();
             Dictionary<DateTime, List<string>> dictionary = new Dictionary<DateTime, List<string>>();
             for (DateTime st = start; st <= end; st = st.AddDays(1))
