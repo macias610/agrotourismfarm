@@ -24,7 +24,8 @@ namespace Repository.Repo
             DateTime monday = date.AddDays(differenceToMonday);
             List<string> weeks = new List<string>();
             weeks.Add("-");
-            for(int i=0;i<2;i++)
+            int numberOfWeeks = 3;
+            for(int i=0;i<numberOfWeeks;i++)
             {
                 weeks.Add(monday.ToShortDateString() + ";" + monday.AddDays(6).ToShortDateString());
                 monday = monday.AddDays(7);
