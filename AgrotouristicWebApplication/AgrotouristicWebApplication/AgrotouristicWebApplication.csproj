@@ -257,6 +257,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HousesController.cs" />
     <Compile Include="Controllers\HouseTypesController.cs" />
+    <Compile Include="Controllers\InstructorAttractionsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MealsController.cs" />
     <Compile Include="Controllers\ClientReservationsController.cs" />
@@ -451,6 +452,9 @@
     <Content Include="Views\Shared\_WeeklyTimetableAttractionsInstructorsPartial.cshtml" />
     <Content Include="Views\ReceptionistAttractions\AddInstructor.cshtml" />
     <Content Include="Views\ReceptionistAttractions\RemoveInstructor.cshtml" />
+    <Content Include="Views\InstructorAttractions\Details.cshtml" />
+    <Content Include="Views\InstructorAttractions\Index.cshtml" />
+    <Content Include="Views\Shared\_WeeklyTimeTableClassesInstructorPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

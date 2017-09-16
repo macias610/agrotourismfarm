@@ -199,7 +199,15 @@ namespace Repository.Repo
         {
             List<string> namesAttractions = (from attraction in db.Attractions
                                              select attraction.Name).ToList();
-            List<SelectListItem> selectList = namesAttractions.Select(item => new SelectListItem { Text = item, Value = item, Selected = true }).ToList();
+            List<string> instructorProfessions = (from instructor in db.ApplicationUsers
+                                                  where !instructor.Profession.Equals("Administrator")
+                                                  where !instructor.Profession.Equals("Recepcjonosta")
+                                                  select instructor.Profession).ToList();
+            HashSet<string> professionsWithoutDuplicates = new HashSet<string>();
+            foreach (string item in instructorProfessions)
+                professionsWithoutDuplicates.Add(item);
+            List<string> result = namesAttractions.Where(item => professionsWithoutDuplicates.Contains(item)).ToList();
+            List<SelectListItem> selectList = result.Select(item => new SelectListItem { Text = item, Value = item, Selected = true }).ToList();
             return selectList;
         }
 

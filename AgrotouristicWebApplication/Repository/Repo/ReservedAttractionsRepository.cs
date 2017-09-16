@@ -24,7 +24,8 @@ namespace Repository.Repo
             DateTime monday = date.AddDays(differenceToMonday);
             List<string> weeks = new List<string>();
             weeks.Add("-");
-            for(int i=0;i<2;i++)
+            int numberOfWeeks = 3;
+            for(int i=0;i<numberOfWeeks;i++)
             {
                 weeks.Add(monday.ToShortDateString() + ";" + monday.AddDays(6).ToShortDateString());
                 monday = monday.AddDays(7);
@@ -51,6 +52,8 @@ namespace Repository.Repo
             List<Attraction_Reservation> attractionsReservation = (from attrRes in db.Attractions_Reservations
                                                                    where attrRes.TermAffair.CompareTo(start) >= 0
                                                                    && attrRes.TermAffair.CompareTo(end) <= 0
+                                                                   join reservation in db.Reservations on attrRes.ReservationId equals reservation.Id
+                                                                   where !reservation.Status.Equals("oczekiwanie")
                                                                    select attrRes).ToList();
             Dictionary<DateTime, List<string>> dictionary = new Dictionary<DateTime, List<string>>();
             for (DateTime st = start; st <= end; st = st.AddDays(1))
@@ -62,10 +65,38 @@ namespace Repository.Repo
             foreach (DateTime date in dates)
             {
                 List<string> result = new List<string>();
-                attractionsReservation.Where(x => x.TermAffair.Equals(date)).ToList().ForEach(x => result.Add(x.Id+";"+ x.Attraction.Name + ',' + x.QuantityParticipant + "(" + GetWorkersForReservedAttraction(x.Id) +")"));
+                attractionsReservation.Where(x => x.TermAffair.Equals(date)).ToList().ForEach(x => result.Add(x.Id+";"+ x.Attraction.Name + ',' + x.QuantityParticipant + "(" + GetInstructorsForReservedAttraction(x.Id) +")"));
                 dictionary[date] = result;
             }
             return dictionary;
+        }
+
+        public Dictionary<DateTime, List<string>> GetClassesInstructorInGivenWeek(string term, string idInstructor)
+        {
+            DateTime start = DateTime.Parse(term.Split(';')[0]);
+            DateTime end = DateTime.Parse(term.Split(';')[1]);
+            List<Attraction_Reservation> instructorClassesInWeek = (from attrResWork in db.Attractions_Reservations_Workers
+                                                                   where attrResWork.WorkerId.Equals(idInstructor)
+                                                                   join attrRes in db.Attractions_Reservations on attrResWork.Attraction_ReservationId equals attrRes.Id
+                                                                   where attrRes.TermAffair.CompareTo(start) >= 0
+                                                                   && attrRes.TermAffair.CompareTo(end) <= 0
+                                                                   select attrRes).ToList();
+            Dictionary<DateTime, List<string>> dictionary = new Dictionary<DateTime, List<string>>();
+            for (DateTime st = start; st <= end; st = st.AddDays(1))
+            {
+                dictionary.Add(st, new List<string>());
+            }
+            HashSet<DateTime> dates = new HashSet<DateTime>();
+            instructorClassesInWeek.ForEach(item => dates.Add(item.TermAffair));
+            foreach (DateTime date in dates)
+            {
+                List<string> result = new List<string>();
+                instructorClassesInWeek.Where(x => x.TermAffair.Equals(date)).ToList().ForEach(x => result.Add(x.Id + ";" + x.Attraction.Name));
+                dictionary[date] = result;
+            }
+            return dictionary;
+
+
         }
 
         public int GetMaxRowsToTableAttractions(Dictionary<DateTime, List<string>> dictionary)
@@ -85,7 +116,7 @@ namespace Repository.Repo
             return result;
         }
 
-        public string GetWorkersForReservedAttraction(int id)
+        public string GetInstructorsForReservedAttraction(int id)
         {
             Attraction_Reservation attractionReservation = db.Attractions_Reservations.Find(id);
             Dictionary<int, User> workers = new Dictionary<int, User>();
@@ -95,6 +126,21 @@ namespace Repository.Repo
             string result = string.Empty;
             listResult.ForEach(x => result += x);
             return result;
+        }
+
+        public string RetreiveInstructorsAssignedToAttraction(int id,string attractionName)
+        {
+            string result = string.Empty;
+            List<User> instructors = (from attrResWork in db.Attractions_Reservations_Workers
+                                      where attrResWork.Attraction_ReservationId.Equals(id)
+                                      join user in db.ApplicationUsers on attrResWork.WorkerId equals user.Id
+                                      where user.Profession.Equals(attractionName)
+                                      select user).ToList();
+            foreach(User user in instructors)
+            {
+                result+=user.Name + " " + user.Surname + "(" + user.UserName + ")"+Environment.NewLine;
+            }
+            return result;                                                           
         }
 
         public void RemoveAssignedInstructorAttraction(Attraction_Reservation_Worker attractionReservationWorker)
@@ -144,5 +190,7 @@ namespace Repository.Repo
             Attraction_Reservation_Worker attractionReservationWorker = db.Attractions_Reservations_Workers.Find(id);
             return attractionReservationWorker;
         }
+
+        
     }
 }

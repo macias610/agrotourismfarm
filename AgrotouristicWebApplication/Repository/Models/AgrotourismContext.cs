@@ -58,6 +58,12 @@ namespace Repository.Models
                                             .HasForeignKey(x => x.ReservationId)
                                             .WillCascadeOnDelete(true);
 
+            modelBuilder.Entity<Attraction_Reservation_Worker>().HasRequired(x => x.Attraction_Reservation)
+                                            .WithMany(x => x.Attraction_Reservation_Worker)
+                                            .HasForeignKey(x => x.Attraction_ReservationId)
+                                            .WillCascadeOnDelete(true);
+
+
         }
 
     }

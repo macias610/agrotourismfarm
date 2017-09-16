@@ -53,7 +53,7 @@ namespace AgrotouristicWebApplication.Controllers
         public ActionResult RemoveInstructor(int id,string name,int reservationAttractionWorkerId)
         {
             Attraction_Reservation attractionReservation = repository.GetAttractionReservationById(id);
-            AttractionRemovedInstructor attractionRemovedInstructor = new AttractionRemovedInstructor()
+            AttractionInstructorDetails attractionRemovedInstructor = new AttractionInstructorDetails()
             {
                 AttractionName=attractionReservation.Attraction.Name,
                 AttractionReservationID=id,
@@ -80,7 +80,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 ViewBag.exception = true;
                 Attraction_Reservation attractionReservation = repository.GetAttractionReservationById(Int32.Parse(Request.Form["attractionReservationId"].ToString()));
-                AttractionRemovedInstructor attractionRemovedInstructor = new AttractionRemovedInstructor()
+                AttractionInstructorDetails attractionRemovedInstructor = new AttractionInstructorDetails()
                 {
                     AttractionName = attractionReservation.Attraction.Name,
                     AttractionReservationID = id,
