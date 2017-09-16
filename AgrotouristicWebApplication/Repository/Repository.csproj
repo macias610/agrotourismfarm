@@ -207,6 +207,10 @@
     <Compile Include="Migrations\201709111440030_added_delete_on_cascade_for_AttractionReservation.Designer.cs">
       <DependentUpon>201709111440030_added_delete_on_cascade_for_AttractionReservation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709160536026_Added_delete_on_cascade_for_Attraction_Reservation_Worker.cs" />
+    <Compile Include="Migrations\201709160536026_Added_delete_on_cascade_for_Attraction_Reservation_Worker.Designer.cs">
+      <DependentUpon>201709160536026_Added_delete_on_cascade_for_Attraction_Reservation_Worker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AgrotourismContext.cs" />
     <Compile Include="Models\HouseType.cs" />
@@ -274,6 +278,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709111440030_added_delete_on_cascade_for_AttractionReservation.resx">
       <DependentUpon>201709111440030_added_delete_on_cascade_for_AttractionReservation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709160536026_Added_delete_on_cascade_for_Attraction_Reservation_Worker.resx">
+      <DependentUpon>201709160536026_Added_delete_on_cascade_for_Attraction_Reservation_Worker.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

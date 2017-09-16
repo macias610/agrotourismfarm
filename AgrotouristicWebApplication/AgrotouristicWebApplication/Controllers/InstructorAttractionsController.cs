@@ -51,6 +51,7 @@ namespace AgrotouristicWebApplication.Controllers
             return PartialView("~/Views/Shared/_WeeklyTimetableClassesInstructorPartial.cshtml",attractionInstructor);
         }
 
+        [Authorize(Roles ="Instruktor")]
         public ActionResult Details(int? id)
         {
             if (id == null)
