@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
+using PagedList;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -20,23 +21,20 @@ namespace AgrotouristicWebApplication.Controllers
             this.repository = repository;
         }
 
-        // GET: Meals
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             List<Meal> meals = repository.GetMeals().ToList();
-            return View(meals);
+            int currentPage = page ?? 1;
+            int perPage = 4;
+            return View(meals.ToPagedList<Meal>(currentPage,perPage));
         }
 
-        // GET: Meals/Create
         [Authorize(Roles ="Admin")]
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Meals/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize(Roles ="Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -60,7 +58,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View();
         }
 
-        // GET: Meals/Edit/5
         [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
@@ -76,9 +73,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(meal);
         }
 
-        // POST: Meals/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -103,7 +97,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(meal);
         }
 
-        // GET: Meals/Delete/5
         [Authorize(Roles ="Admin")]
         public ActionResult Delete(int? id)
         {
@@ -119,7 +112,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(meal);
         }
 
-        // POST: Meals/Delete/5
         [Authorize(Roles ="Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
