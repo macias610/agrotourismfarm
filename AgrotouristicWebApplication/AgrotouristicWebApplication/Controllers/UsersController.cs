@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
 using Repository.Repo;
+using PagedList;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -23,14 +24,15 @@ namespace AgrotouristicWebApplication.Controllers
 
         // GET: Users
         [Authorize(Roles ="Admin")]
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             List<User> users = repository.GetUsers().ToList();
-            return View(users);
+            int currentPage = page ?? 1;
+            int perPage = 4;
+            return View(users.ToPagedList<User>(currentPage,perPage));
         }
 
-        // GET: Users/Details/5
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         public ActionResult Details(string id)
         {
             if (id == null)
@@ -45,8 +47,7 @@ namespace AgrotouristicWebApplication.Controllers
             return View(user);
         }
 
-        // GET: Users/Edit/5
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         public ActionResult Edit(string id)
         {
             if (id == null)
@@ -62,12 +63,9 @@ namespace AgrotouristicWebApplication.Controllers
             return View(user);
         }
 
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         public ActionResult Edit([Bind(Include = "Id,Email,PasswordHash,SecurityStamp,PhoneNumber,Name,Surname,BirthDate,HireDate,Profession,Salary")] User user)
         {
             if (ModelState.IsValid)
@@ -89,7 +87,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(user);
         }
 
-        // GET: Users/Delete/5
         [Authorize(Roles ="Admin")]
         public ActionResult Delete(string id)
         {
@@ -105,7 +102,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(user);
         }
 
-        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Admin")]
@@ -115,7 +111,6 @@ namespace AgrotouristicWebApplication.Controllers
             Dictionary<string, string> rolesSecond = repository.GetRoles().ToDictionary(x => x.Id, x => x.Name);
             List<String> userRoles = new List<string>();
             User user = repository.GetUserById(id);
-
 
             user.Roles.ToList().ForEach(item => userRoles.Add(rolesSecond[item.RoleId]));
 
@@ -141,8 +136,7 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         protected override void Dispose(bool disposing)
-        {
-            
+        { 
             base.Dispose(disposing);
         }
     }
