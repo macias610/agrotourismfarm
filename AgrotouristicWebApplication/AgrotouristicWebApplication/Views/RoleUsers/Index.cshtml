@@ -57,7 +57,7 @@
             }
         </td>
         <td>
-            @if (Model.Roles.Count != user.Roles.Count)
+            @if (user.Roles.Count <=1)
             {
             @Html.ActionLink("Dodaj poziom dostępu", "Create", new { id = user.Id })
             }
