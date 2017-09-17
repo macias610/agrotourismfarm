@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Repository.ViewModels.HouseDetails>
+﻿@model PagedList.IPagedList<Repository.ViewModels.HouseDetails>
+@using PagedList.Mvc
 @using Repository.ViewModels;
 
 @{
@@ -16,19 +17,19 @@
             @Html.DisplayName("LP")
         </th>
         <th>
-            @Html.DisplayNameFor(model=>model.House.Name)
+            @Html.DisplayNameFor(model=>model[0].House.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.House.Description)
+            @Html.DisplayNameFor(model => model[0].House.Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model=>model.Type)
+            @Html.DisplayNameFor(model=>model[0].Type)
         </th>
         <th>
-            @Html.DisplayNameFor(model=>model.Price)
+            @Html.DisplayNameFor(model=>model[0].Price)
         </th>
         <th>
-            @Html.DisplayNameFor(model=>model.House.statusHouse)
+            @Html.DisplayNameFor(model=>model[0].House.statusHouse)
         </th>
         <th></th>
     </tr>
@@ -61,5 +62,10 @@
         </td>
     </tr>
 }
-
 </table>
+
+<div>
+    <br />
+    Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>

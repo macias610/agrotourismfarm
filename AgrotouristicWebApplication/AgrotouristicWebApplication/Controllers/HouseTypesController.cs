@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
 using Repository.ViewModels;
+using PagedList;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -23,10 +24,12 @@ namespace AgrotouristicWebApplication.Controllers
 
         // GET: HouseTypes
         [Authorize(Roles ="Admin")]
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             List<HouseType> housesTypes = repository.GetHouseTypes().ToList();
-            return View(housesTypes);
+            int currentPage = page ?? 1;
+            int perPage = 4;
+            return View(housesTypes.ToPagedList<HouseType>(currentPage,perPage));
         }
 
         // GET: HouseTypes/Create
