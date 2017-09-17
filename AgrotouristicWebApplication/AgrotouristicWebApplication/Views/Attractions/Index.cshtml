@@ -1,5 +1,6 @@
 ﻿@model PagedList.IPagedList<Repository.Models.Attraction>
-    @using PagedList.Mvc
+@using PagedList.Mvc
+@using Repository.Models
 
 @{
     ViewBag.Title = "Index";
@@ -12,6 +13,9 @@
 </p>
 <table class="table">
     <tr>
+        <th>
+            @Html.DisplayName("LP")
+        </th>
         <th>
             @Html.DisplayNameFor(model => model[0].Name)
         </th>
@@ -27,23 +31,29 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.Select((value, i) => new { i, value }))
+{
+    Attraction value = item.value;
+    int index = item.i + 1;
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Name)
+            @index.ToString()
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Description)
+            @value.Name
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Price)
+            @value.Description
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Discount)
+            @value.Price
         </td>
         <td>
-            @Html.ActionLink("Edytuj", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Usuń", "Delete", new { id=item.Id })
+            @value.Discount
+        </td>
+        <td>
+            @Html.ActionLink("Edytuj", "Edit", new { id=value.Id }) |
+            @Html.ActionLink("Usuń", "Delete", new { id=value.Id })
         </td>
     </tr>
 }
