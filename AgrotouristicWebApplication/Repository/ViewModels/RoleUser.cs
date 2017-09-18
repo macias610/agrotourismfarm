@@ -19,5 +19,6 @@ namespace Repository.ViewModels
         [Display(Name ="Poziom dostępu")]
         public string SelectedRoleText { get; set; }
 
+
     }
 }

@@ -11,6 +11,7 @@ using Repository.IRepo;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Repository.ViewModels;
 using PagedList;
+using System.Data.Entity.Validation;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -72,7 +73,7 @@ namespace AgrotouristicWebApplication.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Admin")]
-        public ActionResult Create([Bind(Include = "userId,selectedRoleText")] RoleUser user)
+        public ActionResult Create([Bind(Include = "userId,SelectedRoleText")] RoleUser user)
         {
             if (ModelState.IsValid)
             {

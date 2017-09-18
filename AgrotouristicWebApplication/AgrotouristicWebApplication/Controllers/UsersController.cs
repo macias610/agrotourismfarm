@@ -59,6 +59,8 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return HttpNotFound();
             }
+            IList<string> professions = repository.GetAvaiableProfessons();
+            ViewData["Professions"] = professions;
             return View(user);
         }
 
