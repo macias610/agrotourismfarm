@@ -377,5 +377,10 @@ namespace AgrotouristicWebApplication.Controllers
             return RedirectToAction("Edit", "ClientReservations", new { id = Int32.Parse(Request.Form["reservationId"]) });
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
+
     }
 }

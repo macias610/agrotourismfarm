@@ -13,7 +13,7 @@ using System.Web.Mvc;
 
 namespace Repository.Repository
 {
-    public class UserRepository: IUserRepository
+    public class UserRepository: IdentityDbContext,IUserRepository
     {
         private readonly AgrotourismContext db;
 
@@ -39,11 +39,6 @@ namespace Repository.Repository
         public void AssignToRole(string userId, string role)
         {
             GetUserManager().AddToRole(userId, role);
-        }
-
-        public void Dispose()
-        {
-            db.Dispose();
         }
 
         public IQueryable<IdentityRole> GetRoles()

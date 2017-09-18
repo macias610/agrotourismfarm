@@ -22,31 +22,15 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-
-
-                if (!User.IsInRole("Admin"))
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
             IQueryable<IdentityRole> roles = repository.GetRoles();
             return View(roles);
         }
 
-        // GET: Role/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Role/Create
         [HttpPost]
         [Authorize(Roles ="Admin")]
         [ValidateAntiForgeryToken]
