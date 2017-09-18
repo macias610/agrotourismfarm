@@ -47,7 +47,7 @@ namespace Repository.Repository
             return roles;
         }
 
-        public void SaveChanges()
+        public new void SaveChanges()
         {
             db.SaveChanges();
         }
@@ -157,6 +157,15 @@ namespace Repository.Repository
                 result.Add(roles[userRole.RoleId]);
             }
             return result;
+        }
+
+        public List<string> GetAvaiableProfessons()
+        {
+            List<string> professions = (from attraction in db.Attractions
+                                        select attraction.Name).ToList();
+            professions.Add("Administrator");
+            professions.Add("-");
+            return professions;
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Repository.Models
         public DateTime? HireDate { get; set; }
 
         [Display(Name = "Profesja")]
-        [MinLength(3), MaxLength(15)]
+        [MinLength(1), MaxLength(15)]
         public string Profession { get; set; }
 
         [Display(Name = "Pensja")]

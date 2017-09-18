@@ -10,6 +10,7 @@ using Repository.Models;
 using Repository.IRepo;
 using Repository.Repo;
 using PagedList;
+using System.Globalization;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -59,6 +60,8 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return HttpNotFound();
             }
+            IList<string> professions = repository.GetAvaiableProfessons();
+            ViewData["Professions"] = professions;
             return View(user);
         }
 
@@ -70,15 +73,32 @@ namespace AgrotouristicWebApplication.Controllers
             if (ModelState.IsValid)
             {
                 user.UserName = user.Email;
+                decimal salary;
+                if(Decimal.TryParse(Request.Form["UserSalary"].ToString(), NumberStyles.Any, new CultureInfo("pl-PL"), out salary))
+                {
+                    user.Salary = salary;
+                }
+                else
+                {
+                    ViewBag.exception = true;
+                    IList<string> professions = repository.GetAvaiableProfessons();
+                    ViewData["Professions"] = professions;
+                    user.isUserEmployed = repository.isUserEmployed(user.Id);
+                    return View(user);
+                } 
                 try
                 {
                     repository.UpdateUser(user);
                     repository.SaveChanges();
+                    ViewBag.exception = false;
                     return RedirectToAction("Index");
                 }
                 catch 
                 {
-                    ViewBag.exception = false;
+                    ViewBag.exception = true;
+                    IList<string> professions = repository.GetAvaiableProfessons();
+                    ViewData["Professions"] = professions;
+                    user.isUserEmployed = repository.isUserEmployed(user.Id);
                     return View(user);
                 }
                

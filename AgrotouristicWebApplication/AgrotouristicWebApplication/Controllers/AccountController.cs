@@ -162,7 +162,8 @@ namespace AgrotouristicWebApplication.Controllers
                         Surname = model.Surname,
                         BirthDate = model.BirthDate,
                         Email = model.Email,
-                        PhoneNumber=model.PhoneNumber
+                        PhoneNumber=model.PhoneNumber,
+                        Profession ="-"
                     };
                     IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
