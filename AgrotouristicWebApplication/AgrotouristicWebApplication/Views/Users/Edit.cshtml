@@ -4,6 +4,13 @@
     ViewBag.Title = "Edit";
 }
 
+@if (ViewBag.exception == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Wystąpił błąd.
+    </div>
+}
+
 <head>
     @Scripts.Render("~/bundles/jquery")    
     @Scripts.Render("~/bundles/jqueryui")
@@ -104,8 +111,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                        <input type="text" name="UserSalary" id="UserSalary" value="@Model.Salary"/>
                     </div>
                 </div>
             }
@@ -117,6 +123,9 @@
                 <input type="submit" value="Zapisz" class="btn btn-default"/>
             </div>
         </div>
+
+        @Html.HiddenFor(model=>model.Profession)
+        @Html.HiddenFor(model=>model.Salary)
 
 }
 <div>
