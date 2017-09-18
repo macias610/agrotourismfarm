@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
 using Repository.ViewModels;
+using PagedList;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -21,9 +22,8 @@ namespace AgrotouristicWebApplication.Controllers
             this.repository = repository;
         }
 
-        // GET: Houses
         [Authorize(Roles ="Admin")]
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             List<House> houses = repository.GetHouses().ToList();
             houses.ForEach(item => repository.setAvailabilityHouse(item));
@@ -35,10 +35,11 @@ namespace AgrotouristicWebApplication.Controllers
                 Price = repository.GetHouseTypeById(item.HouseTypeId).Price,
                 Type = repository.GetHouseTypeById(item.HouseTypeId).Type
             }));
-            return View(houseDetails);
+            int currentPage = page ?? 1;
+            int perPage = 4;
+            return View(houseDetails.ToPagedList<HouseDetails>(currentPage,perPage));
         }
 
-        // GET: Houses/Create
         public ActionResult Create()
         {
             HouseDetails house = new HouseDetails()
@@ -48,9 +49,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(house);
         }
 
-        //// POST: Houses/Create
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Admin")]
@@ -78,7 +76,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View();
         }
 
-        // GET: Houses/Edit/5
         [Authorize(Roles ="Admin")]
         public ActionResult Edit(int? id)
         {
@@ -94,9 +91,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(house);
         }
 
-        // POST: Houses/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize(Roles ="Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -121,7 +115,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(house);
         }
 
-        // GET: Houses/Delete/5
         [Authorize(Roles ="Admin")]
         public ActionResult Delete(int? id)
         {
@@ -137,7 +130,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(house);
         }
 
-        //// POST: Houses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Admin")]

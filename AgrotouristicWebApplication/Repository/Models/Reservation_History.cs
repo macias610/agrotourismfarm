@@ -28,11 +28,11 @@ namespace Repository.Models
         [Required]
         public decimal OverallCost { get; set; }
 
-        [Display(Name ="Zarezerwowane domki")]
+        [Display(Name ="Zarezerwowane domki:")]
         [Required]
         public string ReservedHouses { get; set; }
 
-        [Display(Name ="Zarezerwowane warsztaty")]
+        [Display(Name ="Zarezerwowane warsztaty:")]
         [Required]
         public string ReservedAttractions { get; set; }
 

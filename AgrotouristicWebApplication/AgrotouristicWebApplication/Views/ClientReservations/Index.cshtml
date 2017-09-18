@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Repository.Models.Reservation>
+﻿@model PagedList.IPagedList<Repository.Models.Reservation>
+@using PagedList.Mvc
 @using Repository.Models
 
 @{
@@ -16,19 +17,19 @@
             @Html.DisplayName("LP")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StartDate)
+            @Html.DisplayNameFor(model => model[0].StartDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.EndDate)
+            @Html.DisplayNameFor(model => model[0].EndDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DeadlinePayment)
+            @Html.DisplayNameFor(model => model[0].DeadlinePayment)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Status)
+            @Html.DisplayNameFor(model => model[0].Status)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.OverallCost)
+            @Html.DisplayNameFor(model => model[0].OverallCost)
         </th>
         <th></th>
     </tr>
@@ -66,5 +67,10 @@
             </td>
         </tr>
 }
-
 </table>
+
+<div>
+    <br />
+    Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>

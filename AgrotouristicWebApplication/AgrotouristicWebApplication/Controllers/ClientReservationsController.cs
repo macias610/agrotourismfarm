@@ -12,6 +12,7 @@ using System.Web.Security;
 using Microsoft.AspNet.Identity;
 using Repository.ViewModels;
 using Microsoft.Ajax.Utilities;
+using PagedList;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -25,11 +26,13 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         [Authorize(Roles ="Klient")]
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             List<Reservation> reservations = repository.GetClientReservations(User.Identity.GetUserId()).ToList();
             reservations=repository.RemoveOutOfDateReservations(reservations);
-            return View(reservations);
+            int currentPage = page ?? 1;
+            int perPage = 4;
+            return View(reservations.ToPagedList<Reservation>(currentPage,perPage));
         }
 
         [Authorize(Roles ="Klient")]

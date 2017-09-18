@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Repository.Models.Attraction>
+﻿@model PagedList.IPagedList<Repository.Models.Attraction>
+@using PagedList.Mvc
+@using Repository.Models
 
 @{
     ViewBag.Title = "Index";
@@ -12,39 +14,54 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayName("LP")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model[0].Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayNameFor(model => model[0].Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Discount)
+            @Html.DisplayNameFor(model => model[0].Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model[0].Discount)
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.Select((value, i) => new { i, value }))
+{
+    Attraction value = item.value;
+    int index = item.i + 1;
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Name)
+            @index.ToString()
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Description)
+            @value.Name
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Price)
+            @value.Description
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Discount)
+            @value.Price
         </td>
         <td>
-            @Html.ActionLink("Edytuj", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Usuń", "Delete", new { id=item.Id })
+            @value.Discount
+        </td>
+        <td>
+            @Html.ActionLink("Edytuj", "Edit", new { id=value.Id }) |
+            @Html.ActionLink("Usuń", "Delete", new { id=value.Id })
         </td>
     </tr>
 }
 
 </table>
+
+<div>
+    <br />
+    Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>

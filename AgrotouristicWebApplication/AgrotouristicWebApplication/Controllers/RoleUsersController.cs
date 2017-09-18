@@ -10,6 +10,7 @@ using Repository.Models;
 using Repository.IRepo;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Repository.ViewModels;
+using PagedList;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -22,34 +23,33 @@ namespace AgrotouristicWebApplication.Controllers
             this.repository = repository;
         }
 
-        // GET: RoleUsers
         [Authorize(Roles = "Admin")]
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                if (!User.IsInRole("Admin"))
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
             List<User> users = repository.GetUsers().ToList();
 
             Dictionary<string,string> roles = repository.GetRoles().ToDictionary(x=>x.Id,x=>x.Name);
-            RolesUsers rolesUsers = new RolesUsers
-            {
-                Users = users,
-                Roles = roles
-            };
-            return View(rolesUsers);
+            List<RolesUser> rolesUsers = new List<RolesUser>();
+            users.ForEach(user => rolesUsers.Add(
+                new RolesUser()
+                {
+                    Id=user.Id,
+                    Email=user.Email,
+                    Name=user.Name,
+                    Surname=user.Surname,
+                    BirthDate=user.BirthDate,
+                    Roles= repository.GetRolesForUser(user.Roles)
+                }
+            )
+            );
+            
+
+            int currentPage = page ?? 1;
+            int perPage = 4;
+            return View(rolesUsers.ToPagedList<RolesUser>(currentPage,perPage));
         }
 
-        // GET: RoleUsers/Create
+        [Authorize(Roles ="Admin")]
         public ActionResult Create(string id)
         {
 
@@ -69,9 +69,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(roleUser);
         }
 
-        // POST: RoleUsers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Admin")]
@@ -95,8 +92,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View();
         }
 
-
-        // GET: RoleUsers/Delete/5
         [Authorize(Roles ="Admin")]
         public ActionResult Delete(string userId,string SelectedRoleText)
         {
@@ -118,7 +113,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(roleUser);
         }
 
-        // POST: RoleUsers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Admin")]

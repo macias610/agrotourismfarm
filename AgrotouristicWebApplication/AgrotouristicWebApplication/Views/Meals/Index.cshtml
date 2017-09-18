@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Repository.Models.Meal>
+﻿@model PagedList.IPagedList<Repository.Models.Meal>
+@using PagedList.Mvc
 @using Repository.Models
 
 @{
@@ -13,27 +14,41 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Type)
+            @Html.DisplayName("LP")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayNameFor(model => model[0].Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model[0].Price)
         </th>
         <th></th>
     </tr>
 
-@foreach (Meal item in Model) {
+@foreach (var item in Model.Select((value, i) => new { i, value }))
+{
+    Meal value = item.value;
+    int index = item.i + 1;
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Type)
+            @index.ToString()
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Price)
+            @value.Type
         </td>
         <td>
-            @Html.ActionLink("Edytuj", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Usuń", "Delete", new { id=item.Id })
+            @value.Price
+        </td>
+        <td>
+            @Html.ActionLink("Edytuj", "Edit", new { id=value.Id }) |
+            @Html.ActionLink("Usuń", "Delete", new { id=value.Id })
         </td>
     </tr>
 }
-
 </table>
+
+<div>
+    <br />
+    Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>

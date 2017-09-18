@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
+using PagedList;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -20,24 +21,21 @@ namespace AgrotouristicWebApplication.Controllers
             this.repository = repository;
         }
 
-        // GET: Attractions
         [Authorize(Roles ="Admin")]
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             List<Attraction> attractions = repository.GetAttractions().ToList();
-            return View(attractions);
+            int currentPage = page ?? 1;
+            int perPage = 4;
+            return View(attractions.ToPagedList<Attraction>(currentPage,perPage));
         }
 
-        // GET: Attractions/Create
         [Authorize(Roles ="Admin")]
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Attractions/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize(Roles ="Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -61,7 +59,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View();
         }
 
-        // GET: Attractions/Edit/5
         [Authorize(Roles ="Admin")]
         public ActionResult Edit(int? id)
         {
@@ -77,9 +74,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(attraction);
         }
 
-        // POST: Attractions/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize(Roles ="Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -104,7 +98,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(attraction);
         }
 
-        // GET: Attractions/Delete/5
         [Authorize(Roles ="Admin")]
         public ActionResult Delete(int? id)
         {
@@ -120,7 +113,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View(attraction);
         }
 
-        // POST: Attractions/Delete/5
         [Authorize(Roles ="Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

@@ -1,7 +1,6 @@
-﻿@model Repository.ViewModels.RolesUsers
-
-@using Repository.Models;
-@using Microsoft.AspNet.Identity.EntityFramework;
+﻿@model PagedList.IPagedList<Repository.ViewModels.RolesUser>
+@using PagedList.Mvc
+@using Repository.ViewModels
 
 @{
     ViewBag.Title = "Index";
@@ -12,16 +11,16 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model=>model.Users.First().Email)
+            @Html.DisplayNameFor(model=>model[0].Email)
         </th>
         <th>
-            @Html.DisplayNameFor(model=>model.Users.First().Name)
+            @Html.DisplayNameFor(model=>model[0].Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Users.First().Surname)
+            @Html.DisplayNameFor(model => model[0].Surname)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Users.First().BirthDate)
+            @Html.DisplayNameFor(model => model[0].BirthDate)
         </th>
         <th>
             @Html.DisplayName("Poziomy dostępu")
@@ -29,7 +28,7 @@
         <th></th>
     </tr>
 
-    @foreach (User user in Model.Users) {
+    @foreach (RolesUser user in Model) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => user.Email)
@@ -41,16 +40,16 @@
             @Html.DisplayFor(modelItem => user.Surname)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => user.BirthDate)
+            @Convert.ToString(string.Format("{0:dd/MM/yyyy}", user.BirthDate))
         </td>
         <td>
-            @foreach (IdentityUserRole userRole in user.Roles)
+            @foreach (string userRole in user.Roles)
             {
             <ul>
                 <li>
                     <p>
-                        @Model.Roles[userRole.RoleId]
-                        @Html.ActionLink("Delete", "Delete", new { userId = user.Id, SelectedRoleText = Model.Roles[userRole.RoleId]})
+                        @userRole
+                        @Html.ActionLink("Delete", "Delete", new { userId = user.Id, SelectedRoleText = userRole})
                     </p>
                 </li>
             </ul>
@@ -66,3 +65,9 @@
     }
 
 </table>
+
+<div>
+    <br />
+    Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>

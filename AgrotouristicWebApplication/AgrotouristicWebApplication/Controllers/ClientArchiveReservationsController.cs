@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
 using Microsoft.AspNet.Identity;
+using PagedList;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -22,10 +23,12 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         [Authorize(Roles ="Klient")]
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             List<Reservation_History> reservationsHistory = repository.GetClientArchiveReservations(User.Identity.GetUserId()).ToList();
-            return View(reservationsHistory);
+            int currentPage = page ?? 1;
+            int perPage = 4;
+            return View(reservationsHistory.ToPagedList<Reservation_History>(currentPage,perPage));
         }
 
         [Authorize(Roles = "Klient")]

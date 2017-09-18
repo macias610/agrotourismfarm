@@ -152,5 +152,16 @@ namespace Repository.Repository
 
             db.Users.Remove(user);
         }
+
+        public List<string> GetRolesForUser(ICollection<IdentityUserRole> userRoles)
+        {
+            Dictionary<string,string> roles = GetRoles().ToDictionary(x=>x.Id,x=>x.Name);
+            List<string> result = new List<string>();
+            foreach(IdentityUserRole userRole in userRoles)
+            {
+                result.Add(roles[userRole.RoleId]);
+            }
+            return result;
+        }
     }
 }
