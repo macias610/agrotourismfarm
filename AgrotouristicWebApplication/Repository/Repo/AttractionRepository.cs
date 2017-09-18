@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using Repository.Models;
 using System.Data.Entity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Repository.Repo
 {

@@ -1,4 +1,5 @@
-﻿using Repository.Models;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

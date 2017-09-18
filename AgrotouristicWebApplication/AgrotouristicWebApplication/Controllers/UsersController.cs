@@ -22,7 +22,6 @@ namespace AgrotouristicWebApplication.Controllers
             this.repository = repository;
         }
 
-        // GET: Users
         [Authorize(Roles ="Admin")]
         public ActionResult Index(int? page)
         {

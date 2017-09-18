@@ -24,6 +24,9 @@ namespace Repository.IRepo
         DbSet<Reservation_House> Reservation_Houses { get; set; }
         DbSet<Reservation_History> Reservations_History { get; set; }
         DbSet<Attraction_Reservation> Attractions_Reservations { get; set; }
+
+        void Dispose();
+
         DbSet<Attraction_Reservation_Worker> Attractions_Reservations_Workers { get; set; }
 
         DbEntityEntry Entry(object entity);
