@@ -145,10 +145,6 @@ namespace AgrotouristicWebApplication.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                repository.Dispose();
-            }
             base.Dispose(disposing);
         }
     }

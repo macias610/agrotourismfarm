@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace Repository.IRepo
 {
-    public interface IUserRepository
+    public interface IUserRepository: IDisposable
     {
         IQueryable<IdentityRole> GetRoles();
         IQueryable<User> GetUsers();
