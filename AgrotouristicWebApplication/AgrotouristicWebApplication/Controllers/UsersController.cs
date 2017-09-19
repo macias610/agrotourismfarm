@@ -47,6 +47,46 @@ namespace AgrotouristicWebApplication.Controllers
             return View(user);
         }
 
+        [Authorize]
+        public ActionResult EditBaseData(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            User user = repository.GetUserById(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
+        }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult EditBaseData([Bind(Include = "Id,Email,PasswordHash,SecurityStamp,PhoneNumber,Name,Surname,BirthDate")]User user)
+        {
+            if (ModelState.IsValid)
+            {
+                user.UserName = user.Email;
+                try
+                {
+                    repository.UpdateBaseDataUser(user);
+                    repository.SaveChanges();
+                    ViewBag.exception = false;
+                    return RedirectToAction("Index","Home");
+                }
+                catch
+                {
+                    ViewBag.exception = true;
+                    return View(user);
+                }
+
+            }
+            return View(user);
+        }
+
         [Authorize(Roles ="Admin")]
         public ActionResult Edit(string id)
         {
