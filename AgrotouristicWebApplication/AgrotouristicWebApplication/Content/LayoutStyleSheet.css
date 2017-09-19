@@ -19,10 +19,12 @@
     list-style: none;
     text-align: center;
 }
+
 .nav ul {
     display: none;
     list-style: none;
 }
+
 
 .nav li {
     float: left;
@@ -42,5 +44,4 @@
 }
 
 .nav li:hover, .nav li a:hover,.nav li li:hover {
-    background-color: white;
-}
+    background-color: white;

@@ -68,13 +68,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Agroturystyka<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Domki<span class="caret"></span></a>
-                                    <ul class="dropdown-menu-right" role="menu">
-                                        <li>@Html.ActionLink("Lista", "Index", "Houses")</li>
-                                        <li>@Html.ActionLink("Rodzaje","Index","HouseTypes")</li>
-                                    </ul>
-                                </li>
+                                <li>@Html.ActionLink("Domki", "Index", "Houses")</li>
+                                <li>@Html.ActionLink("Rodzaje domków","Index","HouseTypes")</li>
                                 <li>@Html.ActionLink("Posiłki", "Index", "Meals")</li>
                                 <li>@Html.ActionLink("Warsztaty","Index","Attractions")</li>
                             </ul>
