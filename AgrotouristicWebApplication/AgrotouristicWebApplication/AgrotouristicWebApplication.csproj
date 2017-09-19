@@ -280,6 +280,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\LayoutStyleSheet.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
@@ -455,6 +456,9 @@
     <Content Include="Views\InstructorAttractions\Details.cshtml" />
     <Content Include="Views\InstructorAttractions\Index.cshtml" />
     <Content Include="Views\Shared\_WeeklyTimeTableClassesInstructorPartial.cshtml" />
+    <Content Include="Views\Home\Meals.cshtml" />
+    <Content Include="Views\Home\Houses.cshtml" />
+    <Content Include="Views\Home\Attractions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
