@@ -157,6 +157,7 @@
   <ItemGroup>
     <Compile Include="IRepo\IAgrotourismContext.cs" />
     <Compile Include="IRepo\IAttractionRepository.cs" />
+    <Compile Include="IRepo\IHomeRepository.cs" />
     <Compile Include="IRepo\IHouseRepository.cs" />
     <Compile Include="IRepo\IMealRepository.cs" />
     <Compile Include="IRepo\IReservationDetailsRepository.cs" />
@@ -231,6 +232,7 @@
     <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repo\AttractionRepository.cs" />
+    <Compile Include="Repo\HomeRepository.cs" />
     <Compile Include="Repo\HouseRepository.cs" />
     <Compile Include="Repo\MealRepository.cs" />
     <Compile Include="Repo\ReservationDetailsRepository.cs" />

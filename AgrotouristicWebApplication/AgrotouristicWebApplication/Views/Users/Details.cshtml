@@ -68,7 +68,7 @@
             </dd>
         }
 
-        @if (!Model.Profession.IsEmpty())
+        @if (!Model.Profession.Equals("-"))
         {
             <dt>
                 @Html.DisplayNameFor(model => model.Profession)

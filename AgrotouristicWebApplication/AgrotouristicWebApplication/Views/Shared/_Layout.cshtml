@@ -6,18 +6,22 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <link rel="stylesheet" href="~/Content/LayoutStyleSheet.css" type="text/css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <div id="banner" style="width:100%">
+                <img class="mySlides w3-animate-fading" src="~/Content/images/Field.jpg"  style="width:100%">
+                <img class="mySlides w3-animate-fading" src="~/Content/images/House.jpg" style="width:100%">
+                <img class="mySlides w3-animate-fading" src="~/Content/images/Horses.jpg" style="width:100%">
+                <img class="mySlides w3-animate-fading" src="~/Content/images/Road.jpg" style="width:100%">
+            </div>
+            <div class="navbar-nav">
+                @Html.ActionLink("Menu", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -64,13 +68,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Agroturystyka<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Domki<span class="caret"></span></a>
-                                    <ul class="dropdown-menu-right" role="menu">
-                                        <li>@Html.ActionLink("Lista", "Index", "Houses")</li>
-                                        <li>@Html.ActionLink("Rodzaje","Index","HouseTypes")</li>
-                                    </ul>
-                                </li>
+                                <li>@Html.ActionLink("Domki", "Index", "Houses")</li>
+                                <li>@Html.ActionLink("Rodzaje domków","Index","HouseTypes")</li>
                                 <li>@Html.ActionLink("Posiłki", "Index", "Meals")</li>
                                 <li>@Html.ActionLink("Warsztaty","Index","Attractions")</li>
                             </ul>
@@ -81,7 +80,6 @@
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
-    </div>
     <div class="container body-content">
         @RenderBody()
         <hr />
@@ -90,8 +88,21 @@
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    <script>
+        var counter = 0;
+        swichPicture()
+        function swichPicture() {
+            var i;
+            var x = document.getElementsByClassName("mySlides");
+            for (i = 0; i < x.length; i++) {
+               x[i].style.display = "none";
+            }
+            counter++;
+            if (counter > x.length) {counter = 1}
+            x[counter-1].style.display = "block";
+            setTimeout(swichPicture, 9000);
+        }
+    </script>
+    @RenderSection("Scripts",required:false)
 </body>
 </html>

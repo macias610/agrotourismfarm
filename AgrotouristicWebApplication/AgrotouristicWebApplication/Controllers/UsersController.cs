@@ -32,7 +32,7 @@ namespace AgrotouristicWebApplication.Controllers
             return View(users.ToPagedList<User>(currentPage,perPage));
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize]
         public ActionResult Details(string id)
         {
             if (id == null)

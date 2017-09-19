@@ -1,0 +1,20 @@
+﻿@model PagedList.IPagedList<string>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Houses";
+}
+
+<div>
+    <h2>Rodzaje domków</h2>
+    @foreach (string item in Model)
+    {
+        <p>@item</p>
+    }
+
+    <div>
+        <br />
+        Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
+        @Html.PagedListPager(Model, page => Url.Action("Houses", new { page }))
+    </div>
+</div>
