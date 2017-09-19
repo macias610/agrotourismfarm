@@ -463,6 +463,7 @@
     <Content Include="Views\Home\Meals.cshtml" />
     <Content Include="Views\Home\Houses.cshtml" />
     <Content Include="Views\Home\Attractions.cshtml" />
+    <Content Include="Views\Shared\_EditBaseDataPartial.cshtml" />
     <Content Include="Views\Users\EditBaseData.cshtml" />
   </ItemGroup>
   <ItemGroup>
