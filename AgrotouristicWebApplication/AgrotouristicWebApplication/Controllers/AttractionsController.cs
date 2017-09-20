@@ -172,7 +172,7 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(Attraction attraction)
+        public ActionResult DeleteConfirmed([Bind(Include ="Id,Name,Descripction,Price,Discount,RowVersion")] Attraction attraction)
         {
 
             if (repository.countReservationsWithGivenAttraction(attraction.Id) >= 1)

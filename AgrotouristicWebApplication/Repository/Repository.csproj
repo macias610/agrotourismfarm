@@ -224,6 +224,10 @@
     <Compile Include="Migrations\201709201809237_RowVersion_HouseType_table.Designer.cs">
       <DependentUpon>201709201809237_RowVersion_HouseType_table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709202001363_RowVersion_House_table.cs" />
+    <Compile Include="Migrations\201709202001363_RowVersion_House_table.Designer.cs">
+      <DependentUpon>201709202001363_RowVersion_House_table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AgrotourismContext.cs" />
     <Compile Include="Models\HouseType.cs" />
@@ -304,6 +308,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709201809237_RowVersion_HouseType_table.resx">
       <DependentUpon>201709201809237_RowVersion_HouseType_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709202001363_RowVersion_House_table.resx">
+      <DependentUpon>201709202001363_RowVersion_House_table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

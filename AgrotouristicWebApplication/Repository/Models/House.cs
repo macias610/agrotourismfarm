@@ -34,6 +34,9 @@ namespace Repository.Models
         [Display(Name ="Aktualny status")]
         public string statusHouse { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         public int  HouseTypeId { get; set; }
 
         public virtual HouseType HouseType { get; set; }

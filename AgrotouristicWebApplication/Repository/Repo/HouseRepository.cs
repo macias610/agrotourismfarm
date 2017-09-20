@@ -80,7 +80,7 @@ namespace Repository.Repo
 
         public void RemoveHouse(House house)
         {
-            db.Houses.Remove(house);
+            db.Entry(house).State=EntityState.Deleted;
         }
 
         public void RemoveHouseType(HouseType houseType)
@@ -118,9 +118,9 @@ namespace Repository.Repo
             }
         }
 
-        public void UpdateHouse(House house)
+        public void UpdateHouse(House house,byte[] rowVersion)
         {
-            db.Entry(house).State = EntityState.Modified;
+            db.Entry(house).OriginalValues["RowVersion"] = rowVersion;
         }
 
         public void UpdateHouseType(HouseType houseType,byte[] rowVersion)
