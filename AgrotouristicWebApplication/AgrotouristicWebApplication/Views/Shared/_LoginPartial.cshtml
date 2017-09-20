@@ -10,7 +10,6 @@
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> @User.Identity.GetUserName()<span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-                @*<li>@Html.ActionLink("Zarządzaj kontem", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })</li>*@
                 <li>@Html.ActionLink("Zmień hasło", "ChangePassword","Manage")</li>
                 <li>@Html.ActionLink("Moje dane osobowe", "Details", "Users", new { id = User.Identity.GetUserId()},null)</li>
                 <li>@Html.ActionLink("Edytuj dane osobowe", "EditBaseData", "Users", new { id=User.Identity.GetUserId()},null)</li>

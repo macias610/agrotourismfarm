@@ -49,75 +49,77 @@ namespace Repository.Models
 
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage ="Pole email jest wymagane")]
         [Display(Name = "Email")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage ="Niepoprawny format adresu e-mail")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Pole hasło jest wymagane")]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Zampamiętaj mnie?")]
         public bool RememberMe { get; set; }
     }
 
     public class RegisterViewModel
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage ="Pole Email jest wymagane")]
+        [EmailAddress(ErrorMessage = "Niepoprawny format adresu e-mail")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required]
-        [MinLength(3),MaxLength(20)]
+        [Required(ErrorMessage ="Pole Imię jest wymagane")]
+        [MinLength(3, ErrorMessage = "Pole Imię musi mieć minimum 3 znaki"),MaxLength(20, ErrorMessage = "Pole Imię musi mieć max 20 znaków")]
         [Display(Name = "Imię")]
         public string Name { get; set; }
 
-        [Required]
-        [MinLength(3),MaxLength(20)]
+        [Required(ErrorMessage = "Pole Nazwisko jest wymagane")]
+        [MinLength(3,ErrorMessage ="Pole Nazwisko musi mieć minimum 3 znaki"),MaxLength(20, ErrorMessage = "Pole Nazwisko musi mieć max 20 znaków")]
         [Display(Name = "Nazwisko")]
         public string Surname { get; set; }
 
         [DataType(DataType.Date)]
-        [Required]
+        [Required(ErrorMessage = "Pole Data urodzenia jest wymagane")]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name="Data urodzenia")]
         public DateTime BirthDate { get; set; }
 
-        [Required]
-        [MinLength(9),MaxLength(9)]
+        [Required(ErrorMessage = "Pole Telefon jest wymagane")]
+        [StringLength(9,ErrorMessage ="Telefon musi składać się z 9 liczb")]
         [Display(Name="Telefon")]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "Telefon musi składać tylko z liczb")]
         public string PhoneNumber { get; set; }
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessage = "Pole Hasło jest wymagane")]
+        [StringLength(100, ErrorMessage = "{0} musi mieć przynajmniej {2} znaków.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Hasło")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Potwierdź hasło")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Compare("Password", ErrorMessage = "Hasło i potwierdzenie nie są identyczne.")]
         public string ConfirmPassword { get; set; }
     }
 
     public class ResetPasswordViewModel
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage ="Pole Email jest wymagane")]
+        [EmailAddress(ErrorMessage = "Niepoprawny format adresu e-mail")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessage ="Pole Hasło jest wymagane")]
+        [StringLength(100, ErrorMessage = "{0} musi mieć przynajmniej {2} znaków.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Hasło")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Potwierdź hasło")]
+        [Compare("Password", ErrorMessage = "Hasło i potwierdzenie nie są identyczne.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
@@ -125,7 +127,7 @@ namespace Repository.Models
 
     public class ForgotPasswordViewModel
     {
-        [Required]
+        [Required(ErrorMessage ="Pole Email jest wymagane")]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
