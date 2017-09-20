@@ -13,7 +13,7 @@ namespace Repository.IRepo
         IQueryable<Meal> GetMeals();
         Meal GetMealById(int id);
         void AddMeal(Meal meal);
-        void UpdateMeal(Meal meal);
+        void UpdateMeal(Meal meal,byte[] rowVersion);
         int countHousesWithGivenMeal(int id);
         void RemoveMeal(Meal meal);
         void SaveChanges();
