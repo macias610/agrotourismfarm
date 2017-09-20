@@ -216,6 +216,10 @@
     <Compile Include="Migrations\201709161746458_delete_birthDate_from_Participants.Designer.cs">
       <DependentUpon>201709161746458_delete_birthDate_from_Participants.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709201321335_RowVersion_Attractions_table.cs" />
+    <Compile Include="Migrations\201709201321335_RowVersion_Attractions_table.Designer.cs">
+      <DependentUpon>201709201321335_RowVersion_Attractions_table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AgrotourismContext.cs" />
     <Compile Include="Models\HouseType.cs" />
@@ -290,6 +294,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709161746458_delete_birthDate_from_Participants.resx">
       <DependentUpon>201709161746458_delete_birthDate_from_Participants.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709201321335_RowVersion_Attractions_table.resx">
+      <DependentUpon>201709201321335_RowVersion_Attractions_table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

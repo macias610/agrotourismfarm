@@ -11,12 +11,10 @@
     </div>
 }
 
-@if (ViewBag.exception == true)
-{
-    <div class="alert alert-danger" role="alert">
-        Wystąpił błąd.
-    </div>
-}
+<div class="alert alert-danger" role="alert">
+    @ViewBag.ConcurrencyErrorMessage
+</div>
+
 
 <h2>Usuń warsztat</h2>
 
@@ -61,6 +59,9 @@
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model=>model.Id)
+        @Html.HiddenFor(model=>model.RowVersion)
 
         <div class="form-actions no-color">
             <input type="submit" value="Usuń" class="btn btn-default" /> |
