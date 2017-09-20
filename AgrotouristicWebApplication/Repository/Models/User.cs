@@ -51,6 +51,9 @@ namespace Repository.Models
         [NotMapped]
         public bool isUserEmployed { get; set; }
 
+        public override string Email { get; set; }
+        public override bool EmailConfirmed { get; set; }
+
         public virtual ICollection<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
 
         public virtual ICollection<Reservation> Reservations { get; private set; }
