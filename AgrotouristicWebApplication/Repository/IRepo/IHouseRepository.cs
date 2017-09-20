@@ -23,7 +23,7 @@ namespace Repository.IRepo
         void RemoveHouse(House house);
         void RemoveHouseType(HouseType houseType);
         void UpdateHouse(House house);
-        void UpdateHouseType(HouseType houseType);
+        void UpdateHouseType(HouseType houseType,byte[] rowVersion);
         void SaveChanges();
 
     }
