@@ -117,49 +117,6 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         //
-        // GET: /Account/VerifyCode
-        [AllowAnonymous]
-        public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
-        {
-            // Require that the user has already logged in via username/password or external login
-            if (!await SignInManager.HasBeenVerifiedAsync())
-            {
-                return View("Error");
-            }
-            return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
-        }
-
-        //
-        // POST: /Account/VerifyCode
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            // The following code protects for brute force attacks against the two factor codes. 
-            // If a user enters incorrect codes for a specified amount of time then the user account 
-            // will be locked out for a specified amount of time. 
-            // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(model.ReturnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid code.");
-                    return View(model);
-            }
-        }
-
-        //
         // GET: /Account/Register
         [AllowAnonymous]
         public ActionResult Register()
@@ -194,22 +151,9 @@ namespace AgrotouristicWebApplication.Controllers
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         repository.AssignToRole(user.Id, "Klient");
-
-                        System.Net.Mail.MailMessage m = new System.Net.Mail.MailMessage(
-                         new System.Net.Mail.MailAddress("maciuszka9@gmail.com", "Agroturystyka"),
-                         new System.Net.Mail.MailAddress(user.Email));
-                        m.Subject = "Potwierdzenie adresu e-mail";
-                        m.Body = string.Format("Drogi {0}<BR/>Dziękujemy za rejestrację, kliknij link poniżej w celu ukończenia rejestracji: <a href=\"{1}\" title=\"User Email Confirm\">{1}</a>", user.UserName, Url.Action("ConfirmEmail", "Account", new { Token = user.Id, Email = user.Email }, Request.Url.Scheme));
-                        m.IsBodyHtml = true;
-                        System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient()
-                        {
-                            Host = "smtp.gmail.com",
-                            Port=587,
-                            Credentials = new System.Net.NetworkCredential("maciuszka9@gmail.com", "Legolas6#"),
-                            DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network,
-                            EnableSsl=true
-                        };
-                        smtp.Send(m);
+                        string callbackUrl = Url.Action("ConfirmEmail", "Account", new { Token = user.Id, Email = user.Email }, Request.Url.Scheme);
+                        string body = string.Format("Drogi {0}<BR/>Dziękujemy za rejestrację, kliknij link poniżej w celu ukończenia rejestracji: <a href=\"{1}\" title=\"User Email Confirm\">{1}</a>", user.UserName, callbackUrl);
+                        SendEmail(user.Email, "Potwierdzenie adresu e-mail", body);
                         return RedirectToAction("Confirm", "Account", new { Email = user.Email });
                     }
                     else
@@ -263,16 +207,6 @@ namespace AgrotouristicWebApplication.Controllers
             AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
         }
 
-        private bool HasPassword()
-        {
-            var user = UserManager.FindById(User.Identity.GetUserId());
-            if (user != null)
-            {
-                return user.PasswordHash != null;
-            }
-            return false;
-        }
-
         //
         // GET: /Account/ForgotPassword
         [AllowAnonymous]
@@ -293,20 +227,36 @@ namespace AgrotouristicWebApplication.Controllers
                 var user = await UserManager.FindByNameAsync(model.Email);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
-                    // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
                 }
-
-                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                string callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                string body = string.Format("Drogi {0}<BR/>, kliknij link poniżej w celu zresetowania hasła: <a href=\"{1}\" title=\"User Reset Password\">{1}</a>", user.UserName, callbackUrl);
+                SendEmail(user.Email, "Zresetowanie hasła", body);
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        private void SendEmail(string userEmail,string subject,string body)
+        {
+            System.Net.Mail.MailMessage m = new System.Net.Mail.MailMessage(
+                         new System.Net.Mail.MailAddress("maciuszka9@gmail.com", "Agroturystyka"),
+                         new System.Net.Mail.MailAddress(userEmail));
+            m.Subject = subject;
+            m.Body = body;
+            m.IsBodyHtml = true;
+            System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient()
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                Credentials = new System.Net.NetworkCredential("maciuszka9@gmail.com", "Legolas6#"),
+                DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network,
+                EnableSsl = true
+            };
+            smtp.Send(m);
         }
 
         //
@@ -367,14 +317,6 @@ namespace AgrotouristicWebApplication.Controllers
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
-        }
-
-        //
-        // GET: /Account/ExternalLoginFailure
-        [AllowAnonymous]
-        public ActionResult ExternalLoginFailure()
-        {
-            return View();
         }
 
         protected override void Dispose(bool disposing)
