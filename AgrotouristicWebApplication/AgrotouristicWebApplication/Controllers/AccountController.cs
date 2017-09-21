@@ -143,7 +143,9 @@ namespace AgrotouristicWebApplication.Controllers
                         Email = model.Email,
                         PhoneNumber=model.PhoneNumber,
                         Profession ="-",
-                        EmailConfirmed=false
+                        EmailConfirmed=false,
+                        HireDate=DateTime.Now.Date,
+                        Salary=0
                     };
                     IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
