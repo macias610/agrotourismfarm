@@ -17,7 +17,7 @@ namespace Repository.IRepo
         User GetOriginalValuesUser(string id);
         void AssignToRole(string userId, string role);
         void UpdateUser(User user,string securityStamp);
-        void UpdateBaseDataUser(User user);
+        void UpdateBaseDataUser(User user, string securityStamp);
         List<SelectListItem> GetNewRolesForUser(List<IdentityUserRole> UserRoles, Dictionary<string, string> Roles);
         List<string> GetAvaiableProfessons();
         List<string> GetUserRoles(string id);
