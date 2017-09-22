@@ -158,17 +158,6 @@ namespace Repository.Repository
             db.Entry(user).State = EntityState.Deleted;
         }
 
-        public List<string> GetRolesForUser(ICollection<IdentityUserRole> userRoles)
-        {
-            Dictionary<string,string> roles = GetRoles().ToDictionary(x=>x.Id,x=>x.Name);
-            List<string> result = new List<string>();
-            foreach(IdentityUserRole userRole in userRoles)
-            {
-                result.Add(roles[userRole.RoleId]);
-            }
-            return result;
-        }
-
         public List<string> GetAvaiableProfessons()
         {
             List<string> professions = (from attraction in db.Attractions
@@ -212,10 +201,16 @@ namespace Repository.Repository
             return orignal;
         }
 
-        public ICollection<IdentityUserRole> GetUserRoles(string id)
+        public List<string> GetUserRoles(string id)
         {
             User user = GetUserById(id);
-            return user.Roles;
+            Dictionary<string, string> roles = GetRoles().ToDictionary(x => x.Id, x => x.Name);
+            List<string> result = new List<string>();
+            foreach (IdentityUserRole userRole in user.Roles)
+            {
+                result.Add(roles[userRole.RoleId]);
+            }
+            return result;
         }
     }
 }

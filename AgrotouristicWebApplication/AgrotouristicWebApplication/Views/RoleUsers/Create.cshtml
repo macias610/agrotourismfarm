@@ -16,6 +16,20 @@
     ViewBag.Title = "Create";
 }
 
+@if ((string)ViewBag.ConcurrencyErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ConcurrencyErrorMessage
+    </div>
+}
+
+@if (ViewBag.exception == true)
+{
+    <div class="alert alert-danger" role="alert">
+        Wystąpił błąd.
+    </div>
+}
+
 <h2>Dodaj poziom dostępu</h2>
 
 @using (Html.BeginForm())

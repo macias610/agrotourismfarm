@@ -224,10 +224,7 @@ namespace AgrotouristicWebApplication.Controllers
         {
             Dictionary<string, string> roles = repository.GetRoles().ToDictionary(x => x.Name, x => x.Id);
             Dictionary<string, string> rolesSecond = repository.GetRoles().ToDictionary(x => x.Id, x => x.Name);
-            List<String> userRoles = new List<string>();
-
-            repository.GetUserRoles(user.Id).ToList().ForEach(item => userRoles.Add(rolesSecond[item.RoleId]));
-            if (userRoles.Contains("Admin") && repository.GetNumberOfUsersForGivenRole(roles, "Admin") <= 1)
+            if (repository.GetUserRoles(user.Id).Contains("Admin") && repository.GetNumberOfUsersForGivenRole(roles, "Admin") <= 1)
             {
                 ViewBag.error = true;
                 return View(user);
