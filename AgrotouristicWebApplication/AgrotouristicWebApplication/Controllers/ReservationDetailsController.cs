@@ -19,7 +19,7 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Klient")]
+        [Authorize(Roles = "Klient,Recepcjonista")]
         public ActionResult GetReservationDetails(int id)
         {
             List<House> houses = repository.GetHousesForReservation(id);
@@ -33,7 +33,7 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Klient")]
+        [Authorize(Roles = "Klient,Recepcjonista")]
         public ActionResult GetHouseDetails(int id, string houseName)
         {
             House house = repository.GetHousesForReservation(id).Where(item => item.Name.Equals(houseName)).FirstOrDefault();
@@ -224,7 +224,7 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Klient")]
+        [Authorize(Roles = "Klient,Recepcjonista")]
         [ValidateAntiForgeryToken]
         public ActionResult RetreiveAttractionsForTerm(string term,int id)
         {
