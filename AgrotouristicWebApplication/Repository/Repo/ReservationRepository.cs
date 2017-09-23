@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
 namespace Repository.Repo
 {
@@ -263,7 +264,12 @@ namespace Repository.Repo
 
         public void RemoveReservation(Reservation reservation)
         {
-            db.Reservations.Remove(reservation);
+            Reservation toDelete = GetReservationById(reservation.Id);
+            if(!reservation.RowVersion.SequenceEqual(toDelete.RowVersion))
+            {
+                throw new DbUpdateConcurrencyException();
+            }
+            db.Reservations.Remove(toDelete);
         }   
 
         public List<Reservation> RemoveOutOfDateReservations(List<Reservation> reservations)
@@ -298,9 +304,9 @@ namespace Repository.Repo
             return reservations;
         }
 
-        public void UpdateReservation(Reservation reservation)
+        public void UpdateReservation(Reservation reservation,byte[] rowVersion)
         {
-            db.Entry(reservation).State = EntityState.Modified;
+            db.Entry(reservation).OriginalValues["RowVersion"] = rowVersion;
         }
 
         public void AddReservationHistory(Reservation_History reservationHistory)

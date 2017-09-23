@@ -47,14 +47,6 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return HttpNotFound();
             }      
-            //List<ReservationAttractionDetails> attractionDetails = new List<ReservationAttractionDetails>();
-
-            //repository.GetAttractionsForReservation(reservation.Id).ForEach(item => attractionDetails.Add(new ReservationAttractionDetails()
-            //{
-            //    Attraction = item,
-            //    Attraction_Reservation = repository.GetDetailsAboutReservedAttraction(item.Id),
-            //    Workers = repository.GetWorkersAssignedToAttraction(repository.GetDetailsAboutReservedAttraction(item.Id).Id)
-            //}));
 
             return View(reservation);
         } 

@@ -29,7 +29,7 @@ namespace Repository.IRepo
         void AddReservation(Reservation reservation);
         void AddReservationHistory(Reservation_History reservationHistory);
         void SaveChanges();   
-        void UpdateReservation(Reservation reservation);
+        void UpdateReservation(Reservation reservation,byte[] rowVersion);
         IQueryable<Reservation> GetClientReservations(string id);
         IQueryable<Reservation_History> GetClientArchiveReservations(string id);
         void SaveAssignedMealsAndHouses(int id, NewReservation reservation);

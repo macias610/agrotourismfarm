@@ -4,6 +4,13 @@
     ViewBag.Title = "Delete";
 }
 
+@if ((string)ViewBag.ConcurrencyErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ConcurrencyErrorMessage
+    </div>
+}
+
 <h2>Usuń</h2>
 
 <h3></h3>
@@ -63,6 +70,15 @@
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model=>model.Id)
+        @Html.HiddenFor(model=>model.ClientId)
+        @Html.HiddenFor(model=>model.Client.Name)
+        @Html.HiddenFor(model=>model.Client.Surname)
+        @Html.HiddenFor(model=>model.StartDate)
+        @Html.HiddenFor(model=>model.EndDate)
+        @Html.HiddenFor(model=>model.OverallCost)
+        @Html.HiddenFor(model=>model.RowVersion)
 
         <div class="form-actions no-color">
             <input type="submit" value="Usuń" class="btn btn-default" /> |
