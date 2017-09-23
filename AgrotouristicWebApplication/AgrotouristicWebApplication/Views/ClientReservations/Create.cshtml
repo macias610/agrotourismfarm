@@ -4,6 +4,7 @@
     ViewBag.Title = "Create";
 }
 
+
 <head>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
@@ -115,6 +116,12 @@
 
 </head>
 
+@if ((string)ViewBag.ConcurrencyErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ConcurrencyErrorMessage
+    </div>
+}
 
 <h2>Dodaj rezerwację</h2>
 

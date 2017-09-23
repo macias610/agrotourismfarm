@@ -388,5 +388,30 @@ namespace Repository.Repo
             }
         }
 
+        public bool checkAvaiabilityHousesBeforeConformation(NewReservation savedReservation)
+        {
+            DateTime startDate = savedReservation.StartDate;
+            DateTime endDate = savedReservation.EndDate;
+            List<string> reservationHousesNames = (from reservation in db.Reservations
+                                              where (startDate.CompareTo(reservation.StartDate) >= 0 & startDate.CompareTo(reservation.EndDate) < 0)
+                                              | (endDate.CompareTo(reservation.StartDate) >= 0 & endDate.CompareTo(reservation.EndDate) < 0)
+                                              | (reservation.StartDate.CompareTo(startDate) >= 0 & reservation.StartDate.CompareTo(endDate) < 0)
+                                              | (reservation.EndDate.CompareTo(startDate) >= 0 & reservation.EndDate.CompareTo(endDate) < 0)
+                                              join resHouse in db.Reservation_Houses on reservation.Id equals resHouse.ReservationId
+                                              select resHouse.House.Name).ToList();
+            List<string> housesName = (from house in db.Houses
+                                       select house.Name).ToList();
+            housesName.RemoveAll(item => reservationHousesNames.Contains(item));
+            List<string> selectedHouses = new List<string>();
+            savedReservation.AssignedParticipantsHouses.Keys.ToList().ForEach(item => selectedHouses.Add(Regex.Match(item, @"\(([^)]*)\)").Groups[1].Value));
+            foreach(string houseName in selectedHouses)
+            {
+                if(!housesName.Contains(houseName))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
