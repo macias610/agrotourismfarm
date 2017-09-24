@@ -19,6 +19,24 @@
             </script>
         }
 
+        <script>
+            $(function() {
+                $("input[type='button']").hover( function() {
+                    if($(this).val() == 'Usuń')
+                    {
+                        ($(this).parent()).parent().attr('style','background-color: aqua');
+                    }
+                });
+                $("input[type='button']").mouseleave( function() {
+                    if($(this).val() == 'Usuń')
+                    {
+                        ($(this).parent()).parent().attr('style','background-color: lavender');
+                    }
+                });
+            })
+        </script>
+
+        <link rel="stylesheet" href="~/Content/TimeTableStyleSheet.css" type="text/css" />
     </head>
     <body>
         <div id="TimeTableDetails" class="form-horizontal">
@@ -38,10 +56,10 @@
                         {
                             <td>
                                 <p>
-                                    <input type="text" name="Term" readonly="readonly" value="@date.ToShortDateString()" style="width:100px;border:0" />
+                                    <input type="text" name="Term" readonly="readonly" value="@date.ToShortDateString()" />
                                 </p>
                                 <p>
-                                    <input type="text" name="DayOfWeek" readonly="readonly" value="@(ReservationAttractions.Days[date.DayOfWeek.ToString()])" style="width:100px;border:0" />
+                                    <input type="text" name="DayOfWeek" readonly="readonly" value="@(ReservationAttractions.Days[date.DayOfWeek.ToString()])"/>
                                 </p>
                             </td>
                         }
@@ -70,7 +88,7 @@
 
                                         foreach (string item in @Model.AssignedAttractions[date][i].Split('(')[1].Split(')')[0].Split(';').ToList().Where(x => !x.IsEmpty()).ToList())
                                         {
-                                            <div style="border:dashed;border-width:1px;">
+                                            <div >
                                                 <input type="hidden" name="EmailInstructor" value="@item.Split('|')[0]" />
                                                 <p>@item.Split('|')[1].Split('-')[0].Split(',')[0],</p>
                                                 <p>@item.Split('|')[1].Split('-')[0].Split(',')[1]</p>
