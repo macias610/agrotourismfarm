@@ -103,7 +103,6 @@ namespace AgrotouristicWebApplication.Controllers
                     }
                     repository.AssignToRole(roleUser.userId,roleUser.SelectedRoleText);
                     repository.SaveChanges();
-                    ViewBag.exception = false;
                     return RedirectToAction("Index");
                 }
                 catch

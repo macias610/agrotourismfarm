@@ -18,6 +18,8 @@ namespace Repository.IRepo
         Attraction_Reservation GetAttractionReservationById(int id);
         Attraction_Reservation_Worker GetAttractionReservationWorkerById(int id);
         int GetMaxRowsToTableAttractions(Dictionary<DateTime, List<string>> dictionary);
+        bool checkStateInstructorToAttraction(Attraction_Reservation_Worker attractionReservationWorker);
+        User GetInstructorAssignedToAttraction(string id);
         string GetInstructorsForReservedAttraction(int id);
         string RetreiveInstructorsAssignedToAttraction(int id,string attractionName);
         void RemoveAssignedInstructorAttraction(Attraction_Reservation_Worker attractionReservationWorker);
