@@ -116,6 +116,7 @@ namespace AgrotouristicWebApplication.Controllers
                 AvaiableInstructors = repository.GetAvaiableInstructors(id, attractionReservation.Attraction.Name),
                 AttractionReservationID=attractionReservation.Id
             };
+
             return View("~/Views/ReceptionistAttractions/AddInstructor.cshtml",attractionNewInstructor);
         }
 
@@ -127,7 +128,7 @@ namespace AgrotouristicWebApplication.Controllers
             Attraction_Reservation_Worker attractionReservationWorker = new Attraction_Reservation_Worker()
             {
                 WorkerId= Request.Form["IdInstructor"].ToString(),
-                Attraction_ReservationId=idAttractionReservation
+                Attraction_ReservationId=idAttractionReservation,
             };
             try
             {

@@ -244,6 +244,22 @@
     <Compile Include="Migrations\201709240844132_RowVersion_Attraction_Reservation_table.Designer.cs">
       <DependentUpon>201709240844132_RowVersion_Attraction_Reservation_table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709240851583_RowVersion_Reservation_House_table.cs" />
+    <Compile Include="Migrations\201709240851583_RowVersion_Reservation_House_table.Designer.cs">
+      <DependentUpon>201709240851583_RowVersion_Reservation_House_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709240858031_RowVersion_AttractionReservationWorker_table.cs" />
+    <Compile Include="Migrations\201709240858031_RowVersion_AttractionReservationWorker_table.Designer.cs">
+      <DependentUpon>201709240858031_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709240913481_deleted_RowVersion_AttractionReservationWorker_table.cs" />
+    <Compile Include="Migrations\201709240913481_deleted_RowVersion_AttractionReservationWorker_table.Designer.cs">
+      <DependentUpon>201709240913481_deleted_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709240914511_added_RowVersion_AttractionReservationWorker_table.cs" />
+    <Compile Include="Migrations\201709240914511_added_RowVersion_AttractionReservationWorker_table.Designer.cs">
+      <DependentUpon>201709240914511_added_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AgrotourismContext.cs" />
     <Compile Include="Models\HouseType.cs" />
@@ -338,6 +354,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709240844132_RowVersion_Attraction_Reservation_table.resx">
       <DependentUpon>201709240844132_RowVersion_Attraction_Reservation_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709240851583_RowVersion_Reservation_House_table.resx">
+      <DependentUpon>201709240851583_RowVersion_Reservation_House_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709240858031_RowVersion_AttractionReservationWorker_table.resx">
+      <DependentUpon>201709240858031_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709240913481_deleted_RowVersion_AttractionReservationWorker_table.resx">
+      <DependentUpon>201709240913481_deleted_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709240914511_added_RowVersion_AttractionReservationWorker_table.resx">
+      <DependentUpon>201709240914511_added_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

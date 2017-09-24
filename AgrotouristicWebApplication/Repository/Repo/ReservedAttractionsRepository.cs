@@ -176,7 +176,16 @@ namespace Repository.Repo
                     result.Add(worker);
                 }
             }
-            List<SelectListItem> selectListItem = result.Select(item => new SelectListItem { Text = item.Name + "," + item.Surname + "(" + item.UserName + ")", Value = item.Id, Selected = result.First().Equals(item) ? true : false }).ToList();
+            List<SelectListItem> selectListItem = null;
+
+            if (result.Count > 0)
+                selectListItem = result.Select(item => new SelectListItem { Text = item.Name + "," + item.Surname + "(" + item.UserName + ")", Value = item.Id, Selected = result.First().Equals(item) ? true : false }).ToList();
+            else
+            {
+                List<string> list = new List<string>();
+                list.Add("-");
+                selectListItem = list.Select(item => new SelectListItem { Text = item, Value = item, Selected = true }).ToList();
+            }
             return selectListItem;
         }
 

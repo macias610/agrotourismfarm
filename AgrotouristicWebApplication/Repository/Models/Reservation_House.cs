@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -19,6 +20,9 @@ namespace Repository.Models
         public virtual Reservation Reservation { get; set; }
         public int MealId { get; set; }
         public virtual Meal Meal { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         public virtual ICollection<Participant> Participant { get; set; }
     }
