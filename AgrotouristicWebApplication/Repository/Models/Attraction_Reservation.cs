@@ -30,6 +30,9 @@ namespace Repository.Models
         public int QuantityParticipant { get; set; }
         public decimal OverallCost { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         public virtual Attraction Attraction { get; set; }
         public virtual Reservation Reservation { get; set; }
         public virtual ICollection<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
