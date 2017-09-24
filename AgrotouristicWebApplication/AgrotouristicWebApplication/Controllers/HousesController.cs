@@ -10,6 +10,7 @@ using Repository.Models;
 using Repository.IRepo;
 using Repository.ViewModels;
 using PagedList;
+using System.Data.Entity.Infrastructure;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -94,29 +95,69 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Description,Name,HouseTypeId")] House house)
+        public ActionResult Edit(int? id, byte[] rowVersion) 
         {
-
-            if (ModelState.IsValid)
+            string[] fieldsToBind = new string[] { "Description", "Name","HouseTypeId", "RowVersion" };
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            House houseToUpdate = repository.GetHouseById((int)id);
+            if (houseToUpdate == null)
+            {
+                House deletedHouse = new House();
+                TryUpdateModel(deletedHouse, fieldsToBind);
+                 ModelState.AddModelError(string.Empty,
+                    "Nie można zapisać. Domek został usunięty przez innego użytkownika.");
+                return View(deletedHouse);
+            }
+            if (TryUpdateModel(houseToUpdate, fieldsToBind))
             {
                 try
                 {
-                    repository.UpdateHouse(house);
+                    repository.UpdateHouse(houseToUpdate, rowVersion);
                     repository.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                catch
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    ViewBag.exception = true;
-                    return View(house);
+                    DbEntityEntry entry = ex.Entries.Single();
+                    House clientValues = (House)entry.Entity;
+                    DbPropertyValues databaseEntry = entry.GetDatabaseValues();
+                    if (databaseEntry == null)
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            "Nie można zapisać. Domek został usunięty przez innego użytkownika.");
+                    }
+                    else
+                    {
+                        House databaseValues = (House)databaseEntry.ToObject();
+
+                        if (databaseValues.Name != clientValues.Name)
+                            ModelState.AddModelError("Nazwa", "Aktulalna wartość: "
+                                + databaseValues.Name);
+                        if (databaseValues.HouseTypeId != clientValues.HouseTypeId)
+                            ModelState.AddModelError("Typdomku", "Aktulalna wartość: "
+                                + String.Format("{0:c}", databaseValues.HouseTypeId));
+                        if (databaseValues.Description != clientValues.Description)
+                            ModelState.AddModelError("Description", "Aktulalna wartość: "
+                                + String.Format("{0:c}", databaseValues.Description));
+                        ModelState.AddModelError(string.Empty, "Edytowany rekord  "
+                            + "został wcześniej zmodyfikowany przez innego użytkownika,operacja anulowana. Pobrano wpisane wartości. Kliknij zapisz, żeby napisać.");
+                        houseToUpdate.RowVersion = databaseValues.RowVersion;
+                    }
                 }
-                
+                catch (RetryLimitExceededException)
+                {
+                    ModelState.AddModelError("", "Nie można zapisać. Spróbuj ponownie");
+                }
             }
-            return View(house);
+
+            return View(houseToUpdate);
         }
 
         [Authorize(Roles ="Admin")]
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, bool? concurrencyError)
         {
             if (id == null)
             {
@@ -125,7 +166,18 @@ namespace AgrotouristicWebApplication.Controllers
             House house = repository.GetHouseById((int)id);
             if (house == null)
             {
+                if (concurrencyError.GetValueOrDefault())
+                {
+                    return RedirectToAction("Index");
+                }
                 return HttpNotFound();
+            }
+            if (concurrencyError.GetValueOrDefault())
+            {
+                ViewBag.ConcurrencyErrorMessage = "Usuwany rekord "
+                    + "został zmodyfikowany po pobraniu oryginalnych wartości."
+                    + "Usuwanie anulowano i wyświetlono aktualne dane. "
+                    + "W celu usunięcia kliknij usuń";
             }
             return View(house);
         }
@@ -133,9 +185,8 @@ namespace AgrotouristicWebApplication.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Admin")]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed([Bind(Include ="Id,Description,Name,RowVersion")] House house)
         {
-            House house = repository.GetHouseById(id);
             repository.setAvailabilityHouse(house);
 
             if (house.statusHouse.Equals("Zajęty")|| house.statusHouse.Equals("Zarezerwowany"))
@@ -143,22 +194,21 @@ namespace AgrotouristicWebApplication.Controllers
                 ViewBag.error = true;
                 return View(house);
             }
-
-
             try
             {
                 repository.RemoveHouse(house);
                 repository.SaveChanges();
+                return RedirectToAction("Index");
             }
-            catch
+            catch (DbUpdateConcurrencyException)
             {
-                ViewBag.exception = true;
+                return RedirectToAction("Delete", new { concurrencyError = true, id = house.Id });
+            }
+            catch (DataException)
+            {
+                ModelState.AddModelError(string.Empty, "Nie można usunąć.Spróbuj ponownie.");
                 return View(house);
             }
-
-            ViewBag.exception = false;
-            ViewBag.error = false;
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

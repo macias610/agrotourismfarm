@@ -11,10 +11,10 @@
     </div>
 }
 
-@if (ViewBag.exception == true)
+@if ((string)ViewBag.ConcurrencyErrorMessage != null)
 {
     <div class="alert alert-danger" role="alert">
-        Wystąpił błąd
+        @ViewBag.ConcurrencyErrorMessage
     </div>
 }
 
@@ -24,7 +24,7 @@
 <div>
     <hr />
     <dl class="dl-horizontal">
-        @Html.HiddenFor(model=>model.Id)
+        
         <dt>
             @Html.DisplayNameFor(model => model.Email)
         </dt>
@@ -62,6 +62,14 @@
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model=>model.Email)
+        @Html.HiddenFor(model=>model.Name)
+        @Html.HiddenFor(model=>model.Surname)
+        @Html.HiddenFor(model=>model.BirthDate)
+        <input type="hidden" id="DeleteSecurityStamp" name="DeleteSecurityStamp" value="@Model.SecurityStamp" />
+
 
         <div class="form-actions no-color">
             <input type="submit" value="Usuń" class="btn btn-default" /> |

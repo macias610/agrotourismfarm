@@ -21,6 +21,7 @@ namespace Repository.IRepo
         List<Reservation> RemoveOutOfDateReservations(List<Reservation> reservations);
         Reservation_History GetReservationHistoryBasedReservation(Reservation reservation);
         Reservation_History GetReservationHistoryById(int id);
+        bool checkAvaiabilityHousesBeforeConformation(NewReservation savedReservation);
 
         void ChangeAssignedMeals(int id, NewReservation reservation);
         void ChangeAssignedParticipants(int id,NewReservation reservation);
@@ -28,7 +29,7 @@ namespace Repository.IRepo
         void AddReservation(Reservation reservation);
         void AddReservationHistory(Reservation_History reservationHistory);
         void SaveChanges();   
-        void UpdateReservation(Reservation reservation);
+        void UpdateReservation(Reservation reservation,byte[] rowVersion);
         IQueryable<Reservation> GetClientReservations(string id);
         IQueryable<Reservation_History> GetClientArchiveReservations(string id);
         void SaveAssignedMealsAndHouses(int id, NewReservation reservation);

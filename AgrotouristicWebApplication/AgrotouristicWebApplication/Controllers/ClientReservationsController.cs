@@ -47,20 +47,12 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return HttpNotFound();
             }      
-            //List<ReservationAttractionDetails> attractionDetails = new List<ReservationAttractionDetails>();
-
-            //repository.GetAttractionsForReservation(reservation.Id).ForEach(item => attractionDetails.Add(new ReservationAttractionDetails()
-            //{
-            //    Attraction = item,
-            //    Attraction_Reservation = repository.GetDetailsAboutReservedAttraction(item.Id),
-            //    Workers = repository.GetWorkersAssignedToAttraction(repository.GetDetailsAboutReservedAttraction(item.Id).Id)
-            //}));
 
             return View(reservation);
         } 
 
         [Authorize(Roles ="Klient")]
-        public ActionResult Create()
+        public ActionResult Create(bool? concurrencyError)
         {
             string action = (Request.UrlReferrer.Segments.Skip(2).Take(1).SingleOrDefault() ?? "Index").Trim('/');
             List<string> actions = new List<string>()
@@ -69,6 +61,14 @@ namespace AgrotouristicWebApplication.Controllers
             };
             if(!actions.Contains(action))
             {
+                Session.Remove("Reservation");
+            }
+            if(concurrencyError.GetValueOrDefault())
+            {
+                    ViewBag.ConcurrencyErrorMessage = "Inny użytkownik "
+                        + "wcześniej zarezerwował wybrane domki."
+                        + "Rezerwację anulowano. "
+                        + "Wybierz ponownie";
                 Session.Remove("Reservation");
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
@@ -83,6 +83,10 @@ namespace AgrotouristicWebApplication.Controllers
             if (ModelState.IsValid)
             {
                 reservation = (NewReservation )Session["Reservation"];
+                if(!repository.checkAvaiabilityHousesBeforeConformation(reservation))
+                {
+                    return RedirectToAction("Create", new { concurrencyError = true});
+                }
 
                 Reservation savedReservation = repository.GetReservationBasedOnData(reservation, User.Identity.GetUserId());
                 repository.AddReservation(savedReservation);

@@ -6,6 +6,13 @@
     ViewBag.Title = "Index";
 }
 
+@if ((string)ViewBag.ConcurrencyErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ConcurrencyErrorMessage
+    </div>
+}
+
 <h2>Index</h2>
 
 <table class="table">

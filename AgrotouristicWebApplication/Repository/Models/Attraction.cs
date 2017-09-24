@@ -36,6 +36,9 @@ namespace Repository.Models
         [Required]
         public decimal Discount { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         public ICollection<Attraction_Reservation> Attraction_Reservation { get; set; }
     }
 }

@@ -30,6 +30,9 @@ namespace Repository.Models
         [Required]
         public decimal Price { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         public virtual ICollection<Reservation_House> Reservation_House { get; set; }
     }
 }

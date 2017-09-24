@@ -2,90 +2,95 @@
 @using Repository.ViewModels
 @using Newtonsoft.Json
 
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryval")
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/jqueryval")
 
-    @foreach (KeyValuePair<DateTime, List<string>> item in Model.AssignedAttractions)
-    {
-        <script type="text/javascript">
-                    var dictionary ={};
-                     $(function () {
-                         dictionary[@Html.Raw(JsonConvert.SerializeObject(item.Key.ToShortDateString()))] = @Html.Raw(JsonConvert.SerializeObject(item.Value));
-                     });
-        </script>
-    }
+        @foreach (KeyValuePair<DateTime, List<string>> item in Model.AssignedAttractions)
+        {
+            <script type="text/javascript">
+                var dictionary ={};
+                $(function () {
+                    dictionary[@Html.Raw(JsonConvert.SerializeObject(item.Key.ToShortDateString()))] = @Html.Raw(JsonConvert.SerializeObject(item.Value));
+                });
+            </script>
+        }
 
-</head>
+    </head>
+    <body>
+        <div id="TimeTableDetails" class="form-horizontal">
 
-<div id="TimeTableDetails" class="form-horizontal">
+            <div style="clear:both" />
 
-    <div style="clear:both" />
-
-    <table class="table" border="1" id="TimeTableAttractions">
-        <thead>
-            <tr>
-                <td>
-                    <p>
-                        Terminy
-                    </p>
-                    <br />
-                </td>
-                @foreach (DateTime date in Model.AssignedAttractions.Keys.ToList())
-                {
-                    <td>
-                        <p>
-                            <input type="text" name="Term" readonly="readonly" value="@date.ToShortDateString()" style="width:90px;border:0" />
-                        </p>
-                        <p>
-                            <input type="text" name="DayOfWeek" readonly="readonly" value="@(ReservationAttractions.Days[date.DayOfWeek.ToString()])" style="width:90px;border:0" />
-                        </p>
-                    </td>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < Model.MaxRows; i++)
-            {
-                <tr>
-                    <td>
-                        <p>Atrakcja:</p>
-                        <p>Liczba osób:</p>
-                    </td>
-                    @foreach (DateTime date in Model.AssignedAttractions.Keys.ToList())
-                    {
+            <table class="table" border="1" id="TimeTableAttractions">
+                <thead>
+                    <tr>
                         <td>
-                            @if (i < Model.AssignedAttractions[date].Count)
-                            {
-                                <p>@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[1].Split(',')[0]</p>
-                                <p>@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[1].Split(',')[1]</p>
-
-                                if (date.CompareTo(DateTime.Now.Date) > 0)
-                                {
-                                    <p><input type="button" name="ButtonAddInstructor" value="Dodaj" onclick="location.href='@Url.Action("AddInstructor", "ReceptionistAttractions",new {id=@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[0],attractionName= @Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[1].Split(',')[0] })'" /></p>
-                                }
-
-                                foreach (string item in @Model.AssignedAttractions[date][i].Split('(')[1].Split(')')[0].Split(';').ToList().Where(x => !x.IsEmpty()).ToList())
-                                {
-                                    <div style="border:dashed;border-width:1px;">
-                                        <input type="hidden" name="EmailInstructor" value="@item.Split('|')[0]" />
-                                        <p>@item.Split('|')[1].Split('-')[0]</p>
-                                        <input type="hidden" name="IDInstructor" value="@item.Split('|')[1].Split('-')[1]"/>
-                                        @if (date.CompareTo(DateTime.Now.Date) > 0)
-                                        {
-                                            <p><input type="button" name="ButtonRemoveInstructor" value="Usuń" onclick="location.href='@Url.Action("RemoveInstructor", "ReceptionistAttractions",new {id=@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[0],name=@item.Split('|')[1].Split('-')[0]+"("+@item.Split('|')[0] +")",reservationAttractionWorkerId=@item.Split('|')[1].Split('-')[1]})'" /></p>
-                                        }
-                                    </div>
-                                }
-
-                            }
+                            <p>
+                                Terminy
+                            </p>
+                            <br />
                         </td>
+                        @foreach (DateTime date in Model.AssignedAttractions.Keys.ToList())
+                        {
+                            <td>
+                                <p>
+                                    <input type="text" name="Term" readonly="readonly" value="@date.ToShortDateString()" style="width:100px;border:0" />
+                                </p>
+                                <p>
+                                    <input type="text" name="DayOfWeek" readonly="readonly" value="@(ReservationAttractions.Days[date.DayOfWeek.ToString()])" style="width:100px;border:0" />
+                                </p>
+                            </td>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.MaxRows; i++)
+                    {
+                        <tr>
+                            <td>
+                                <p>Atrakcja:</p>
+                                <p>Liczba osób:</p>
+                            </td>
+                            @foreach (DateTime date in Model.AssignedAttractions.Keys.ToList())
+                            {
+                                <td>
+                                    @if (i < Model.AssignedAttractions[date].Count)
+                                    {
+                                        <p>@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[1].Split(',')[0]</p>
+                                        <p>@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[1].Split(',')[1]</p>
+
+                                        if (date.CompareTo(DateTime.Now.Date) > 0)
+                                        {
+                                            <p><input type="button" name="ButtonAddInstructor" value="Dodaj" onclick="location.href='@Url.Action("AddInstructor", "ReceptionistAttractions",new {id=@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[0],attractionName= @Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[1].Split(',')[0] })'" /></p>
+                                        }
+
+                                        foreach (string item in @Model.AssignedAttractions[date][i].Split('(')[1].Split(')')[0].Split(';').ToList().Where(x => !x.IsEmpty()).ToList())
+                                        {
+                                            <div style="border:dashed;border-width:1px;">
+                                                <input type="hidden" name="EmailInstructor" value="@item.Split('|')[0]" />
+                                                <p>@item.Split('|')[1].Split('-')[0].Split(',')[0],</p>
+                                                <p>@item.Split('|')[1].Split('-')[0].Split(',')[1]</p>
+                                                <input type="hidden" name="IDInstructor" value="@item.Split('|')[1].Split('-')[1]" />
+                                                @if (date.CompareTo(DateTime.Now.Date) > 0)
+                                                {
+                                                    <p><input type="button" name="ButtonRemoveInstructor" value="Usuń" onclick="location.href='@Url.Action("RemoveInstructor", "ReceptionistAttractions",new {id=@Model.AssignedAttractions[date][i].Split('(')[0].Split(';')[0],name=@item.Split('|')[1].Split('-')[0]+"("+@item.Split('|')[0] +")",reservationAttractionWorkerId=@item.Split('|')[1].Split('-')[1]})'" /></p>
+                                                }
+                                            </div>
+                                        }
+
+                                    }
+                                </td>
+                            }
+
+                        </tr>
                     }
+                </tbody>
+            </table>
 
-                </tr>
-            }
-        </tbody>
-    </table>
-
-</div>
+        </div>
+    </body>
+</html>

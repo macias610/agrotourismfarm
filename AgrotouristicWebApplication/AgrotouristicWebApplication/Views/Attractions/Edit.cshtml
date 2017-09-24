@@ -4,6 +4,14 @@
     ViewBag.Title = "Edit";
 }
 
+@if (ViewData.ModelState.Keys.Contains(string.Empty))
+{
+    <div class="alert alert-danger" role="alert">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </div>
+}
+
+
 <h2>Edytuj warsztat</h2>
 
 @using (Html.BeginForm())
@@ -13,8 +21,9 @@
     <div class="form-horizontal">
         <h4>Warsztat</h4>
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
         @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model=>model.RowVersion)
 
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })

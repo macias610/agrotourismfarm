@@ -22,9 +22,15 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         [Authorize(Roles ="Recepcjonista")]
-        public ActionResult Index()
+        public ActionResult Index(bool? concurrencyError)
         {
             List<SelectListItem> weeksSelectListItem = repository.GetWeeksForAttractions(DateTime.Now);
+            if (concurrencyError.GetValueOrDefault())
+            {
+                ViewBag.ConcurrencyErrorMessage = "Inny użytkownik "
+                    + "przypisał/usunął tego instruktora lub  instruktor został usunięty."
+                    + "Operacja anulowana. ";
+            }
             return View(weeksSelectListItem);
         }
 
@@ -73,8 +79,13 @@ namespace AgrotouristicWebApplication.Controllers
             Attraction_Reservation_Worker attractionReservationWorker = repository.GetAttractionReservationWorkerById(id);
             try
             {
+                if (attractionReservationWorker == null || !repository.checkStateInstructorToAttraction(attractionReservationWorker))
+                {
+                    return RedirectToAction("Index", new { concurrencyError = true });
+                }
                 repository.RemoveAssignedInstructorAttraction(attractionReservationWorker);
                 repository.SaveChanges();
+                return RedirectToAction("Index");
             }
             catch 
             {
@@ -91,8 +102,6 @@ namespace AgrotouristicWebApplication.Controllers
                 };
                 return View("~/Views/ReceptionistAttractions/RemoveInstructor.cshtml", attractionRemovedInstructor);
             }
-            ViewBag.exception = false;
-            return RedirectToAction("Index");
         }
         
         [Authorize(Roles ="Recepcjonista")]
@@ -107,6 +116,7 @@ namespace AgrotouristicWebApplication.Controllers
                 AvaiableInstructors = repository.GetAvaiableInstructors(id, attractionReservation.Attraction.Name),
                 AttractionReservationID=attractionReservation.Id
             };
+
             return View("~/Views/ReceptionistAttractions/AddInstructor.cshtml",attractionNewInstructor);
         }
 
@@ -118,13 +128,17 @@ namespace AgrotouristicWebApplication.Controllers
             Attraction_Reservation_Worker attractionReservationWorker = new Attraction_Reservation_Worker()
             {
                 WorkerId= Request.Form["IdInstructor"].ToString(),
-                Attraction_ReservationId=idAttractionReservation
+                Attraction_ReservationId=idAttractionReservation,
             };
             try
             {
+                if(repository.checkStateInstructorToAttraction(attractionReservationWorker) || repository.GetInstructorAssignedToAttraction(attractionReservationWorker.WorkerId) == null)
+                {
+                    return RedirectToAction("Index", new { concurrencyError = true });
+                }
                 repository.AssignInstructorToAttraction(attractionReservationWorker);
                 repository.SaveChanges();
-                
+                return RedirectToAction("Index");
             }
             catch
             {
@@ -141,7 +155,6 @@ namespace AgrotouristicWebApplication.Controllers
                 ViewBag.exception = false;
                 return View("~/Views/ReceptionistAttractions/AddInstructor.cshtml",attractionNewInstructor);
             }
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

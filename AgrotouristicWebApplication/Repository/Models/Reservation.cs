@@ -51,6 +51,9 @@ namespace Repository.Models
 
         public string ClientId { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         public virtual ICollection<Reservation_House> Reservation_House { get; set; }
         public virtual ICollection<Attraction_Reservation> Attraction_Reservation { get; set; }
         public virtual User Client { get; set; }

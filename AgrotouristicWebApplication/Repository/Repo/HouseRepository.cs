@@ -80,12 +80,12 @@ namespace Repository.Repo
 
         public void RemoveHouse(House house)
         {
-            db.Houses.Remove(house);
+            db.Entry(house).State=EntityState.Deleted;
         }
 
         public void RemoveHouseType(HouseType houseType)
         {
-            db.HouseTypes.Remove(houseType);
+            db.Entry(houseType).State = EntityState.Deleted;
         }
 
         public void SaveChanges()
@@ -118,14 +118,14 @@ namespace Repository.Repo
             }
         }
 
-        public void UpdateHouse(House house)
+        public void UpdateHouse(House house,byte[] rowVersion)
         {
-            db.Entry(house).State = EntityState.Modified;
+            db.Entry(house).OriginalValues["RowVersion"] = rowVersion;
         }
 
-        public void UpdateHouseType(HouseType houseType)
+        public void UpdateHouseType(HouseType houseType,byte[] rowVersion)
         {
-            db.Entry(houseType).State = EntityState.Modified;
+            db.Entry(houseType).OriginalValues["RowVersion"] = rowVersion;
         }
     }
 }

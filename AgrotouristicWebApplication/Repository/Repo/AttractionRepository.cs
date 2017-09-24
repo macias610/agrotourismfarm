@@ -46,7 +46,7 @@ namespace Repository.Repo
 
         public void RemoveAttraction(Attraction attraction)
         {
-            db.Attractions.Remove(attraction);
+            db.Entry(attraction).State = EntityState.Deleted;
         }
 
         public void SaveChanges()
@@ -54,9 +54,9 @@ namespace Repository.Repo
             db.SaveChanges();
         }
 
-        public void UpdateAttraction(Attraction attraction)
+        public void UpdateAttraction(Attraction attraction,byte[] rowVersion)
         {
-            db.Entry(attraction).State = EntityState.Modified;
+            db.Entry(attraction).OriginalValues["RowVersion"] = rowVersion;
         }
     }
 }

@@ -2,10 +2,16 @@
 
         <h4>Użytkownik</h4>
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
+        @if (ViewData.ModelState.Keys.Contains(string.Empty))
+        {
+            <div class="alert alert-danger" role="alert">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            </div>
+        }
+
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.PasswordHash)
-        @Html.HiddenFor(model => model.SecurityStamp)
 
         <div class="form-group">
             @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })

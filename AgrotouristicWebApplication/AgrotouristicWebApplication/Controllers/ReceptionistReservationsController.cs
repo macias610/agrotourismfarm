@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
 using Repository.ViewModels;
+using System.Data.Entity.Infrastructure;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -63,48 +64,89 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return HttpNotFound();
             }
-            EditionStatusReservation reservation = new EditionStatusReservation()
-            {
-                Id=editedReservation.Id,
-                Name=editedReservation.Client.Name,
-                Surname=editedReservation.Client.Surname,
-                StartDate=editedReservation.StartDate,
-                EndDate=editedReservation.EndDate,
-                Status=editedReservation.Status,
-                States = Reservation.States.Select(state=>new SelectListItem { Text=state,Value=state,Selected=state.Equals(editedReservation.Status)?true:false}).ToList()
-            };
-            return View(reservation);
+            IList<string> states = Reservation.States;
+            ViewData["States"] = states;
+            return View(editedReservation);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Recepcjonista")]
-        public ActionResult Edit([Bind(Include = "Id,Name,Surname,StartDate,EndDate,Status")] EditionStatusReservation reservation)
+        public ActionResult Edit(int? id, byte[] rowVersion) 
         {
-            Reservation editedReservation = repository.GetReservationById(reservation.Id);
-            if (ModelState.IsValid)
+            string[] fieldsToBind = new string[] { "Name", "Surname","StartDate","EndDate","Status", "RowVersion" };
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Reservation editedReservation = repository.GetReservationById((int)id);
+            if (editedReservation == null)
+            {
+                Reservation deletedReservation = new Reservation();
+                TryUpdateModel(deletedReservation, fieldsToBind);
+                deletedReservation.Client = new User();
+                deletedReservation.Client.Name = Request.Form["Client.Name"];
+                deletedReservation.Client.Surname = Request.Form["Client.Surname"];
+                ModelState.AddModelError(string.Empty,
+                    "Nie można zapisać. Rezerwacja została usunięta przez innego użytkownika.");
+                IList<string> ss = Reservation.States;
+                ViewData["States"] = ss;
+                return View(deletedReservation);
+            }
+            if (TryUpdateModel(editedReservation, fieldsToBind))
             {
                 try
                 {
-                    editedReservation.Status = reservation.Status;
-                    repository.UpdateReservation(editedReservation);
+                    repository.UpdateReservation(editedReservation, rowVersion);
                     repository.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                catch 
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    ViewBag.exception = true;
-                    reservation.States = Reservation.States.Select(state => new SelectListItem { Text = state, Value = state, Selected = state.Equals(editedReservation.Status) ? true : false }).ToList();
-                    return View(reservation);
+                    DbEntityEntry entry = ex.Entries.Single();
+                    Reservation clientValues = (Reservation)entry.Entity;
+                    DbPropertyValues databaseEntry = entry.GetDatabaseValues();
+                    if (databaseEntry == null)
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            "Nie można zapisać. Rezerwacja została usunięta przez innego użytkownika.");
+                    }
+                    else
+                    {
+                        Reservation databaseValues = (Reservation)databaseEntry.ToObject();
+
+                        if (databaseValues.Status != clientValues.Status)
+                            ModelState.AddModelError("Status", "Aktulalna wartość: "
+                                + databaseValues.Status);
+                        if (databaseValues.StartDate != clientValues.StartDate)
+                            ModelState.AddModelError("Początek", "Aktulalna wartość: "
+                                + databaseValues.StartDate);
+                        if (databaseValues.EndDate != clientValues.EndDate)
+                            ModelState.AddModelError("Koniec", "Aktulalna wartość: "
+                                + databaseValues.EndDate);
+                        if (databaseValues.DeadlinePayment != clientValues.DeadlinePayment)
+                            ModelState.AddModelError("Termin płatności", "Aktulalna wartość: "
+                                + String.Format("{0:c}", databaseValues.DeadlinePayment));
+                        if (databaseValues.OverallCost != clientValues.OverallCost)
+                            ModelState.AddModelError("Całkowity koszt", "Aktulalna wartość: "
+                                + String.Format("{0:c}", databaseValues.OverallCost));
+                        ModelState.AddModelError(string.Empty, "Edytowany rekord  "
+                            + "został wcześniej zmodyfikowany przez innego użytkownika,operacja anulowana. Pobrano wpisane wartości. Kliknij zapisz, żeby napisać.");
+                        editedReservation.RowVersion = databaseValues.RowVersion;
+                    }
                 }
-                
+                catch (RetryLimitExceededException)
+                {
+                    ModelState.AddModelError("", "Nie można zapisać. Spróbuj ponownie");
+                }
             }
-            reservation.States = Reservation.States.Select(state => new SelectListItem { Text = state, Value = state, Selected = state.Equals(editedReservation.Status) ? true : false }).ToList();
-            return View(reservation);
+            IList<string> states = Reservation.States;
+            ViewData["States"] = states;
+            return View(editedReservation);
         }
 
         [Authorize(Roles ="Recepcjonista")]
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, bool? concurrencyError)
         {
             if (id == null)
             {
@@ -113,7 +155,18 @@ namespace AgrotouristicWebApplication.Controllers
             Reservation reservation = repository.GetReservationById((int)id);
             if (reservation == null)
             {
+                if (concurrencyError.GetValueOrDefault())
+                {
+                    return RedirectToAction("Index");
+                }
                 return HttpNotFound();
+            }
+            if (concurrencyError.GetValueOrDefault())
+            {
+                ViewBag.ConcurrencyErrorMessage = "Usuwany rekord "
+                    + "został zmodyfikowany po pobraniu oryginalnych wartości."
+                    + "Usuwanie anulowano i wyświetlono aktualne dane. "
+                    + "W celu usunięcia kliknij usuń";
             }
             ViewBag.NumberHouses = reservation.Reservation_House.Count;
             return View(reservation);
@@ -122,14 +175,27 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Recepcjonista")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed([Bind(Include = "Id,Name,Surname,StartDate,EndDate,OverallCost,ClientId,RowVersion")]Reservation reservation)
         {
-            Reservation reservation = repository.GetReservationById(id);
-            Reservation_History reservationHistory = repository.GetReservationHistoryBasedReservation(reservation);
-            repository.AddReservationHistory(reservationHistory);
-            repository.RemoveReservation(reservation);
-            repository.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                reservation.Attraction_Reservation = repository.GetReservationById(reservation.Id).Attraction_Reservation;
+                reservation.Reservation_House = repository.GetReservationById(reservation.Id).Reservation_House;
+                Reservation_History reservationHistory = repository.GetReservationHistoryBasedReservation(reservation);
+                repository.RemoveReservation(reservation);
+                repository.AddReservationHistory(reservationHistory);
+                repository.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return RedirectToAction("Delete", new { concurrencyError = true, id = reservation.Id });
+            }
+            catch (DataException)
+            {
+                ModelState.AddModelError(string.Empty, "Nie można usunąć.Spróbuj ponownie.");
+                return View(reservation);
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -22,8 +22,8 @@ namespace Repository.IRepo
         void AddHouseType(HouseType houseType);
         void RemoveHouse(House house);
         void RemoveHouseType(HouseType houseType);
-        void UpdateHouse(House house);
-        void UpdateHouseType(HouseType houseType);
+        void UpdateHouse(House house,byte[] rowVersion);
+        void UpdateHouseType(HouseType houseType,byte[] rowVersion);
         void SaveChanges();
 
     }

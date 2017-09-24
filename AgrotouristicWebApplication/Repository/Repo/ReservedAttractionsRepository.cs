@@ -176,7 +176,16 @@ namespace Repository.Repo
                     result.Add(worker);
                 }
             }
-            List<SelectListItem> selectListItem = result.Select(item => new SelectListItem { Text = item.Name + "," + item.Surname + "(" + item.UserName + ")", Value = item.Id, Selected = result.First().Equals(item) ? true : false }).ToList();
+            List<SelectListItem> selectListItem = null;
+
+            if (result.Count > 0)
+                selectListItem = result.Select(item => new SelectListItem { Text = item.Name + "," + item.Surname + "(" + item.UserName + ")", Value = item.Id, Selected = result.First().Equals(item) ? true : false }).ToList();
+            else
+            {
+                List<string> list = new List<string>();
+                list.Add("-");
+                selectListItem = list.Select(item => new SelectListItem { Text = item, Value = item, Selected = true }).ToList();
+            }
             return selectListItem;
         }
 
@@ -191,6 +200,24 @@ namespace Repository.Repo
             return attractionReservationWorker;
         }
 
-        
+        public bool checkStateInstructorToAttraction(Attraction_Reservation_Worker attractionReservationWorker)
+        {
+            List<Attraction_Reservation_Worker> added = (from attrResWork in db.Attractions_Reservations_Workers
+                                                         where attrResWork.Attraction_ReservationId.Equals(attractionReservationWorker.Attraction_ReservationId)
+                                                         && attrResWork.WorkerId.Equals(attractionReservationWorker.WorkerId)
+                                                         select attrResWork).ToList();
+            if (added.Count >= 1)
+                return true;
+            else
+                return false;
+        }
+
+        public User GetInstructorAssignedToAttraction(string id)
+        {
+            User user = (from usr in db.ApplicationUsers
+                         where usr.Id.Equals(id)
+                         select usr).FirstOrDefault();
+            return user;
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace Repository.Repo
 
         public void RemoveMeal(Meal meal)
         {
-            db.Meals.Remove(meal);
+            db.Entry(meal).State = EntityState.Deleted;
         }
 
         public void SaveChanges()
@@ -53,9 +53,9 @@ namespace Repository.Repo
             db.SaveChanges();
         }
 
-        public void UpdateMeal(Meal meal)
+        public void UpdateMeal(Meal meal,byte[] rowVersion)
         {
-            db.Entry(meal).State = EntityState.Modified;
+            db.Entry(meal).OriginalValues["RowVersion"] = rowVersion;
         }
     }
 }

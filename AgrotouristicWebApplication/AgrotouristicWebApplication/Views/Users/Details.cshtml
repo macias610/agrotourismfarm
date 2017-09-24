@@ -57,7 +57,7 @@
             @Html.DisplayFor(model => model.BirthDate)
         </dd>
 
-        @if (Model.HireDate.HasValue)
+        @if (Model.isUserEmployed)
         {
             <dt>
                 @Html.DisplayNameFor(model => model.HireDate)
@@ -68,7 +68,7 @@
             </dd>
         }
 
-        @if (!Model.Profession.Equals("-"))
+        @if (!Model.Profession.Equals("-") && Model.isUserEmployed)
         {
             <dt>
                 @Html.DisplayNameFor(model => model.Profession)
@@ -80,7 +80,7 @@
         }
 
         
-        @if (Model.Salary.HasValue)
+        @if (Model.Salary.Value >0 && Model.isUserEmployed)
         {
             <dt>
                 @Html.DisplayNameFor(model => model.Salary)
@@ -96,5 +96,5 @@
     </dl>
 </div>
 <p>
-    <a href="javascript:void(0);" onclick="history.go(-1);">Wróć</a>
+    @Html.ActionLink("Wróć", "Index","Home")
 </p>

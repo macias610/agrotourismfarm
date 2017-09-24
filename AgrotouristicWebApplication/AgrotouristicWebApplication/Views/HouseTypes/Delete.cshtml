@@ -11,12 +11,13 @@
     </div>
 }
 
-@if (ViewBag.exception == true)
+@if ((string)ViewBag.ConcurrencyErrorMessage != null)
 {
     <div class="alert alert-danger" role="alert">
-        Wystąpił błąd.
+        @ViewBag.ConcurrencyErrorMessage
     </div>
 }
+
 
 <h2>Usuń typ</h2>
 
@@ -44,6 +45,11 @@
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.RowVersion)
+        @Html.HiddenFor(model=>model.Price)
+        @Html.HiddenFor(model=>model.Type)
 
         <div class="form-actions no-color">
             <input type="submit" value="Usuń" class="btn btn-default" /> |

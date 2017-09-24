@@ -11,7 +11,8 @@
     </div>
 }
 
-<script type="text/javascript">
+<head>
+    <script type="text/javascript">
         function handler(e) {
             var source = e.srcElement.id;
             if (source == 'AssignInstructorToAttaction')
@@ -19,7 +20,25 @@
                 $('#IdInstructor').val($('#AssignInstructorToAttaction option:selected').val())
             }
         }
-</script>
+    </script>
+
+    <script>
+        $(function () {
+            var selected = $('#AssignInstructorToAttaction option:selected').val();
+            if(selected == '-')
+            {
+                $('#btnSaveInstructor').attr("style", "visibility: hidden");
+            }
+            else
+            {
+                $('#btnSaveInstructor').attr("style", "visibility: visible");
+            }
+        });
+    </script>
+
+</head>
+
+
 
 <h2>Dodaj instruktora</h2>
 
@@ -62,7 +81,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Dodaj" class="btn btn-default" />
+                <input type="submit" value="Dodaj" class="btn btn-default" id="btnSaveInstructor" />
             </div>
         </div>
     </div>

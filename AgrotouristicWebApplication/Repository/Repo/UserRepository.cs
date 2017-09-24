@@ -5,6 +5,7 @@ using Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -112,9 +113,14 @@ namespace Repository.Repository
             return numberOfUsers;
         }
 
-        public void UpdateUser(User user)
+        public void UpdateUser(User user,string securityStamp)
         {
-            db.Entry(user).State = EntityState.Modified;
+            if(!db.Entry(user).OriginalValues["SecurityStamp"].Equals(securityStamp))
+            {
+                throw new DbUpdateConcurrencyException(user.Id);
+            }
+            db.Entry(user).OriginalValues["SecurityStamp"] = securityStamp;
+            GetUserManager().UpdateSecurityStamp(user.Id);
         }
 
         public bool isUserEmployed(string userId)
@@ -134,9 +140,14 @@ namespace Repository.Repository
             return false;
         }
 
-        public void RemoveUser(string id)
+        public void RemoveUser(User user,string securityStamp)
         {
-            User user = GetUserById(id);
+            user = GetUserById(user.Id);
+            if (!db.Entry(user).OriginalValues["SecurityStamp"].Equals(securityStamp))
+            {
+                throw new DbUpdateConcurrencyException(user.Id);
+            }
+            
             ICollection<IdentityUserLogin> logins = user.Logins;
             ICollection<IdentityUserRole> rolesForUser = user.Roles;
             Dictionary<string, string> roles = db.Roles.ToDictionary(x => x.Id, x => x.Name);
@@ -144,19 +155,7 @@ namespace Repository.Repository
             logins.ToList().ForEach(item => GetUserManager().RemoveLogin(user.Id, new UserLoginInfo(item.LoginProvider, item.ProviderKey)));
 
             rolesForUser.ToList().ForEach(item => RemoveFromRole(user.Id,roles[item.RoleId]));
-
-            db.Users.Remove(user);
-        }
-
-        public List<string> GetRolesForUser(ICollection<IdentityUserRole> userRoles)
-        {
-            Dictionary<string,string> roles = GetRoles().ToDictionary(x=>x.Id,x=>x.Name);
-            List<string> result = new List<string>();
-            foreach(IdentityUserRole userRole in userRoles)
-            {
-                result.Add(roles[userRole.RoleId]);
-            }
-            return result;
+            db.Entry(user).State = EntityState.Deleted;
         }
 
         public List<string> GetAvaiableProfessons()
@@ -168,18 +167,56 @@ namespace Repository.Repository
             return professions;
         }
 
-        public void UpdateBaseDataUser(User user)
+        public void UpdateBaseDataUser(User user,string securityStamp)
         {
-            User editedUser = db.ApplicationUsers.Find(user.Id);
-            editedUser.Email = user.Email;
-            editedUser.UserName = user.UserName;
-            editedUser.Name = user.Name;
-            editedUser.Surname = user.Surname;
-            editedUser.BirthDate = user.BirthDate;
-            editedUser.PhoneNumber = user.PhoneNumber;
-            editedUser.SecurityStamp = user.SecurityStamp;
-            editedUser.PasswordHash = user.PasswordHash;
-            db.Entry(editedUser).State = EntityState.Modified;
+            if (!db.Entry(user).OriginalValues["SecurityStamp"].Equals(securityStamp))
+            {
+                throw new DbUpdateConcurrencyException(user.Id);
+            }
+            db.Entry(user).OriginalValues["SecurityStamp"] = securityStamp;
+            //User editedUser = db.ApplicationUsers.Find(user.Id);
+            //editedUser.Email = user.Email;
+            //editedUser.UserName = user.UserName;
+            //editedUser.Name = user.Name;
+            //editedUser.Surname = user.Surname;
+            //editedUser.BirthDate = user.BirthDate;
+            //editedUser.PhoneNumber = user.PhoneNumber;
+            //editedUser.SecurityStamp = user.SecurityStamp;
+            //editedUser.PasswordHash = user.PasswordHash;
+            //db.Entry(editedUser).State = EntityState.Modified;
+            GetUserManager().UpdateSecurityStamp(user.Id);
+        }
+
+        public User GetOriginalValuesUser(string id)
+        {
+            User user = GetUserById(id);
+            User orignal = new User();
+            orignal.Id = db.Entry(user).OriginalValues["Id"].ToString();
+            orignal.PasswordHash = db.Entry(user).OriginalValues["PasswordHash"].ToString();
+            orignal.SecurityStamp = db.Entry(user).OriginalValues["SecurityStamp"].ToString();
+            orignal.BirthDate = DateTime.Parse(db.Entry(user).OriginalValues["BirthDate"].ToString());
+            orignal.Email = db.Entry(user).OriginalValues["Email"].ToString();
+            orignal.EmailConfirmed = Boolean.Parse(db.Entry(user).OriginalValues["EmailConfirmed"].ToString());
+            orignal.HireDate = DateTime.Parse(db.Entry(user).OriginalValues["HireDate"].ToString() != null ? db.Entry(user).OriginalValues["HireDate"].ToString() : null);
+            orignal.Name = db.Entry(user).OriginalValues["Name"].ToString();
+            orignal.Surname = db.Entry(user).OriginalValues["Surname"].ToString();
+            orignal.PhoneNumber = db.Entry(user).OriginalValues["PhoneNumber"].ToString();
+            orignal.Profession = db.Entry(user).OriginalValues["Profession"].ToString();
+            orignal.Salary = Decimal.Parse(db.Entry(user).OriginalValues["Salary"].ToString());
+            orignal.UserName = db.Entry(user).OriginalValues["UserName"].ToString();
+            return orignal;
+        }
+
+        public List<string> GetUserRoles(string id)
+        {
+            User user = GetUserById(id);
+            Dictionary<string, string> roles = GetRoles().ToDictionary(x => x.Id, x => x.Name);
+            List<string> result = new List<string>();
+            foreach (IdentityUserRole userRole in user.Roles)
+            {
+                result.Add(roles[userRole.RoleId]);
+            }
+            return result;
         }
     }
 }
