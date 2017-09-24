@@ -1,0 +1,38 @@
+﻿
+
+thead p input[type=text] 
+{
+    width:100px;
+    border: 0;
+    text-align: center;
+    align-content:center;
+    background-color: lavender;
+}
+
+thead tr td 
+{
+    text-align: center;
+    align-content:center;
+    background-color: lavender;
+}
+
+tbody tr td > *
+{
+    text-align: center;
+    align-content:center;
+}
+
+tbody td div 
+{
+    border:dashed;
+    border-width:1px;
+}
+
+tbody:before {
+    content: "-";
+    display: block;
+    line-height: 1em;
+    color: transparent;
+}
+ 
+

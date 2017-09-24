@@ -174,16 +174,6 @@ namespace Repository.Repository
                 throw new DbUpdateConcurrencyException(user.Id);
             }
             db.Entry(user).OriginalValues["SecurityStamp"] = securityStamp;
-            //User editedUser = db.ApplicationUsers.Find(user.Id);
-            //editedUser.Email = user.Email;
-            //editedUser.UserName = user.UserName;
-            //editedUser.Name = user.Name;
-            //editedUser.Surname = user.Surname;
-            //editedUser.BirthDate = user.BirthDate;
-            //editedUser.PhoneNumber = user.PhoneNumber;
-            //editedUser.SecurityStamp = user.SecurityStamp;
-            //editedUser.PasswordHash = user.PasswordHash;
-            //db.Entry(editedUser).State = EntityState.Modified;
             GetUserManager().UpdateSecurityStamp(user.Id);
         }
 
