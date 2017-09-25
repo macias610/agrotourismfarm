@@ -303,5 +303,18 @@ namespace Repository.Repo
                                      select attr).FirstOrDefault();
             return attraction;
         }
+
+        public void WriteDocument(string fileName,byte[] content, HttpResponseBase response)
+        {
+            HttpContext.Current.Response.Clear();
+            response.ContentType = "application/pdf";
+            response.ContentEncoding = System.Text.Encoding.UTF8;
+            response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            response.CacheControl = "No-cache";
+            response.BinaryWrite(content);
+            response.Flush();
+            response.SuppressContent = true;
+            HttpContext.Current.ApplicationInstance.CompleteRequest();
+        }
     }
 }

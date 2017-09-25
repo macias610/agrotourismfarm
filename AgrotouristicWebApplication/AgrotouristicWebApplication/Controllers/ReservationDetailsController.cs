@@ -1,9 +1,10 @@
-﻿using Repository.IRepo;
+﻿using HtmlAgilityPack;
+using NReco.PdfGenerator;
+using Repository.IRepo;
 using Repository.Models;
 using Repository.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -30,6 +31,80 @@ namespace AgrotouristicWebApplication.Controllers
                 { "Weeks",repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate)}
             };
             return PartialView("~/Views/Shared/_ReservationDetailsPartial.cshtml", dictionary);
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Klient,Recepcjonista")]
+        public FileResult ExportPDFReservation(int id)
+        {
+            Reservation reservation = repository.GetReservationById(id);
+            string htmlContent = this.RenderView("~/Views/Shared/_PDFReservationPartial.cshtml", reservation);
+
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(htmlContent);
+            HtmlNode node = doc.GetElementbyId("DetailsToPDF");
+            HtmlToPdfConverter htmlToPdf = new HtmlToPdfConverter();
+
+            node.InnerHtml= "<html><body>" + node.InnerHtml + "</body></html>";
+            var pdfBytes = htmlToPdf.GeneratePdf("<html><body>" + node.InnerHtml + "</body></html>");
+            var contentDisposition = new System.Net.Mime.ContentDisposition
+            {
+                FileName = "ReservationPDF.pdf",
+                Inline = false,
+                CreationDate = DateTime.Now,
+            };
+            Response.AppendHeader("Content-Disposition", contentDisposition.ToString());
+            Response.Charset = "utf-8";
+            return File(pdfBytes, "application/pdf");
+            //using (MemoryStream stream = new MemoryStream())
+            //{
+            //    string ARIALUNI_TFF = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "ARIALUNI.TTF");
+            //    BaseFont bf = BaseFont.CreateFont(ARIALUNI_TFF, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+            //    Font f = new Font(bf, 12, Font.NORMAL);
+
+
+            //    StringReader sr = new StringReader(node.InnerHtml);
+            //    Document pdfDoc = new Document(iTextSharp.text.PageSize.A4, 10f, 10f, 100f, 0f);
+            //    PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
+            //    pdfDoc.Open();
+            //    XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, sr);
+            //    pdfDoc.Close();
+            //    return File(stream.ToArray(), "application/pdf", "ReservationPDF.pdf");
+            //}
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="Klient,Recepcjonista")]
+        public ActionResult GetPDFReservation(int id)
+        {
+            Reservation reservation = repository.GetReservationById(id);
+            string htmlContent = this.RenderView("~/Views/Shared/_PDFReservationPartial.cshtml", reservation);
+
+
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(htmlContent);
+            HtmlNode node = doc.GetElementbyId("DetailsToPDF");
+            HtmlToPdfConverter htmlToPdf = new HtmlToPdfConverter();
+
+            htmlToPdf.Orientation = PageOrientation.Portrait;
+            htmlToPdf.PageFooterHtml = "<div style='text-align:center;font-family:Tahoma; font-size:9px;'>Page <span class=\"page\"></span> of <span class=\"topage\"></span></div>";
+            htmlToPdf.CustomWkHtmlArgs = "--margin-top 35 --header-spacing 0 --margin-left 0 --margin-right 0";
+            var pdfBytes = htmlToPdf.GeneratePdf("<html><body>" + node.InnerHtml + "</body></html>");
+
+            HttpContext.Response.Clear();
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", "attachment; filename=TEST.pdf");
+            Response.ContentEncoding = System.Text.Encoding.UTF8;
+            Response.CacheControl = "No-cache";
+            Response.BinaryWrite(pdfBytes);
+            Response.Flush();
+            Response.Close();
+            Response.SuppressContent = true;
+            HttpContext.ApplicationInstance.CompleteRequest();
+
+            //htmlToPdf.GeneratePdf(node.InnerHtml,null, "./export.pdf");
+            return new EmptyResult();
         }
 
         [HttpPost]
