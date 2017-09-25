@@ -9,6 +9,7 @@
 <head>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
+    <link href="~/Content/CreateReservationStyleSheet.css" rel="stylesheet">
 
     @if (Model != null)
     {
@@ -178,23 +179,23 @@
 
             <div style="clear:both;margin-bottom:20px;"></div>
 
-            <div style="float:left;margin-right:40px;">
+            <div class="divStages">
                 <button type="button" class="btn btn-danger btn-round stages" ><span class="glyphicon glyphicon-remove"></span></button>
             </div>
 
-            <div style="float:left;margin-right:40px;">
+            <div class="divStages">
                 <button type="button" class="btn btn-danger btn-round stages"><span class="glyphicon glyphicon-remove"></span></button>
             </div>
 
-            <div style="float:left;margin-right:40px;">
+            <div class="divStages">
                 <button type="button" class="btn btn-danger btn-round stages"><span class="glyphicon glyphicon-remove"></span></button>
             </div>
 
-            <div style="float:left;margin-right:40px;">
+            <div class="divStages">
                 <button type="button" class="btn btn-danger btn-round stages"><span class="glyphicon glyphicon-remove"></span></button>
             </div>
 
-            <div style="float:left;margin-right:40px;">
+            <div class="divStages">
                 <button type="button" class="btn btn-danger btn-round stages"><span class="glyphicon glyphicon-remove"></span></button>
             </div>
     </div>
@@ -211,6 +212,6 @@
 
 }
 
-<div>
+<div style="clear:both">
     @Html.ActionLink("Wróć", "Index")
 </div>
