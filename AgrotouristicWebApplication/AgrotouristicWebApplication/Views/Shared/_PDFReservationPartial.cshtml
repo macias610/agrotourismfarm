@@ -1,0 +1,44 @@
+﻿@model Repository.Models.Reservation
+@using Repository.Models
+
+@{
+    ViewBag.Title = "PDFReservation";
+}
+
+        <div id="DetailsToPDF">
+            <h2 align="center">Rezerwacja @Model.Client.Name @Model.Client.Surname (@Model.Client.Email)</h2>
+            <h4>Data rozpoczęcia: @Model.StartDate</h4>
+            <h4>Data zakończenia: @Model.EndDate</h4>
+            <h4>Termin płatności: @Model.DeadlinePayment</h4>
+            <h4>Koszt całkowity: @Model.OverallCost</h4>
+            <h4>Aktulany status: @Model.Status</h4>
+
+            <h4 align="center">Domki</h4>
+            @foreach (Reservation_House resHouse in Model.Reservation_House)
+            {
+                <div>
+                    <p style="text-indent: 10%; ">Domek: @resHouse.House.HouseType.Type @resHouse.House.Name, Cena: @resHouse.House.HouseType.Price </p>
+                    <p style="text-indent: 20%; ">Posiłek: @resHouse.Meal.Type, Cena: @resHouse.Meal.Price</p>
+                    <div style="text-indent: 20%; ">
+                        Lokatorzy:
+                        @foreach(Participant participant in resHouse.Participant)
+                        {
+                            <p style="text-indent: 30%; "> @participant.Name @participant.Surname</p>
+                        }
+                    </div>
+                </div>
+            }
+            <div style="clear:both"/>
+            <h4 align="center">Warsztaty</h4>
+            @foreach(Attraction_Reservation attrReservation in Model.Attraction_Reservation)
+            {
+                <div>
+                    <p style="text-indent: 10%; ">Warsztat: @attrReservation.Attraction.Name</p>
+                    <p style="text-indent: 20%; ">Liczba osób: @attrReservation.QuantityParticipant</p>
+                    <p style="text-indent: 20%; ">Termin: @attrReservation.TermAffair.ToShortDateString()</p>
+                    <p style="text-indent: 20%; ">Koszt: @attrReservation.OverallCost</p>
+                </div>
+            }
+
+        </div>
+
