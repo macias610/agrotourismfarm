@@ -1,4 +1,5 @@
 ﻿@model Repository.ViewModels.NewReservation
+@using Newtonsoft.Json
 
 @{
     ViewBag.Title = "Create";
@@ -8,6 +9,7 @@
 <head>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
+
     @if (Model != null)
     {
                 if(Model.StartDate != null)
@@ -110,10 +112,42 @@
                         }
                     });
         </script>
+        <script type="text/javascript">
+            var stagesConformation = [];
+            $(function () {
+                
+            });
+        </script>
+        
+        foreach (bool item in Model.stagesConfirmation)
+        {
+            <script>
+            $(function(){
+                stagesConformation.push(@Html.Raw(JsonConvert.SerializeObject(item)));
+            });
+            </script>
+        }
+
+        <script>
+        $(function () {
+            var x = document.getElementsByClassName("stages");
+
+            for(var i=0;i<x.length;i++)
+            {
+                if (stagesConformation[i] === true)
+                {
+                    x[i].classList.remove("btn-danger");
+                    x[i].className += " btn-success";
+                    x[i].firstChild.classList.remove("glyphicon-remove");
+                    x[i].firstChild.className +=" glyphicon-ok";
+                }
+            }
+        });
+        </script>
+
     }
 
-    
-
+   
 </head>
 
 @if ((string)ViewBag.ConcurrencyErrorMessage != null)
@@ -141,10 +175,28 @@
             <input type="button" id="participantsSection" value="Uczestnicy" onclick="location.href='@Url.Action("AddParticipants", "ReservationDetails")'" disabled="disabled" />
 
             <input type="button" id="attractionsSection" value="Warsztaty" onclick="location.href='@Url.Action("AddAttractions","ReservationDetails")'" disabled="disabled" />
-    </div>
 
-    <div id="content">
+            <div style="clear:both;margin-bottom:20px;"></div>
 
+            <div style="float:left;margin-right:40px;">
+                <button type="button" class="btn btn-danger btn-round stages" ><span class="glyphicon glyphicon-remove"></span></button>
+            </div>
+
+            <div style="float:left;margin-right:40px;">
+                <button type="button" class="btn btn-danger btn-round stages"><span class="glyphicon glyphicon-remove"></span></button>
+            </div>
+
+            <div style="float:left;margin-right:40px;">
+                <button type="button" class="btn btn-danger btn-round stages"><span class="glyphicon glyphicon-remove"></span></button>
+            </div>
+
+            <div style="float:left;margin-right:40px;">
+                <button type="button" class="btn btn-danger btn-round stages"><span class="glyphicon glyphicon-remove"></span></button>
+            </div>
+
+            <div style="float:left;margin-right:40px;">
+                <button type="button" class="btn btn-danger btn-round stages"><span class="glyphicon glyphicon-remove"></span></button>
+            </div>
     </div>
 
 
