@@ -2,7 +2,7 @@
 
 <section >
     <div >
-        @Html.Label("Domki", htmlAttributes: new { @class = "control-label col-md-1" })
+        @Html.Label("Domek", htmlAttributes: new { @class = "control-label col-md-1" })
         <div class="col-md-1" >
             @Html.DropDownList("SelectedHouseDetails", Model["Houses"], new { id= "SelectedHouseDetails", onchange = "handler(event)" })
         </div>
@@ -11,9 +11,9 @@
         </div> 
     </div>
 
-    <div >
+    <div>
         @Html.Label("Warsztaty(terminy)", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-2">
+        <div class="col-lg-3">
             @Html.DropDownList("SelectedWeekAttractions", Model["Weeks"], new { id = "SelectedWeekAttractions", onchange = "handler(event)" })
         </div>
         <div class="col-md-1">
