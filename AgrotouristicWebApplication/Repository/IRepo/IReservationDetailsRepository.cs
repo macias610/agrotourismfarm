@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Repository.IRepo
@@ -37,6 +38,7 @@ namespace Repository.IRepo
         void SaveSelectedHouses(NewReservation reservation, List<string> selectedHouses);
         void SaveAssignedMealsToHouses(NewReservation reservation, List<string> selectedMeals);
         void ClearParticipantsFormular(NewReservation reservation);
+        void WriteDocument(string fileName, byte[] content,HttpResponseBase response);
         bool ValidateFormularParticipants(Dictionary<string, List<Participant>> dictionary);
     }
 }

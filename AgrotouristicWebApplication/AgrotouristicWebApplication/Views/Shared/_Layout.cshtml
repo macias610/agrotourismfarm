@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
@@ -47,12 +48,7 @@
                     }
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Recepcjonista"))
                     {
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Rezerwacje<span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>@Html.ActionLink("Lista", "Index", "ReceptionistReservations")</li>
-                            </ul>
-                        </li>
+                        <li>@Html.ActionLink("Rezerwacje", "Index", "ReceptionistReservations")</li>
                         <li>@Html.ActionLink("Warsztaty", "Index", "ReceptionistAttractions")</li>
                     }
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))

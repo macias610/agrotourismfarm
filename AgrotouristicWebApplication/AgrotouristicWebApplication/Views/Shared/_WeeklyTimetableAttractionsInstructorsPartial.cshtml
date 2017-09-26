@@ -2,8 +2,7 @@
 @using Repository.ViewModels
 @using Newtonsoft.Json
 
-<!DOCTYPE html>
-<html>
+
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         @Scripts.Render("~/bundles/jquery")
@@ -38,7 +37,8 @@
 
         <link rel="stylesheet" href="~/Content/TimeTableStyleSheet.css" type="text/css" />
     </head>
-    <body>
+
+    <section>
         <div id="TimeTableDetails" class="form-horizontal">
 
             <div style="clear:both" />
@@ -108,7 +108,5 @@
                     }
                 </tbody>
             </table>
-
         </div>
-    </body>
-</html>
+    </section>

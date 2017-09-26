@@ -92,7 +92,6 @@
                 });
             });
     </script>
-
 </head>
 
 <div>
@@ -159,14 +158,24 @@
             </dd>
         </dl>
 
-        <input type="hidden" id="idValue" value=@Model.Id />
-        <input type="button" id="btnGetDetailsReservation" value="Szczegoły rezerwacji" />
+        <div style="display:inline-block">
+            @using (Html.BeginForm("ExportPDFReservation", "ReservationDetails", FormMethod.Post))
+            {
+                <input type="hidden" id="idValue" value=@Model.Id />
+                <input type="button" id="btnGetDetailsReservation" value="Szczegoły rezerwacji" />
+                <input type="submit" id="btnGeneratePDFReservation" value="Generuj PDF" />
+                <input type="hidden" name="id" value="@Model.Id" />
+            }
+        </div>
+        
+    <div style="clear:both;margin-bottom:10px;"></div>
 
     <div id="DetailsReservation" style="visibility:hidden">
 
     </div>
     
-    
+    <div style="clear:both;margin-bottom:10px;"></div>
+
     <div id="DetailsSelectHouseorAttractions" style="visibility:hidden;clear:both">
 
     </div>
