@@ -7,9 +7,9 @@
 
         <div id="DetailsToPDF">
             <h2 align="center">Rezerwacja @Model.Client.Name @Model.Client.Surname (@Model.Client.Email)</h2>
-            <h4>Data rozpoczęcia: @Model.StartDate</h4>
-            <h4>Data zakończenia: @Model.EndDate</h4>
-            <h4>Termin płatności: @Model.DeadlinePayment</h4>
+            <h4>Data rozpoczęcia: @Model.StartDate.ToShortDateString()</h4>
+            <h4>Data zakończenia: @Model.EndDate.ToShortDateString()</h4>
+            <h4>Termin płatności: @Model.DeadlinePayment.ToShortDateString()</h4>
             <h4>Koszt całkowity: @Model.OverallCost</h4>
             <h4>Aktulany status: @Model.Status</h4>
 
