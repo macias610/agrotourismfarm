@@ -4,14 +4,15 @@
     @for(int i = 0; i < Model.ToList().Count; i++)
     {
         <tr>
-            <td>@Html.Label("LP", (i + 1).ToString())</td>
-            <td>
+            <td class="col-xs-1">@Html.Label("LP", (i + 1).ToString())</td>
+            <td class="col-md-1">
                 @Html.EditorFor(model => model[i].Name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model[i].Name, "", new { @class = "text-danger" })
             </td>
-            <td>
+            <td class="col-md-1">
                 @Html.EditorFor(model => model[i].Surname, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model[i].Surname, "", new { @class = "text-danger" })
             </td>
+            <td class="col-md-9"></td>
         </tr>  
     }
