@@ -11,6 +11,7 @@ using Repository.IRepo;
 using Repository.ViewModels;
 using PagedList;
 using System.Data.Entity.Infrastructure;
+using Microsoft.AspNet.Identity;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -26,6 +27,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult Index(int? page)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             List<House> houses = repository.GetHouses().ToList();
             houses.ForEach(item => repository.setAvailabilityHouse(item));
  
@@ -43,6 +49,11 @@ namespace AgrotouristicWebApplication.Controllers
 
         public ActionResult Create()
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             HouseDetails house = new HouseDetails()
             {
                 Types = repository.getAvaiableTypes()
@@ -55,6 +66,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult Create([Bind(Include = "Description,Name")] House house,string selectedTypeText)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             house.HouseTypeId = repository.GetHouseTypeByType(selectedTypeText).Id;
             if (ModelState.IsValid)
             {
@@ -80,6 +96,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult Edit(int? id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -97,6 +118,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int? id, byte[] rowVersion) 
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             string[] fieldsToBind = new string[] { "Description", "Name","HouseTypeId", "RowVersion" };
             if (id == null)
             {
@@ -159,6 +185,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult Delete(int? id, bool? concurrencyError)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -187,6 +218,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult DeleteConfirmed([Bind(Include ="Id,Description,Name,RowVersion")] House house)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             repository.setAvailabilityHouse(house);
 
             if (house.statusHouse.Equals("Zajęty")|| house.statusHouse.Equals("Zarezerwowany"))

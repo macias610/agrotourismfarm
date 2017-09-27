@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Repository.IRepo;
 using Repository.Repo;
 using Repository.Repository;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 
 namespace AgrotouristicWebApplication.Controllers
@@ -22,12 +24,22 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult Index()
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             IQueryable<IdentityRole> roles = repository.GetRoles();
             return View(roles);
         }
 
         public ActionResult Create()
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             return View();
         }
 
@@ -36,6 +48,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include ="Name")] IdentityRole role)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (ModelState.IsValid)
             {
                 List<IdentityRole> roles = repository.GetRoles().ToList();
@@ -67,8 +84,5 @@ namespace AgrotouristicWebApplication.Controllers
         {
             base.Dispose(disposing);
         }
-
     }
-
-    
 }

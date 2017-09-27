@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Repository.ViewModels;
 using PagedList;
 using System.Data.Entity.Validation;
+using Microsoft.AspNet.Identity;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -27,8 +28,12 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Index(int? page, bool? concurrencyError)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             List<User> users = repository.GetUsers().ToList();
-
             Dictionary<string,string> roles = repository.GetRoles().ToDictionary(x=>x.Id,x=>x.Name);
             List<RolesUser> rolesUsers = new List<RolesUser>();
             users.ForEach(user => rolesUsers.Add(
@@ -57,7 +62,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult Create(string id, bool? concurrencyError)
         {
-
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -85,6 +94,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult Create([Bind(Include = "userId,SelectedRoleText")] RoleUser roleUser)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (ModelState.IsValid)
             {
                 try
@@ -117,6 +131,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult Delete(string userId,string selectedRoleText, bool? concurrencyError)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (selectedRoleText == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -140,6 +159,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         public ActionResult DeleteConfirmed([Bind(Include = "userId,SelectedRoleText")] RoleUser roleUser)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             Dictionary<string, string> roles = repository.GetRoles().ToDictionary(x => x.Name, x => x.Id);
             try
             {

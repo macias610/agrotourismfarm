@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
+
 using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
-using System.Web.Security;
 using Microsoft.AspNet.Identity;
 using Repository.ViewModels;
-using Microsoft.Ajax.Utilities;
 using PagedList;
+using System.Web.Security;
+using Microsoft.Owin.Security;
+using System.Net;
+using System.Web;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -28,6 +29,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult Index(int? page)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             List<Reservation> reservations = repository.GetClientReservations(User.Identity.GetUserId()).ToList();
             reservations=repository.RemoveOutOfDateReservations(reservations);
             int currentPage = page ?? 1;
@@ -38,6 +44,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult Details(int? id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -54,6 +65,12 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult Create(bool? concurrencyError)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true});
+            }
+
             string action = (Request.UrlReferrer.Segments.Skip(2).Take(1).SingleOrDefault() ?? "Index").Trim('/');
             List<string> actions = new List<string>()
             {
@@ -80,6 +97,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult Create([Bind(Include = "StartDate,EndDate")] NewReservation reservation)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (ModelState.IsValid)
             {
                 reservation = (NewReservation )Session["Reservation"];
@@ -106,6 +128,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult Edit(int? id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -141,6 +168,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult Edit([Bind(Include = "StartDate,EndDate")] NewReservation reservation)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (ModelState.IsValid)
             {
                 reservation = (NewReservation)Session["Reservation"];
@@ -161,6 +193,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult Delete(int? id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -179,6 +216,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult DeleteConfirmed(int id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             Reservation reservation = repository.GetReservationById(id);
             repository.RemoveReservation(reservation);
             repository.SaveChanges();

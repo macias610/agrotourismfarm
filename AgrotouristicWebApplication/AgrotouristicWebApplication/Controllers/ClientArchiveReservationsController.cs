@@ -25,6 +25,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult Index(int? page)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             List<Reservation_History> reservationsHistory = repository.GetClientArchiveReservations(User.Identity.GetUserId()).ToList();
             int currentPage = page ?? 1;
             int perPage = 4;
@@ -34,6 +39,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult Details(int? id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

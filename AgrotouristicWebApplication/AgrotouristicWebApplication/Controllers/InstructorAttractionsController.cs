@@ -25,6 +25,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Instruktor")]
         public ActionResult Index()
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             List<SelectListItem> weeksSelectListItem = repository.GetWeeksForAttractions(DateTime.Now);
             return View(weeksSelectListItem);
         }
@@ -33,6 +38,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Instruktor")]
         public ActionResult GetClassesInWeek(string term)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             AttractionInstructors attractionInstructor = null;
             if (term.Equals("-"))
             {
@@ -54,6 +64,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Instruktor")]
         public ActionResult Details(int? id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

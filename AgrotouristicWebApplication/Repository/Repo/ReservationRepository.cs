@@ -7,7 +7,6 @@ using Repository.Models;
 using Repository.ViewModels;
 using System.Web.Mvc;
 using System.Text.RegularExpressions;
-using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 
