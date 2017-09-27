@@ -47,3 +47,15 @@ body {
 .nav li:hover, .nav li a:hover, .nav li li:hover {
         background-color: white;
 }
+
+.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
