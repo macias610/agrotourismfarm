@@ -37,17 +37,17 @@
             function checkStateDropDownLists(avaiable,selected) {
                 if (avaiable < 1) {
                     document.getElementById("btnAddHouseMeal").style.visibility = 'hidden';
+                    document.getElementById('btnConfirmHousesMeals').style.visibility = 'visible'
                 }
                 else {
                     document.getElementById("btnAddHouseMeal").style.visibility = 'visible';
+                    document.getElementById('btnConfirmHousesMeals').style.visibility = 'hidden'
                 }
                 if (selected < 1) {
                     document.getElementById("btnRemoveSelectedHouseMeal").style.visibility = 'hidden';
-                    document.getElementById('btnConfirmHousesMeals').style.visibility = 'hidden'
                 }
                 else {
                     document.getElementById("btnRemoveSelectedHouseMeal").style.visibility = 'visible';
-                    document.getElementById('btnConfirmHousesMeals').style.visibility = 'visible'
                     detectChangeInSelectedHousesMeals();
                 }
             }
