@@ -2,6 +2,7 @@
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
+using Microsoft.AspNet.Identity;
 using NReco.PdfGenerator;
 using Repository.IRepo;
 using Repository.Models;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 
 namespace AgrotouristicWebApplication.Controllers
@@ -27,6 +29,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient,Recepcjonista")]
         public ActionResult GetReservationDetails(int id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             List<House> houses = repository.GetHousesForReservation(id);
             Reservation reservation = repository.GetReservationById(id);
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
@@ -64,42 +71,14 @@ namespace AgrotouristicWebApplication.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles ="Klient,Recepcjonista")]
-        public ActionResult GetPDFReservation(int id)
-        {
-            Reservation reservation = repository.GetReservationById(id);
-            string htmlContent = this.RenderView("~/Views/Shared/_PDFReservationPartial.cshtml", reservation);
-
-
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(htmlContent);
-            HtmlNode node = doc.GetElementbyId("DetailsToPDF");
-            HtmlToPdfConverter htmlToPdf = new HtmlToPdfConverter();
-
-            htmlToPdf.Orientation = PageOrientation.Portrait;
-            htmlToPdf.PageFooterHtml = "<div style='text-align:center;font-family:Tahoma; font-size:9px;'>Page <span class=\"page\"></span> of <span class=\"topage\"></span></div>";
-            htmlToPdf.CustomWkHtmlArgs = "--margin-top 35 --header-spacing 0 --margin-left 0 --margin-right 0";
-            var pdfBytes = htmlToPdf.GeneratePdf("<html><body>" + node.InnerHtml + "</body></html>");
-
-            HttpContext.Response.Clear();
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "attachment; filename=TEST.pdf");
-            Response.ContentEncoding = System.Text.Encoding.UTF8;
-            Response.CacheControl = "No-cache";
-            Response.BinaryWrite(pdfBytes);
-            Response.Flush();
-            Response.Close();
-            Response.SuppressContent = true;
-            HttpContext.ApplicationInstance.CompleteRequest();
-
-            //htmlToPdf.GeneratePdf(node.InnerHtml,null, "./export.pdf");
-            return new EmptyResult();
-        }
-
-        [HttpPost]
         [Authorize(Roles = "Klient,Recepcjonista")]
         public ActionResult GetHouseDetails(int id, string houseName)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             House house = repository.GetHousesForReservation(id).Where(item => item.Name.Equals(houseName)).FirstOrDefault();
             ReservationHouseDetails houseDetails = new ReservationHouseDetails()
             {
@@ -115,6 +94,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult GetAvaiableHouses(DateTime startDate, DateTime endDate)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             Session.Remove("Reservation");
             List<string> houses = new List<string>();
             repository.GetNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(startDate, endDate)).ToList().ForEach(item => houses.Add(item.Value));
@@ -134,6 +118,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult AddTerm()
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             return View("~/Views/ReservationDetails/AddTerm.cshtml");
         }
 
@@ -141,6 +130,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult AddTerm(bool isTermConfirmed)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.stagesConfirmation[0] = isTermConfirmed;
             Session["Reservation"] = reservation;
@@ -150,6 +144,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult AddHouses()
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
@@ -166,6 +165,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult AddHouses(bool isHousesConfirmed)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.OverallCost = Decimal.Parse(Request.Form["housesOverallCost"]);
             repository.SaveSelectedHouses(reservation, Request.Form.GetValues("HousesListBoxSelected").ToList());
@@ -178,6 +182,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult GetHouseDescription(string name)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             House house = repository.GetHouseByName(name);
             return PartialView("~/Views/Shared/_HouseDescriptionPartial.cshtml", house);
         }
@@ -185,6 +194,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult AddMeals()
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
@@ -204,6 +218,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddMeals(bool isMealsConfirmed)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.OverallCost = Decimal.Parse(Request.Form["mealsOverallCost"]);
             repository.SaveAssignedMealsToHouses(reservation, Request.Form.GetValues("ListBoxSelectedHousesMeals").ToList());
@@ -215,6 +234,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult AddParticipants()
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             ViewBag.ReservationId = 0;
             repository.ClearParticipantsFormular(reservation);
@@ -226,6 +250,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddParticipants(bool isParticipantsConfirmed)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             if (!repository.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
             {
@@ -241,6 +270,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult AddAttractions()
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.AssignedAttractions = repository.InitializeDictionaryForAssignedAttractions(reservation.StartDate, reservation.EndDate);
             List<SelectListItem> weeks = repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
@@ -255,6 +289,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddAttractions(bool isAttractionsConfirmed)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.stagesConfirmation[4] = isAttractionsConfirmed;
             Session["Reservation"] = reservation;
@@ -266,7 +305,12 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult GetAttractionsForTerm(string term)
         {
-            if(term.Equals("-"))
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
+            if (term.Equals("-"))
             {
                 return new EmptyResult();
             }
@@ -292,6 +336,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RetreiveAttractionsForTerm(string term,int id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             ReservationAttractions reservationAttractions = null;
             if (term.Equals("-"))
             {
@@ -318,6 +367,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ChangeSelectedAttraction(string term,DateTime date,string attraction)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             if(attraction.Split(';')[1].Equals("Add"))
             {
@@ -351,6 +405,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult GetHouseParticipants(string houseName)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             List<Participant> participants = reservation.AssignedParticipantsHouses[houseName];
             return PartialView("~/Views/Shared/_HouseParticipantsPartial.cshtml", participants);
@@ -360,6 +419,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateHeaderAntiForgeryToken]
         public ActionResult ChangeHouseParticipants(string houseName, List<Participant> participants)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.AssignedParticipantsHouses[houseName] = repository.CopyParticipantsData(reservation.AssignedParticipantsHouses[houseName], participants);
             Session["Reservation"] = reservation;
@@ -369,6 +433,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult EditMeals(int id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
@@ -387,6 +456,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult EditMeals(bool isMealsConfirmed)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.OverallCost = Decimal.Parse(Request.Form["mealsOverallCost"]);
             repository.SaveAssignedMealsToHouses(reservation, Request.Form.GetValues("ListBoxSelectedHousesMeals").ToList());
@@ -398,6 +472,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient")]
         public ActionResult EditParticipants(int id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             ViewBag.ReservationId = id;
             return View("~/Views/ReservationDetails/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
@@ -408,6 +487,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditParticipants(bool isParticipantsConfirmed, int reservationId)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             if (!repository.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
             {
@@ -423,6 +507,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Klient")]
         public ActionResult EditAttractions(int id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             List<SelectListItem> weeks = repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
             ViewBag.OverallCost = reservation.OverallCost;
@@ -435,6 +524,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditAttractions(bool isAttractionsConfirmed)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.stagesConfirmation[4] = isAttractionsConfirmed;
             Session["Reservation"] = reservation;

@@ -14,8 +14,13 @@ namespace AgrotouristicWebApplication.Controllers
             this.repository = repository;
         }
 
-        public ActionResult Index()
+        public ActionResult Index(bool? expiredSession)
         {
+            if (expiredSession.GetValueOrDefault())
+            {
+                ViewBag.ExpiredSessionMessage = "Sesja wygasła."
+                    + "Zaloguj się powonie.";
+            }
             return View();
         }
 

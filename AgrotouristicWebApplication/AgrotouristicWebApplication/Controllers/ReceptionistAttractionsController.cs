@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Repository.Models;
 using Repository.IRepo;
 using Repository.ViewModels;
+using Microsoft.AspNet.Identity;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -24,6 +25,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Recepcjonista")]
         public ActionResult Index(bool? concurrencyError)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             List<SelectListItem> weeksSelectListItem = repository.GetWeeksForAttractions(DateTime.Now);
             if (concurrencyError.GetValueOrDefault())
             {
@@ -38,6 +44,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Recepcjonista")]
         public ActionResult GetAttractionsInWeek(string term)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             AttractionInstructors attractionInstructors = null;
             if (term.Equals("-"))
             {
@@ -58,6 +69,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Recepcjonista")]
         public ActionResult RemoveInstructor(int id,string name,int reservationAttractionWorkerId)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             Attraction_Reservation attractionReservation = repository.GetAttractionReservationById(id);
             AttractionInstructorDetails attractionRemovedInstructor = new AttractionInstructorDetails()
             {
@@ -76,6 +92,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Recepcjonista")]
         public ActionResult RemoveInstructorConfirmed(int id)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             Attraction_Reservation_Worker attractionReservationWorker = repository.GetAttractionReservationWorkerById(id);
             try
             {
@@ -107,6 +128,11 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Recepcjonista")]
         public ActionResult AddInstructor(int id,string attractionName)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             Attraction_Reservation attractionReservation = repository.GetAttractionReservationById(id);
             AttractionNewInstructor attractionNewInstructor = new AttractionNewInstructor()
             {
@@ -125,6 +151,11 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddInstructor(int idAttractionReservation)
         {
+            if (HttpContext.Session["Checker"] == null)
+            {
+                HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home", new { expiredSession = true });
+            }
             Attraction_Reservation_Worker attractionReservationWorker = new Attraction_Reservation_Worker()
             {
                 WorkerId= Request.Form["IdInstructor"].ToString(),
