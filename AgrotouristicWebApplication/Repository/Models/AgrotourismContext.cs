@@ -42,6 +42,7 @@ namespace Repository.Models
 
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+                                            
 
             modelBuilder.Entity<Reservation_House>().HasRequired(x => x.Reservation)
                                             .WithMany(x => x.Reservation_House)

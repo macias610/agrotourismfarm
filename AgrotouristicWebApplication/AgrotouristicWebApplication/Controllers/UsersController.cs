@@ -331,6 +331,8 @@ namespace AgrotouristicWebApplication.Controllers
             string securityStamp = Request.Form["DeleteSecurityStamp"].ToString();
             try
             {
+                if (repository.GetUserRoles(user.Id).Contains("Klient"))
+                    repository.RemoveReservationsAssosiatedClient(user.Id);
                 repository.RemoveUser(user, securityStamp);
                 repository.SaveChanges();
                 return RedirectToAction("Index");
@@ -339,7 +341,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return RedirectToAction("Delete", new { concurrencyError = true, id = user.Id });
             }
-            catch (DataException)
+            catch (DataException ex)
             {
                 ModelState.AddModelError(string.Empty, "Nie można usunąć.Spróbuj ponownie.");
                 return View(user);

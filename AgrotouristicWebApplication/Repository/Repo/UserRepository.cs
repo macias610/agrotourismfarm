@@ -208,5 +208,17 @@ namespace Repository.Repository
             }
             return result;
         }
+
+        public void RemoveReservationsAssosiatedClient(string userId)
+        {
+            IQueryable<Reservation> reservations = (from reservation in db.Reservations
+                                                    where reservation.ClientId.Equals(userId)
+                                                    select reservation);
+            foreach(Reservation reservation in reservations.ToList())
+            {
+                db.Reservations.Remove(reservation);
+            }
+            SaveChanges();
+        }
     }
 }

@@ -14,7 +14,6 @@ namespace Repository.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class User : IdentityUser
     {
-
         public User()
         {
             this.Reservations = new HashSet<Reservation>();
@@ -56,7 +55,7 @@ namespace Repository.Models
 
         public virtual ICollection<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
 
-        public virtual ICollection<Reservation> Reservations { get; private set; }
+        public virtual ICollection<Reservation> Reservations { get; set; }
 
         public virtual ICollection<Reservation_History> Reservations_History { get; private set; }
 

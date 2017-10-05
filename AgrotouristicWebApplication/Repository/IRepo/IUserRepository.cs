@@ -25,6 +25,7 @@ namespace Repository.IRepo
         void RemoveUser(User user,string securityStamp);
         bool isUserEmployed(string userId);
         void RemoveFromRole(string userId, string role);
+        void RemoveReservationsAssosiatedClient(string userId);
         void AddRole(IdentityRole role);
         void SaveChanges();
     }

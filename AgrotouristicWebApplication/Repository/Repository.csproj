@@ -260,6 +260,14 @@
     <Compile Include="Migrations\201709240914511_added_RowVersion_AttractionReservationWorker_table.Designer.cs">
       <DependentUpon>201709240914511_added_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710050808432_added_delete_on_cascade_for_ApplicationUser.cs" />
+    <Compile Include="Migrations\201710050808432_added_delete_on_cascade_for_ApplicationUser.Designer.cs">
+      <DependentUpon>201710050808432_added_delete_on_cascade_for_ApplicationUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710050857045_deleted_delete_on_cascade_for_ApplicationUser.cs" />
+    <Compile Include="Migrations\201710050857045_deleted_delete_on_cascade_for_ApplicationUser.Designer.cs">
+      <DependentUpon>201710050857045_deleted_delete_on_cascade_for_ApplicationUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AgrotourismContext.cs" />
     <Compile Include="Models\HouseType.cs" />
@@ -366,6 +374,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709240914511_added_RowVersion_AttractionReservationWorker_table.resx">
       <DependentUpon>201709240914511_added_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710050808432_added_delete_on_cascade_for_ApplicationUser.resx">
+      <DependentUpon>201710050808432_added_delete_on_cascade_for_ApplicationUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710050857045_deleted_delete_on_cascade_for_ApplicationUser.resx">
+      <DependentUpon>201710050857045_deleted_delete_on_cascade_for_ApplicationUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
