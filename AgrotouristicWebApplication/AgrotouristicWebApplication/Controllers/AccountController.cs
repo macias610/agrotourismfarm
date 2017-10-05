@@ -12,6 +12,7 @@ using Repository.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Repository.IRepo;
 using Repository.Repository;
+using Repository.Repo;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -55,8 +56,6 @@ namespace AgrotouristicWebApplication.Controllers
             }
         }
 
-        //
-        // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -64,8 +63,6 @@ namespace AgrotouristicWebApplication.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -96,16 +93,12 @@ namespace AgrotouristicWebApplication.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/Register
         [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
         }
 
-        //
-        // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -134,23 +127,21 @@ namespace AgrotouristicWebApplication.Controllers
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         repository.AssignToRole(user.Id, "Klient");
                         string callbackUrl = Url.Action("ConfirmEmail", "Account", new { Token = user.Id, Email = user.Email }, Request.Url.Scheme);
-                        string body = string.Format("Drogi {0}<BR/>Dziękujemy za rejestrację, kliknij link poniżej w celu ukończenia rejestracji: <a href=\"{1}\" title=\"User Email Confirm\">{1}</a>", user.UserName, callbackUrl);
-                        SendEmail(user.Email, "Potwierdzenie adresu e-mail", body);
-                        return RedirectToAction("Confirm", "Account", new { Email = user.Email });
+                        using (IAccountRepository repo = new AccountRepository(new AgrotourismContext()))
+                        {
+                            repo.SendEmailConfirmingRegister(user, callbackUrl);
+                        }
+                         return RedirectToAction("Confirm", "Account", new { Email = user.Email });
                     }
                     else
                     {
                         AddErrors(result);
                     }
                 }
-
-                // If we got this far, something failed, redisplay form
                 return View(model);
             }
         }
 
-        //
-        // GET: /Account/ConfirmEmail
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string Token, string Email)
         {
@@ -189,16 +180,12 @@ namespace AgrotouristicWebApplication.Controllers
             AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
         }
 
-        //
-        // GET: /Account/ForgotPassword
         [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
             return View();
         }
 
-        //
-        // POST: /Account/ForgotPassword
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -213,36 +200,16 @@ namespace AgrotouristicWebApplication.Controllers
                 }
                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 string callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                string body = string.Format("Drogi {0}<BR/>, kliknij link poniżej w celu zresetowania hasła: <a href=\"{1}\" title=\"User Reset Password\">{1}</a>", user.UserName, callbackUrl);
-                SendEmail(user.Email, "Zresetowanie hasła", body);
+                using (IAccountRepository repo = new AccountRepository(new AgrotourismContext()))
+                {
+                    repo.SendEmailResetingPassword(user, callbackUrl);
+                }
                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
-        private void SendEmail(string userEmail,string subject,string body)
-        {
-            System.Net.Mail.MailMessage m = new System.Net.Mail.MailMessage(
-                         new System.Net.Mail.MailAddress("maciuszka9@gmail.com", "Agroturystyka"),
-                         new System.Net.Mail.MailAddress(userEmail));
-            m.Subject = subject;
-            m.Body = body;
-            m.IsBodyHtml = true;
-            System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient()
-            {
-                Host = "smtp.gmail.com",
-                Port = 587,
-                Credentials = new System.Net.NetworkCredential("maciuszka9@gmail.com", "Legolas6#"),
-                DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network,
-                EnableSsl = true
-            };
-            smtp.Send(m);
-        }
-
-        //
-        // GET: /Account/ForgotPasswordConfirmation
         [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmation()
         {
@@ -257,8 +224,6 @@ namespace AgrotouristicWebApplication.Controllers
             return code == null ? View("Error") : View();
         }
 
-        //
-        // POST: /Account/ResetPassword
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -283,16 +248,12 @@ namespace AgrotouristicWebApplication.Controllers
             return View();
         }
 
-        //
-        // GET: /Account/ResetPasswordConfirmation
         [AllowAnonymous]
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
         }
 
-        //
-        // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
