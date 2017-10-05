@@ -120,6 +120,7 @@ namespace AgrotouristicWebApplication.Controllers
                 }
 
                 Session.Remove("Reservation");
+                repository.SendEmailAwaitingReservation(savedReservation);
                 return RedirectToAction("Index");
             }
             return View(reservation);
