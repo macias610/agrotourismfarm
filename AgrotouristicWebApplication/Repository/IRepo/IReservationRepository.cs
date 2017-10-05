@@ -36,6 +36,7 @@ namespace Repository.IRepo
         void SaveAssignedAttractions(int id, NewReservation reservation);
         void RemoveReservation(Reservation reservation);
         void SendEmailAwaitingReservation(Reservation reservation);
-        
+        void SendEmailConfirmingReservation(Reservation reservation);
+
     }
 }

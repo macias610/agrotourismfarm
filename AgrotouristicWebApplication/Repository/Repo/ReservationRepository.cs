@@ -431,5 +431,17 @@ namespace Repository.Repo
                 +"Prosimy do dokonanie wpłaty na konto podane na stronie głównej.", reservation.Client.UserName, reservation.StartDate.ToShortDateString(),reservation.EndDate.ToShortDateString(),reservation.DeadlinePayment.ToShortDateString(),reservation.OverallCost);
             base.SendEmail(reservation.Client.UserName, subject,body);
         }
+
+        public void SendEmailConfirmingReservation(Reservation reservation)
+        {
+            reservation.Client = db.ApplicationUsers.Find(reservation.ClientId);
+            string subject = "Potwierdzenie rezerwacji";
+            string body = string.Format("Drogi {0},<BR/> dziękujemy za dokonanie wpłaty rezerwacji<BR/>"
+                + "Data przyjazdu: {1}<BR/>"
+                + "Data wyjazdu: {2}<BR/>"
+                + "Termin płatności: {3}<BR/>"
+                + "Koszt całkowity: {4} zł<BR/>", reservation.Client.UserName, reservation.StartDate.ToShortDateString(), reservation.EndDate.ToShortDateString(), reservation.DeadlinePayment.ToShortDateString(), reservation.OverallCost);
+            base.SendEmail(reservation.Client.UserName, subject, body);
+        }
     }
 }
