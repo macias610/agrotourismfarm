@@ -125,8 +125,8 @@ namespace AgrotouristicWebApplication.Controllers
                 {
                     repository.UpdateReservation(editedReservation, rowVersion);
                     repository.SaveChanges();
-                    //if (editedReservation.Status.Equals("zarezerwowano"))
-                        //repository.SendEmailConfirmingReservation(editedReservation);
+                    if (editedReservation.Status.Equals("zarezerwowano"))
+                        repository.SendEmailConfirmingReservation(editedReservation);
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateConcurrencyException ex)
