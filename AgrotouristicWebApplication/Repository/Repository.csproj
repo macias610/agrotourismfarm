@@ -274,7 +274,6 @@
       <DependentUpon>201711142028183_sth.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repo\AttractionRepository.cs" />
     <Compile Include="Repo\HomeRepository.cs" />

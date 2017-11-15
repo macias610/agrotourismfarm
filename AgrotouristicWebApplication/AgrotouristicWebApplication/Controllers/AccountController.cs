@@ -198,7 +198,8 @@ namespace AgrotouristicWebApplication.Controllers
                 {
                     return View("ForgotPasswordConfirmation");
                 }
-                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                string code = await userManager.GeneratePasswordResetTokenAsync(user.Id);
                 string callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 IAccountService service = new AccountService();
                 service.SendEmailResetingPassword(user, callbackUrl);
@@ -237,7 +238,8 @@ namespace AgrotouristicWebApplication.Controllers
                 // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
-            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var result = await userManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
