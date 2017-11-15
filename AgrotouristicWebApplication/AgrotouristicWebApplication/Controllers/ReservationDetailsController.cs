@@ -1,28 +1,28 @@
-﻿using HtmlAgilityPack;
+﻿using DomainModel.Models;
+using HtmlAgilityPack;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using Microsoft.AspNet.Identity;
 using NReco.PdfGenerator;
-using Repository.IRepo;
-using Repository.Models;
-using Repository.ViewModels;
+using Service.IService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using ViewModel;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class ReservationDetailsController : Controller
     {
-        private readonly IReservationDetailsRepository repository;
+        private readonly IReservationDetailsService reservationDetailsService = null;
 
-        public ReservationDetailsController(IReservationDetailsRepository repository)
+        public ReservationDetailsController(IReservationDetailsService reservationDetailsService)
         {
-            this.repository = repository;
+            this.reservationDetailsService = reservationDetailsService;
         }
 
         [HttpPost]
@@ -34,12 +34,12 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<House> houses = repository.GetHousesForReservation(id);
-            Reservation reservation = repository.GetReservationById(id);
+            IList<House> houses = reservationDetailsService.GetHousesForReservation(id);
+            Reservation reservation = reservationDetailsService.GetReservationById(id);
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
                 { "Houses",houses.Select(house => new SelectListItem { Value = house.Name , Text = house.Name }).ToList()},
-                { "Weeks",repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate)}
+                { "Weeks",reservationDetailsService.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate).ToList()}
             };
             return PartialView("~/Views/Shared/_ReservationDetailsPartial.cshtml", dictionary);
         }
@@ -49,8 +49,24 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles = "Klient,Recepcjonista")]
         public FileResult ExportPDFReservation(int id)
         {
-            Reservation reservation = repository.GetReservationById(id);
-            string htmlContent = this.RenderView("~/Views/Shared/_PDFReservationPartial.cshtml", reservation);
+            Reservation reservation = reservationDetailsService.GetReservationById(id);
+
+            IList<decimal> housesCosts = new List<decimal>();
+            reservation.Reservation_House.ToList()
+                .ForEach(item => housesCosts.Add(((Int32)(reservation.EndDate-reservation.StartDate).TotalDays+1)*(item.House.HouseType.Price)));
+
+            IList<decimal> mealsCosts = new List<decimal>();
+            reservation.Reservation_House.ToList()
+                .ForEach(item => mealsCosts.Add(((Int32)(reservation.EndDate - reservation.StartDate).TotalDays+1)* (item.Meal.Price * item.Participant.Count)));
+
+            PdfReservation pdfReservation = new PdfReservation()
+            {
+                Reservation = reservation,
+                HousesCosts = housesCosts,
+                MealsCosts = mealsCosts
+            };
+
+            string htmlContent = this.RenderView("~/Views/Shared/_PDFReservationPartial.cshtml", pdfReservation);
 
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(htmlContent);
@@ -79,12 +95,12 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            House house = repository.GetHousesForReservation(id).Where(item => item.Name.Equals(houseName)).FirstOrDefault();
+            House house = reservationDetailsService.GetHousesForReservation(id).Where(item => item.Name.Equals(houseName)).FirstOrDefault();
             ReservationHouseDetails houseDetails = new ReservationHouseDetails()
             {
                 House = house,
-                Meal = repository.GetHouseMealForReservation(id, house.Id),
-                Participants = repository.GetParticipantsHouseForReservation(id, house.Id)
+                Meal = reservationDetailsService.GetHouseMealForReservation(id, house.Id),
+                Participants = reservationDetailsService.GetParticipantsHouseForReservation(id, house.Id)
             };
             return PartialView("~/Views/Shared/_ReservationHouseDetailsPartial.cshtml", houseDetails);
         }
@@ -101,7 +117,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             Session.Remove("Reservation");
             List<string> houses = new List<string>();
-            repository.GetNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(startDate, endDate)).ToList().ForEach(item => houses.Add(item.Value));
+            reservationDetailsService.GetNamesAvaiableHouses(reservationDetailsService.GetAvaiableHousesInTerm(startDate, endDate)).ToList().ForEach(item => houses.Add(item.Value));
             if (houses.Count == 0)
             {
                 return new EmptyResult();
@@ -152,7 +168,7 @@ namespace AgrotouristicWebApplication.Controllers
             NewReservation reservation = (NewReservation)Session["Reservation"];
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
-                { "Avaiable",repository.GetNamesAvaiableHouses(repository.GetAvaiableHousesInTerm(reservation.StartDate, reservation.EndDate))},
+                { "Avaiable",reservationDetailsService.GetNamesAvaiableHouses(reservationDetailsService.GetAvaiableHousesInTerm(reservation.StartDate, reservation.EndDate)).ToList()},
                 { "Selected",new List<SelectListItem>()}
             };
             ViewBag.OverallCost = reservation.OverallCost;
@@ -172,7 +188,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.OverallCost = Decimal.Parse(Request.Form["housesOverallCost"]);
-            repository.SaveSelectedHouses(reservation, Request.Form.GetValues("HousesListBoxSelected").ToList());
+            reservationDetailsService.SaveSelectedHouses(reservation, Request.Form.GetValues("HousesListBoxSelected").ToList());
             reservation.stagesConfirmation[1] = isHousesConfirmed;
             Session["Reservation"] = reservation;
             return RedirectToAction("Create","ClientReservations");
@@ -187,7 +203,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            House house = repository.GetHouseByName(name);
+            House house = reservationDetailsService.GetHouseByName(name);
             return PartialView("~/Views/Shared/_HouseDescriptionPartial.cshtml", house);
         }
 
@@ -202,7 +218,7 @@ namespace AgrotouristicWebApplication.Controllers
             NewReservation reservation = (NewReservation)Session["Reservation"];
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
-                { "AvaiableMeals",repository.GetNamesAvaiableMeals()},
+                { "AvaiableMeals",reservationDetailsService.GetNamesAvaiableMeals().ToList()},
                 { "SelectedHouses",reservation.AssignedHousesMeals.Keys.Select(key => new SelectListItem { Value = key, Text = key }).ToList()},
                 { "SelectedMeals",new List<SelectListItem>()},
                 { "SelectedMealsListBox",new List<SelectListItem>()}
@@ -225,7 +241,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.OverallCost = Decimal.Parse(Request.Form["mealsOverallCost"]);
-            repository.SaveAssignedMealsToHouses(reservation, Request.Form.GetValues("ListBoxSelectedHousesMeals").ToList());
+            reservationDetailsService.SaveAssignedMealsToHouses(reservation, Request.Form.GetValues("ListBoxSelectedHousesMeals").ToList());
             reservation.stagesConfirmation[2] = isMealsConfirmed;
             Session["Reservation"] = reservation;
             return RedirectToAction("Create","ClientReservations");
@@ -241,7 +257,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             ViewBag.ReservationId = 0;
-            repository.ClearParticipantsFormular(reservation);
+            reservationDetailsService.ClearParticipantsFormular(reservation);
             return View("~/Views/ReservationDetails/AddParticipants.cshtml", reservation.AssignedParticipantsHouses);
         }
 
@@ -256,7 +272,7 @@ namespace AgrotouristicWebApplication.Controllers
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            if (!repository.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
+            if (!reservationDetailsService.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
             {
                 ViewBag.error = true;
                 ViewBag.ReservationId = 0;
@@ -276,8 +292,8 @@ namespace AgrotouristicWebApplication.Controllers
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            reservation.AssignedAttractions = repository.InitializeDictionaryForAssignedAttractions(reservation.StartDate, reservation.EndDate);
-            List<SelectListItem> weeks = repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
+            reservation.AssignedAttractions = reservationDetailsService.InitializeDictionaryForAssignedAttractions(reservation.StartDate, reservation.EndDate);
+            IList<SelectListItem> weeks = reservationDetailsService.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
             Session["Reservation"] = reservation;
             ViewBag.OverallCost = reservation.OverallCost;
             ViewBag.ReservationId = 0;
@@ -319,12 +335,12 @@ namespace AgrotouristicWebApplication.Controllers
                 NewReservation reservation = (NewReservation)Session["Reservation"];
                 ReservationAttractions reservationAttractions = new ReservationAttractions()
                 {
-                    DaysOfWeek = repository.GetAvaiableDatesInWeek(term),
-                    AvaiableAttractions = repository.GetAvaiableAttractions(),
-                    ParticipantsQuantity = repository.GetParticipantsQuantity(reservation.AssignedParticipantsHouses.SelectMany(x=>x.Value).Where(item => !(item.Name.Equals("Brak"))).Count()),
-                    AssignedAttractions = repository.GetAttractionsInGivenWeek(term,reservation.AssignedAttractions),
+                    DaysOfWeek = reservationDetailsService.GetAvaiableDatesInWeek(term),
+                    AvaiableAttractions = reservationDetailsService.GetAvaiableAttractions(),
+                    ParticipantsQuantity = reservationDetailsService.GetParticipantsQuantity(reservation.AssignedParticipantsHouses.SelectMany(x=>x.Value).Where(item => !(item.Name.Equals("Brak"))).Count()),
+                    AssignedAttractions = reservationDetailsService.GetAttractionsInGivenWeek(term,reservation.AssignedAttractions),
                     OverallCost = reservation.OverallCost,
-                    MaxRows = repository.GetMaxRowsToTableAttractions(repository.GetAttractionsInGivenWeek(term, reservation.AssignedAttractions))
+                    MaxRows = reservationDetailsService.GetMaxRowsToTableAttractions(reservationDetailsService.GetAttractionsInGivenWeek(term, reservation.AssignedAttractions))
                 };
                 ViewBag.IsOnlyToRead = false;
                 return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsPartial.cshtml", reservationAttractions);
@@ -350,12 +366,12 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 reservationAttractions = new ReservationAttractions()
                 {
-                    DaysOfWeek = repository.GetAvaiableDatesInWeek(term),
-                    AvaiableAttractions = repository.GetAvaiableAttractions(),
-                    ParticipantsQuantity = repository.GetParticipantsQuantity(repository.RetreiveHouseParticipants(id).SelectMany(x => x.Value).Where(item => !(item.Name.Equals("Brak"))).Count()),
-                    AssignedAttractions = repository.RetreiveAttractionsInGivenWeek(term,id),
+                    DaysOfWeek = reservationDetailsService.GetAvaiableDatesInWeek(term),
+                    AvaiableAttractions = reservationDetailsService.GetAvaiableAttractions(),
+                    ParticipantsQuantity = reservationDetailsService.GetParticipantsQuantity(reservationDetailsService.RetreiveHouseParticipants(id).SelectMany(x => x.Value).Where(item => !(item.Name.Equals("Brak"))).Count()),
+                    AssignedAttractions = reservationDetailsService.RetreiveAttractionsInGivenWeek(term,id),
                     OverallCost = 0,
-                    MaxRows = repository.GetMaxRowsToTableAttractions(repository.GetAttractionsInGivenWeek(term, repository.RetreiveAttractionsInGivenWeek(term, id)))
+                    MaxRows = reservationDetailsService.GetMaxRowsToTableAttractions(reservationDetailsService.GetAttractionsInGivenWeek(term, reservationDetailsService.RetreiveAttractionsInGivenWeek(term, id)))
                 };
             }
             ViewBag.IsOnlyToRead = true;
@@ -376,25 +392,25 @@ namespace AgrotouristicWebApplication.Controllers
             if(attraction.Split(';')[1].Equals("Add"))
             {
                 reservation.AssignedAttractions[date].Add(attraction.Split(';')[0]);
-                decimal price = repository.GetAttractionByName(attraction.Split(',')[0]).Price * Int32.Parse(attraction.Split(';')[0].Split(',')[1]);
+                decimal price = reservationDetailsService.GetAttractionByName(attraction.Split(',')[0]).Price * Int32.Parse(attraction.Split(';')[0].Split(',')[1]);
                 reservation.OverallCost += price;
             }
             else if(attraction.Split(';')[1].Equals("Remove"))
             {
                 reservation.AssignedAttractions[date].Remove(attraction.Split(';')[0]);
-                decimal price = repository.GetAttractionByName(attraction.Split(',')[0]).Price * Int32.Parse(attraction.Split(';')[0].Split(',')[1]);
+                decimal price = reservationDetailsService.GetAttractionByName(attraction.Split(',')[0]).Price * Int32.Parse(attraction.Split(';')[0].Split(',')[1]);
                 reservation.OverallCost -= price;
                 
             }
             Session["Reservation"] = reservation;
             ReservationAttractions reservationAttractions = new ReservationAttractions()
             {
-                DaysOfWeek = repository.GetAvaiableDatesInWeek(term),
-                AvaiableAttractions = repository.GetAvaiableAttractions(),
-                ParticipantsQuantity = repository.GetParticipantsQuantity(reservation.AssignedParticipantsHouses.SelectMany(x => x.Value).Where(item => !(item.Name.Equals("Brak"))).Count()),
-                AssignedAttractions = repository.GetAttractionsInGivenWeek(term, reservation.AssignedAttractions),
+                DaysOfWeek = reservationDetailsService.GetAvaiableDatesInWeek(term),
+                AvaiableAttractions = reservationDetailsService.GetAvaiableAttractions(),
+                ParticipantsQuantity = reservationDetailsService.GetParticipantsQuantity(reservation.AssignedParticipantsHouses.SelectMany(x => x.Value).Where(item => !(item.Name.Equals("Brak"))).Count()),
+                AssignedAttractions = reservationDetailsService.GetAttractionsInGivenWeek(term, reservation.AssignedAttractions),
                 OverallCost = reservation.OverallCost,
-                MaxRows = repository.GetMaxRowsToTableAttractions(reservation.AssignedAttractions)
+                MaxRows = reservationDetailsService.GetMaxRowsToTableAttractions(reservation.AssignedAttractions)
             };
             ViewBag.IsOnlyToRead = false;
             ViewBag.OverallCost = reservation.OverallCost;
@@ -411,7 +427,7 @@ namespace AgrotouristicWebApplication.Controllers
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            List<Participant> participants = reservation.AssignedParticipantsHouses[houseName];
+            IList<Participant> participants = reservation.AssignedParticipantsHouses[houseName];
             return PartialView("~/Views/Shared/_HouseParticipantsPartial.cshtml", participants);
         }
         [HttpPost]
@@ -425,7 +441,7 @@ namespace AgrotouristicWebApplication.Controllers
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            reservation.AssignedParticipantsHouses[houseName] = repository.CopyParticipantsData(reservation.AssignedParticipantsHouses[houseName], participants);
+            reservation.AssignedParticipantsHouses[houseName] = reservationDetailsService.CopyParticipantsData(reservation.AssignedParticipantsHouses[houseName], participants).ToList();
             Session["Reservation"] = reservation;
             return PartialView("~/Views/Shared/_HouseParticipantsPartial.cshtml", participants);
         }
@@ -441,10 +457,10 @@ namespace AgrotouristicWebApplication.Controllers
             NewReservation reservation = (NewReservation)Session["Reservation"];
             Dictionary<string, List<SelectListItem>> dictionary = new Dictionary<string, List<SelectListItem>>()
             {
-                { "AvaiableMeals",repository.GetNamesAvaiableMeals()},
+                { "AvaiableMeals",reservationDetailsService.GetNamesAvaiableMeals().ToList()},
                 { "SelectedHouses",new List<SelectListItem>()},
-                { "SelectedMeals",repository.GetSelectedHousesMeals(reservation.AssignedHousesMeals,false)},
-                { "SelectedMealsListBox",repository.GetSelectedHousesMeals(reservation.AssignedHousesMeals,true)}
+                { "SelectedMeals",reservationDetailsService.GetSelectedHousesMeals(reservation.AssignedHousesMeals,false).ToList()},
+                { "SelectedMealsListBox",reservationDetailsService.GetSelectedHousesMeals(reservation.AssignedHousesMeals,true).ToList()}
             };
             ViewBag.OverallCost = reservation.OverallCost;
             ViewBag.StayLength = reservation.EndDate.Subtract(reservation.StartDate).Days + 1;
@@ -463,7 +479,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
             reservation.OverallCost = Decimal.Parse(Request.Form["mealsOverallCost"]);
-            repository.SaveAssignedMealsToHouses(reservation, Request.Form.GetValues("ListBoxSelectedHousesMeals").ToList());
+            reservationDetailsService.SaveAssignedMealsToHouses(reservation, Request.Form.GetValues("ListBoxSelectedHousesMeals").ToList());
             reservation.stagesConfirmation[2] = isMealsConfirmed;
             Session["Reservation"] = reservation;
             return RedirectToAction("Edit","ClientReservations", new { id = Int32.Parse(Request.Form["reservationId"]) });
@@ -493,7 +509,7 @@ namespace AgrotouristicWebApplication.Controllers
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            if (!repository.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
+            if (!reservationDetailsService.ValidateFormularParticipants(reservation.AssignedParticipantsHouses))
             {
                 ViewBag.error = true;
                 ViewBag.ReservationId = reservationId;
@@ -513,7 +529,7 @@ namespace AgrotouristicWebApplication.Controllers
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
             NewReservation reservation = (NewReservation)Session["Reservation"];
-            List<SelectListItem> weeks = repository.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
+            IList<SelectListItem> weeks = reservationDetailsService.GetWeeksFromSelectedTerm(reservation.StartDate, reservation.EndDate);
             ViewBag.OverallCost = reservation.OverallCost;
             ViewBag.ReservationId = id;
             return View("~/Views/ReservationDetails/AddAttractions.cshtml", weeks);

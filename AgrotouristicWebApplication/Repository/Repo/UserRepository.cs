@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using DomainModel.Models;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Repository.IRepo;
 using Repository.Models;
@@ -42,10 +43,11 @@ namespace Repository.Repository
             GetUserManager().AddToRole(userId, role);
         }
 
-        public IQueryable<IdentityRole> GetRoles()
+        public IList<IdentityRole> GetRoles()
         {
             IQueryable<IdentityRole> roles = db.Roles.AsNoTracking();
-            return roles;
+
+            return roles.ToList();
         }
 
         public new void SaveChanges()
@@ -58,10 +60,10 @@ namespace Repository.Repository
             GetUserManager().RemoveFromRole(userId, role);
         }
 
-        public IQueryable<User> GetUsers()
+        public IList<User> GetUsers()
         {
             IQueryable<User> users = db.ApplicationUsers.AsNoTracking();
-            return users;
+            return users.ToList();
         }
 
         public User GetUserById(string id)
@@ -70,19 +72,19 @@ namespace Repository.Repository
             return user;
         }
 
-        public List<SelectListItem> GetNewRolesForUser(List<IdentityUserRole> UserRoles, Dictionary<string, string> Roles)
+        public IList<SelectListItem> GetNewRolesForUser(IList<IdentityUserRole> userRoles, Dictionary<string, string> roles)
         {
             Dictionary<int,string> avaiableRoles = new Dictionary<int, string>();
             List<string> IdUserRoles = new List<string>();
-            UserRoles.ForEach(item => IdUserRoles.Add(item.RoleId));
+            userRoles.ToList().ForEach(item => IdUserRoles.Add(item.RoleId));
 
             int index = 0;
 
-            foreach (KeyValuePair<string, string> Role in Roles)
+            foreach (KeyValuePair<string, string> role in roles)
             {
-                if (!IdUserRoles.Contains(Role.Key))
+                if (!IdUserRoles.Contains(role.Key))
                 {
-                    avaiableRoles.Add(index,Role.Value);
+                    avaiableRoles.Add(index,role.Value);
                     index++;
                 }
             }
@@ -90,7 +92,7 @@ namespace Repository.Repository
             return selectList;
         }
 
-        public int GetNumberOfUsersForGivenRole(Dictionary<string, string> Roles,string role)
+        public int GetNumberOfUsersForGivenRole(Dictionary<string, string> roles,string role)
         {
             List<string> userRoles = new List<string>();
             int numberOfUsers = 0;
@@ -101,7 +103,7 @@ namespace Repository.Repository
                 list.ForEach(x => userRoles.Add(x.RoleId));
             }
    
-            string roleId = Roles[role];
+            string roleId = roles[role];
 
             foreach(string userRole in userRoles)
             {
@@ -158,7 +160,7 @@ namespace Repository.Repository
             db.Entry(user).State = EntityState.Deleted;
         }
 
-        public List<string> GetAvaiableProfessons()
+        public IList<string> GetAvaiableProfessons()
         {
             List<string> professions = (from attraction in db.Attractions
                                         select attraction.Name).ToList();
@@ -197,7 +199,7 @@ namespace Repository.Repository
             return orignal;
         }
 
-        public List<string> GetUserRoles(string id)
+        public IList<string> GetUserRoles(string id)
         {
             User user = GetUserById(id);
             Dictionary<string, string> roles = GetRoles().ToDictionary(x => x.Id, x => x.Name);

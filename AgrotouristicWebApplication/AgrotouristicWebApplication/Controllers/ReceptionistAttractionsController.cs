@@ -6,20 +6,20 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Repository.Models;
-using Repository.IRepo;
-using Repository.ViewModels;
 using Microsoft.AspNet.Identity;
+using Service.IService;
+using ViewModel;
+using DomainModel.Models;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class ReceptionistAttractionsController : Controller
     {
-        private readonly IReservedAttractionsRepository repository;
+        private readonly IReservedAttractionsService reservedAttractionsService;
 
-        public ReceptionistAttractionsController(IReservedAttractionsRepository repository)
+        public ReceptionistAttractionsController(IReservedAttractionsService reservedAttractionsService)
         {
-            this.repository = repository;
+            this.reservedAttractionsService = reservedAttractionsService;
         }
 
         [Authorize(Roles ="Recepcjonista")]
@@ -30,7 +30,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<SelectListItem> weeksSelectListItem = repository.GetWeeksForAttractions(DateTime.Now);
+            IList<SelectListItem> weeksSelectListItem = reservedAttractionsService.GetWeeksForAttractions(DateTime.Now);
             if (concurrencyError.GetValueOrDefault())
             {
                 ViewBag.ConcurrencyErrorMessage = "Inny użytkownik "
@@ -58,9 +58,9 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 attractionInstructors = new AttractionInstructors()
                 {
-                    DaysOfWeek = repository.GetAvaiableDatesInWeek(term),
-                    AssignedAttractions = repository.GetAttractionsInstructorsInGivenWeek(term),
-                    MaxRows = repository.GetMaxRowsToTableAttractions(repository.GetAttractionsInstructorsInGivenWeek(term))
+                    DaysOfWeek = reservedAttractionsService.GetAvaiableDatesInWeek(term),
+                    AssignedAttractions = reservedAttractionsService.GetAttractionsInstructorsInGivenWeek(term),
+                    MaxRows = reservedAttractionsService.GetMaxRowsToTableAttractions(reservedAttractionsService.GetAttractionsInstructorsInGivenWeek(term))
                 };
             }
             return PartialView("~/Views/Shared/_WeeklyTimetableAttractionsInstructorsPartial.cshtml", attractionInstructors);
@@ -74,7 +74,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            Attraction_Reservation attractionReservation = repository.GetAttractionReservationById(id);
+            Attraction_Reservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(id);
             AttractionInstructorDetails attractionRemovedInstructor = new AttractionInstructorDetails()
             {
                 AttractionName=attractionReservation.Attraction.Name,
@@ -97,21 +97,20 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            Attraction_Reservation_Worker attractionReservationWorker = repository.GetAttractionReservationWorkerById(id);
+            Attraction_Reservation_Worker attractionReservationWorker = reservedAttractionsService.GetAttractionReservationWorkerById(id);
             try
             {
-                if (attractionReservationWorker == null || !repository.checkStateInstructorToAttraction(attractionReservationWorker))
+                if (attractionReservationWorker == null || !reservedAttractionsService.checkStateInstructorToAttraction(attractionReservationWorker))
                 {
                     return RedirectToAction("Index", new { concurrencyError = true });
                 }
-                repository.RemoveAssignedInstructorAttraction(attractionReservationWorker);
-                repository.SaveChanges();
+                reservedAttractionsService.RemoveAssignedInstructorAttraction(attractionReservationWorker);
                 return RedirectToAction("Index");
             }
             catch 
             {
                 ViewBag.exception = true;
-                Attraction_Reservation attractionReservation = repository.GetAttractionReservationById(Int32.Parse(Request.Form["attractionReservationId"].ToString()));
+                Attraction_Reservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(Int32.Parse(Request.Form["attractionReservationId"].ToString()));
                 AttractionInstructorDetails attractionRemovedInstructor = new AttractionInstructorDetails()
                 {
                     AttractionName = attractionReservation.Attraction.Name,
@@ -133,13 +132,13 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            Attraction_Reservation attractionReservation = repository.GetAttractionReservationById(id);
+            Attraction_Reservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(id);
             AttractionNewInstructor attractionNewInstructor = new AttractionNewInstructor()
             {
                 AttractionName = attractionReservation.Attraction.Name,
                 TermAffair = attractionReservation.TermAffair,
                 QuantityParticipant = attractionReservation.QuantityParticipant,
-                AvaiableInstructors = repository.GetAvaiableInstructors(id, attractionReservation.Attraction.Name),
+                AvaiableInstructors = reservedAttractionsService.GetAvaiableInstructors(id, attractionReservation.Attraction.Name),
                 AttractionReservationID=attractionReservation.Id
             };
 
@@ -163,24 +162,23 @@ namespace AgrotouristicWebApplication.Controllers
             };
             try
             {
-                if(repository.checkStateInstructorToAttraction(attractionReservationWorker) || repository.GetInstructorAssignedToAttraction(attractionReservationWorker.WorkerId) == null)
+                if(reservedAttractionsService.checkStateInstructorToAttraction(attractionReservationWorker) || reservedAttractionsService.GetInstructorAssignedToAttraction(attractionReservationWorker.WorkerId) == null)
                 {
                     return RedirectToAction("Index", new { concurrencyError = true });
                 }
-                repository.AssignInstructorToAttraction(attractionReservationWorker);
-                repository.SaveChanges();
+                reservedAttractionsService.AssignInstructorToAttraction(attractionReservationWorker);
                 return RedirectToAction("Index");
             }
             catch
             {
                 ViewBag.exception = true;
-                Attraction_Reservation attractionReservation = repository.GetAttractionReservationById(idAttractionReservation);
+                Attraction_Reservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(idAttractionReservation);
                 AttractionNewInstructor attractionNewInstructor = new AttractionNewInstructor()
                 {
                     AttractionName = attractionReservation.Attraction.Name,
                     TermAffair = attractionReservation.TermAffair,
                     QuantityParticipant = attractionReservation.QuantityParticipant,
-                    AvaiableInstructors = repository.GetAvaiableInstructors(idAttractionReservation, attractionReservation.Attraction.Name),
+                    AvaiableInstructors = reservedAttractionsService.GetAvaiableInstructors(idAttractionReservation, attractionReservation.Attraction.Name),
                     AttractionReservationID = attractionReservation.Id
                 };
                 ViewBag.exception = false;

@@ -1,43 +1,104 @@
-﻿@model Repository.Models.Reservation
-@using Repository.Models
+﻿@model ViewModel.PdfReservation
+@using DomainModel.Models
+
 
 @{
     ViewBag.Title = "PDFReservation";
 }
     <section>
-        <div id="DetailsToPDF" style="font-size:14px;">
-            <h2 align="center">Rezerwacja @Model.Client.Name @Model.Client.Surname (@Model.Client.Email)</h2>
-            <h4>Data rozpoczęcia: @Model.StartDate.ToShortDateString()</h4>
-            <h4>Data zakończenia: @Model.EndDate.ToShortDateString()</h4>
-            <h4>Termin płatności: @Model.DeadlinePayment.ToShortDateString()</h4>
-            <h4>Koszt całkowity: @Model.OverallCost zł</h4>
-            <h4>Aktulany status: @Model.Status</h4>
+        <div id="DetailsToPDF" style="font-size:16px;">
+            <h1 align="center">Rezerwacja @Model.Reservation.Client.Name @Model.Reservation.Client.Surname (@Model.Reservation.Client.Email)</h1>
 
-            <h4 style="font-size:16px;">Domki</h4>
-            @foreach (Reservation_House resHouse in Model.Reservation_House)
-            {
-                <div class="itemsReservation">
-                    <p style="text-decoration:underline;">Domek: @resHouse.House.HouseType.Type @resHouse.House.Name, Cena: @resHouse.House.HouseType.Price </p>
-                    <p style="text-indent:10%;">Posiłek(@resHouse.Meal.Price zł): @resHouse.Meal.Type</p>
-                    <div style="text-indent:10%;">
-                        Lokatorzy:
-                        @foreach(Participant participant in resHouse.Participant)
+
+            <div style="margin-top:100px;font-size:20px;">
+                <h4>Dane podstawowe</h4>
+                <table border="1" style="text-align:center;font-size:20px;" align="center" width="800">
+                    <thead>
+                        <tr>
+                            <td>Data rozpoczęcia</td>
+                            <td>Data zakończenia</td>
+                            <td>Termin płatności</td>
+                            <td>Koszt całkowity (zł)</td>
+                            <td>Aktualny status</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Model.Reservation.StartDate.ToShortDateString()</td>
+                            <td>@Model.Reservation.EndDate.ToShortDateString()</td>
+                            <td>@Model.Reservation.DeadlinePayment.ToShortDateString()</td>
+                            <td>@Model.Reservation.OverallCost</td>
+                            <td>@Model.Reservation.Status</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:100px;font-size:20px;">
+                <h4>Domki</h4>
+                <table border="1" style="text-align:center;font-size:20px;" align="center" width="1000">
+                    <thead>
+                        <tr>
+                            <td>Domek</td>
+                            <td>Cena za dobę</td>
+                            <td>Koszt całkowity</td>
+                            <td>Posiłek</td>
+                            <td>Cena osoby</td>
+                            <td>Koszt całkowity</td>
+                            <td>Lokatorzy</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+
+    @foreach (var item in Model.Reservation.Reservation_House.Select((value, i) => new { i, value }))
+    {
+        Reservation_House value = item.value;
+        int index = item.i;
+        <tr>
+            <td >@value.House.Name <p>@value.House.HouseType.Type</p> </td>
+            <td>@value.House.HouseType.Price<span style="display:inline-block;width:5px;"></span>zł</td>
+            <td>@Model.HousesCosts[index]<span style="display:inline-block;width:5px;"></span>zł</td>
+            <td>@value.Meal.Type</td>
+            <td>@value.Meal.Price<span style="display:inline-block;width:5px;"></span>zł</td>
+            <td>@Model.MealsCosts[index]<span style="display:inline-block;width:5px;"></span>zł</td>
+            <td>
+                @foreach (Participant participant in value.Participant)
+                {
+                    <span style="display:block">@participant.Name<span style="display:inline-block;width:5px;"></span>@participant.Surname</span>
+                }
+            </td>
+        </tr>
+    }
+</tbody>
+                </table>
+            </div>
+            
+           
+            <div style="margin-top:100px;font-size:20px;">
+                <h4>Warsztaty</h4>
+                <table border="1" style="text-align:center;font-size:20px;" align="center" width="800">
+                    <thead>
+                        <tr>
+                            <td>Warsztat</td>
+                            <td>Termin</td>
+                            <td>Liczba osób</td>
+                            <td>Koszt całkowity (zł)</td>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Attraction_Reservation attrReservation in Model.Reservation.Attraction_Reservation)
                         {
-                            @participant.Name<span style="display:inline-block;width:5px;"></span>@participant.Surname<span style="display:inline-block;width:10px;"></span>
+                            <tr>
+                                <td>@attrReservation.Attraction.Name</td>
+                                <td>@attrReservation.TermAffair.ToShortDateString()</td>
+                                <td>@attrReservation.QuantityParticipant</td>
+                                <td>@attrReservation.OverallCost</td>
+                            </tr>
                         }
-                    </div>
-                </div>
-            }
-            <div style="clear:both"/>
-            <h4 >Warsztaty</h4>
-            @foreach(Attraction_Reservation attrReservation in Model.Attraction_Reservation)
-            {
-                <div >
-                    <p style="text-decoration:underline;">Warsztat: @attrReservation.Attraction.Name</p>
-                    <p style="text-indent:10%;">Liczba osób: @attrReservation.QuantityParticipant</p>
-                    <p style="text-indent:10%;">Termin: @attrReservation.TermAffair.ToShortDateString()</p>
-                    <p style="text-indent:10%;">Koszt: @attrReservation.OverallCost</p>
-                </div>
-            }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>

@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Repository.IRepo;
-using Repository.Repo;
-using Repository.Repository;
+using Service.IService;
+using Service.Service;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -14,11 +12,11 @@ namespace AgrotouristicWebApplication.Controllers
 {
     public class RoleController : Controller
     {
-        private readonly IUserRepository repository;
+        private readonly IUserService userService;
 
-        public RoleController(IUserRepository repository)
+        public RoleController(IUserService userService)
         {
-            this.repository = repository;
+            this.userService = userService;
         }
 
         [Authorize(Roles ="Admin")]
@@ -29,7 +27,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            IQueryable<IdentityRole> roles = repository.GetRoles();
+            IList<IdentityRole> roles = userService.GetRoles();
             return View(roles);
         }
 
@@ -55,7 +53,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             if (ModelState.IsValid)
             {
-                List<IdentityRole> roles = repository.GetRoles().ToList();
+                List<IdentityRole> roles = userService.GetRoles().ToList();
                 if (roles.Contains(role,new RoleComparer()))
                 {
                     ViewBag.error = true;
@@ -65,8 +63,7 @@ namespace AgrotouristicWebApplication.Controllers
 
                 try
                 {
-                    repository.AddRole(role);
-                    repository.SaveChanges();
+                    userService.AddRole(role);
                     ViewBag.exception = false;
                     ViewBag.error = false;
                     return RedirectToAction("Index");

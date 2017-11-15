@@ -6,20 +6,20 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Repository.Models;
-using Repository.IRepo;
-using Repository.ViewModels;
 using Microsoft.AspNet.Identity;
+using Service.IService;
+using ViewModel;
+using DomainModel.Models;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class InstructorAttractionsController : Controller
     {
-        private readonly IReservedAttractionsRepository repository;
+        private readonly IReservedAttractionsService reservedAttractionsService;
 
-        public InstructorAttractionsController(IReservedAttractionsRepository repository)
+        public InstructorAttractionsController(IReservedAttractionsService reservedAttractionsService)
         {
-            this.repository = repository;
+            this.reservedAttractionsService = reservedAttractionsService;
         }
 
         [Authorize(Roles ="Instruktor")]
@@ -30,7 +30,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<SelectListItem> weeksSelectListItem = repository.GetWeeksForAttractions(DateTime.Now);
+            IList<SelectListItem> weeksSelectListItem = reservedAttractionsService.GetWeeksForAttractions(DateTime.Now);
             return View(weeksSelectListItem);
         }
 
@@ -52,9 +52,9 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 attractionInstructor = new AttractionInstructors()
                 {
-                    DaysOfWeek = repository.GetAvaiableDatesInWeek(term),
-                    AssignedAttractions = repository.GetClassesInstructorInGivenWeek(term,User.Identity.GetUserId()),
-                    MaxRows = repository.GetMaxRowsToTableAttractions(repository.GetAttractionsInstructorsInGivenWeek(term))
+                    DaysOfWeek = reservedAttractionsService.GetAvaiableDatesInWeek(term),
+                    AssignedAttractions = reservedAttractionsService.GetClassesInstructorInGivenWeek(term,User.Identity.GetUserId()),
+                    MaxRows = reservedAttractionsService.GetMaxRowsToTableAttractions(reservedAttractionsService.GetAttractionsInstructorsInGivenWeek(term))
                 };
             }
 
@@ -73,7 +73,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Attraction_Reservation attractionReservation = repository.GetAttractionReservationById((int)id);
+            Attraction_Reservation attractionReservation = reservedAttractionsService.GetAttractionReservationById((int)id);
             if (attractionReservation == null)
             {
                 return HttpNotFound();
@@ -82,7 +82,7 @@ namespace AgrotouristicWebApplication.Controllers
             AttractionInstructorDetails attractionInstructorDetails = new AttractionInstructorDetails()
             {
                 AttractionName = attractionReservation.Attraction.Name,
-                Instructor = repository.RetreiveInstructorsAssignedToAttraction(attractionReservation.Id,attractionReservation.Attraction.Name),
+                Instructor = reservedAttractionsService.RetreiveInstructorsAssignedToAttraction(attractionReservation.Id,attractionReservation.Attraction.Name),
                 TermAffair=attractionReservation.TermAffair.Date,
                 QuantityParticipant=attractionReservation.QuantityParticipant
             };

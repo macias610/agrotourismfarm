@@ -15,21 +15,21 @@ namespace Repository.Repo
             this.db = db;
         }
 
-        public List<string> GetAvaiableAttractions()
+        public IList<string> GetAvaiableAttractions()
         {
             List<string> attractions = (from attraction in db.Attractions
                                         select attraction.Name).ToList();
             return attractions;
         }
 
-        public List<string> GetAvaiableHouses()
+        public IList<string> GetAvaiableHouses()
         {
             List<string> houses = (from house in db.Houses
                                    select house.HouseType.Type + "(" + house.Name + ")").ToList();
             return houses;
         } 
 
-        public List<string> GetAvaiableMeals()
+        public IList<string> GetAvaiableMeals()
         {
             List<string> meals = (from meal in db.Meals
                                   select meal.Type).ToList();

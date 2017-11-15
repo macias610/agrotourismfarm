@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
-  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.3.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.3.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -87,8 +87,8 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -155,7 +155,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IRepo\IAccountRepository.cs" />
+    <Compile Include="AgrotourismContext.cs" />
     <Compile Include="IRepo\IAgrotourismContext.cs" />
     <Compile Include="IRepo\IAttractionRepository.cs" />
     <Compile Include="IRepo\IHomeRepository.cs" />
@@ -269,41 +269,20 @@
     <Compile Include="Migrations\201710050857045_deleted_delete_on_cascade_for_ApplicationUser.Designer.cs">
       <DependentUpon>201710050857045_deleted_delete_on_cascade_for_ApplicationUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711142028183_sth.cs" />
+    <Compile Include="Migrations\201711142028183_sth.Designer.cs">
+      <DependentUpon>201711142028183_sth.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\AgrotourismContext.cs" />
-    <Compile Include="Models\HouseType.cs" />
-    <Compile Include="Models\Reservation_History.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Models\Attraction.cs" />
-    <Compile Include="Models\Attraction_Reservation.cs" />
-    <Compile Include="Models\Attraction_Reservation_Worker.cs" />
-    <Compile Include="Models\House.cs" />
-    <Compile Include="Models\Meal.cs" />
-    <Compile Include="Models\Participant.cs" />
-    <Compile Include="Models\Reservation.cs" />
-    <Compile Include="Models\Reservation_House.cs" />
-    <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repo\AccountRepository.cs" />
     <Compile Include="Repo\AttractionRepository.cs" />
-    <Compile Include="Repo\Email.cs" />
     <Compile Include="Repo\HomeRepository.cs" />
     <Compile Include="Repo\HouseRepository.cs" />
     <Compile Include="Repo\MealRepository.cs" />
     <Compile Include="Repo\ReservationDetailsRepository.cs" />
     <Compile Include="Repo\ReservationRepository.cs" />
     <Compile Include="Repo\ReservedAttractionsRepository.cs" />
-    <Compile Include="Repo\RoleComparer.cs" />
     <Compile Include="Repo\UserRepository.cs" />
-    <Compile Include="ViewModels\AttractionInstructors.cs" />
-    <Compile Include="ViewModels\AttractionNewInstructor.cs" />
-    <Compile Include="ViewModels\HouseDetails.cs" />
-    <Compile Include="ViewModels\NewReservation.cs" />
-    <Compile Include="ViewModels\AttractionInstructorDetails.cs" />
-    <Compile Include="ViewModels\ReservationAttractions.cs" />
-    <Compile Include="ViewModels\ReservationHouseDetails.cs" />
-    <Compile Include="ViewModels\RoleUser.cs" />
-    <Compile Include="ViewModels\RolesUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201707240938007_initial.resx">
@@ -384,7 +363,21 @@
     <EmbeddedResource Include="Migrations\201710050857045_deleted_delete_on_cascade_for_ApplicationUser.resx">
       <DependentUpon>201710050857045_deleted_delete_on_cascade_for_ApplicationUser.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711142028183_sth.resx">
+      <DependentUpon>201711142028183_sth.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DomainModel\DomainModel.csproj">
+      <Project>{CF7808A9-020B-4259-95F3-1CD7C373DF18}</Project>
+      <Name>DomainModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ViewModel\ViewModel.csproj">
+      <Project>{971C0B19-CE49-499D-9127-C5F77572EA8D}</Project>
+      <Name>ViewModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -414,8 +407,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.3.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.3.0\build\Microsoft.Net.Compilers.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

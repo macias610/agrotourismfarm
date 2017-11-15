@@ -8,11 +8,12 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Repository.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Repository.IRepo;
-using Repository.Repository;
-using Repository.Repo;
+using ViewModel;
+using DomainModel.Models;
+using Service.IService;
+using Service.Service;
+using Service;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -24,6 +25,7 @@ namespace AgrotouristicWebApplication.Controllers
 
         public AccountController()
         {
+
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -104,7 +106,7 @@ namespace AgrotouristicWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            using (IUserRepository repository = new UserRepository(new AgrotourismContext()))
+            using (IUserService service = new UserService())
             {
                 if (ModelState.IsValid)
                 {
@@ -125,13 +127,11 @@ namespace AgrotouristicWebApplication.Controllers
                     if (result.Succeeded)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        repository.AssignToRole(user.Id, "Klient");
+                        service.AssignToRole(user.Id, "Klient");
                         string callbackUrl = Url.Action("ConfirmEmail", "Account", new { Token = user.Id, Email = user.Email }, Request.Url.Scheme);
-                        using (IAccountRepository repo = new AccountRepository(new AgrotourismContext()))
-                        {
-                            repo.SendEmailConfirmingRegister(user, callbackUrl);
-                        }
-                         return RedirectToAction("Confirm", "Account", new { Email = user.Email });
+                        IAccountService accountService = new AccountService();
+                        accountService.SendEmailConfirmingRegister(user, callbackUrl);
+                        return RedirectToAction("Confirm", "Account", new { Email = user.Email });
                     }
                     else
                     {
@@ -198,12 +198,11 @@ namespace AgrotouristicWebApplication.Controllers
                 {
                     return View("ForgotPasswordConfirmation");
                 }
-                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                string code = await userManager.GeneratePasswordResetTokenAsync(user.Id);
                 string callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                using (IAccountRepository repo = new AccountRepository(new AgrotourismContext()))
-                {
-                    repo.SendEmailResetingPassword(user, callbackUrl);
-                }
+                IAccountService service = new AccountService();
+                service.SendEmailResetingPassword(user, callbackUrl);
                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
@@ -239,7 +238,8 @@ namespace AgrotouristicWebApplication.Controllers
                 // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
-            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var result = await userManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation", "Account");

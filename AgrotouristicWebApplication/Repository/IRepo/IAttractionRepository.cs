@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
-using Repository.Models;
+﻿using DomainModel.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace Repository.IRepo
 {
     public interface IAttractionRepository
     {
-        IQueryable<Attraction> GetAttractions();
+        IList<Attraction> GetAttractions();
         Attraction GetAttractionById(int id);
         int countReservationsWithGivenAttraction(int id);
         void AddAttraction(Attraction attraction);

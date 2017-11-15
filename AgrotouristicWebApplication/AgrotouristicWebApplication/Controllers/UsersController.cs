@@ -6,23 +6,22 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Repository.Models;
-using Repository.IRepo;
-using Repository.Repo;
 using PagedList;
 using System.Globalization;
 using System.Data.Entity.Infrastructure;
 using Microsoft.AspNet.Identity;
+using Service.IService;
+using DomainModel.Models;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly IUserRepository repository;
+        private readonly IUserService userService;
 
-        public UsersController(IUserRepository repository)
+        public UsersController(IUserService userService)
         {
-            this.repository = repository;
+            this.userService = userService;
         }
 
         [Authorize(Roles ="Admin")]
@@ -33,7 +32,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<User> users = repository.GetUsers().ToList();
+            IList<User> users = this.userService.GetUsers();
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(users.ToPagedList<User>(currentPage,perPage));
@@ -51,12 +50,12 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = repository.GetUserById(id);
+            User user = userService.GetUserById(id);
             if (user == null)
             {
                 return HttpNotFound();
             }
-            user.isUserEmployed = repository.isUserEmployed(user.Id);
+            user.isUserEmployed = userService.isUserEmployed(user.Id);
             return View(user);
         }
 
@@ -72,7 +71,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = repository.GetUserById(id);
+            User user = userService.GetUserById(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -96,7 +95,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User userToUpdate = repository.GetUserById(id);
+            User userToUpdate = userService.GetUserById(id);
             if (userToUpdate == null)
             {
                 User deletedUser = new User();
@@ -109,13 +108,12 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    repository.UpdateBaseDataUser(userToUpdate, securityStamp);
-                    repository.SaveChanges();
+                    userService.UpdateBaseDataUser(userToUpdate, securityStamp);
                     return RedirectToAction("Index","Home");
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    User databaseValues = repository.GetOriginalValuesUser(ex.Message);
+                    User databaseValues = userService.GetOriginalValuesUser(ex.Message);
                     if (databaseValues == null)
                     {
                         ModelState.AddModelError(string.Empty,
@@ -179,13 +177,13 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = repository.GetUserById(id);
-            user.isUserEmployed = repository.isUserEmployed(id);
+            User user = userService.GetUserById(id);
+            user.isUserEmployed = userService.isUserEmployed(id);
             if (user == null)
             {
                 return HttpNotFound();
             }
-            IList<string> professions = repository.GetAvaiableProfessons();
+            IList<string> professions = userService.GetAvaiableProfessons();
             ViewData["Professions"] = professions;
             return View(user);
         }
@@ -206,7 +204,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User userToUpdate = repository.GetUserById(id);
+            User userToUpdate = userService.GetUserById(id);
             if (userToUpdate == null)
             {
                 User deletedUser = new User();
@@ -219,13 +217,12 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    repository.UpdateUser(userToUpdate, securityStamp);
-                    repository.SaveChanges();
+                    userService.UpdateUser(userToUpdate, securityStamp);
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    User databaseValues = repository.GetOriginalValuesUser(ex.Message);
+                    User databaseValues = userService.GetOriginalValuesUser(ex.Message);
                     if (databaseValues == null)
                     {
                         ModelState.AddModelError(string.Empty,
@@ -274,8 +271,8 @@ namespace AgrotouristicWebApplication.Controllers
                     ModelState.AddModelError("", "Nie można zapisać. Spróbuj ponownie");
                 }
             }
-            userToUpdate.isUserEmployed = repository.isUserEmployed(id);
-            IList<string> professions = repository.GetAvaiableProfessons();
+            userToUpdate.isUserEmployed = userService.isUserEmployed(id);
+            IList<string> professions = userService.GetAvaiableProfessons();
             ViewData["Professions"] = professions;
             return View(userToUpdate);
         }
@@ -292,7 +289,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = repository.GetUserById(id);
+            User user = userService.GetUserById(id);
             if (user == null)
             {
                 if (concurrencyError.GetValueOrDefault())
@@ -321,9 +318,9 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            Dictionary<string, string> roles = repository.GetRoles().ToDictionary(x => x.Name, x => x.Id);
-            Dictionary<string, string> rolesSecond = repository.GetRoles().ToDictionary(x => x.Id, x => x.Name);
-            if (repository.GetUserRoles(user.Id).Contains("Admin") && repository.GetNumberOfUsersForGivenRole(roles, "Admin") <= 1)
+            Dictionary<string, string> roles = userService.GetRoles().ToDictionary(x => x.Name, x => x.Id);
+            Dictionary<string, string> rolesSecond = userService.GetRoles().ToDictionary(x => x.Id, x => x.Name);
+            if (userService.GetUserRoles(user.Id).Contains("Admin") && userService.GetNumberOfUsersForGivenRole(roles, "Admin") <= 1)
             {
                 ViewBag.error = true;
                 return View(user);
@@ -331,10 +328,9 @@ namespace AgrotouristicWebApplication.Controllers
             string securityStamp = Request.Form["DeleteSecurityStamp"].ToString();
             try
             {
-                if (repository.GetUserRoles(user.Id).Contains("Klient"))
-                    repository.RemoveReservationsAssosiatedClient(user.Id);
-                repository.RemoveUser(user, securityStamp);
-                repository.SaveChanges();
+                if (userService.GetUserRoles(user.Id).Contains("Klient"))
+                    userService.RemoveReservationsAssosiatedClient(user.Id);
+                userService.RemoveUser(user, securityStamp);
                 return RedirectToAction("Index");
             }
             catch (DbUpdateConcurrencyException)

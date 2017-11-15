@@ -1,4 +1,4 @@
-﻿@model Repository.ViewModels.RoleUser
+﻿@model ViewModel.RoleUser
 
 <head>
     @Scripts.Render("~/bundles/jquery")
@@ -49,7 +49,7 @@
             </div>
         </div>
 
-        @Html.HiddenFor(model => model.userId)
+        @Html.HiddenFor(model => model.UserId)
         @Html.HiddenFor(model => model.SelectedRoleText)
 
         <div class="form-group">

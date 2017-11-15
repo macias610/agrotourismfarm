@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Repository.Models;
 using System.Data.Entity;
 using System.Web.Mvc;
+using DomainModel.Models;
 
 namespace Repository.Repo
 {
@@ -37,10 +37,10 @@ namespace Repository.Repo
             return meal;
         }
 
-        public IQueryable<Meal> GetMeals()
+        public IList<Meal> GetMeals()
         {
             IQueryable<Meal> meals = db.Meals.AsNoTracking();
-            return meals;
+            return meals.ToList() ;
         }
 
         public void RemoveMeal(Meal meal)

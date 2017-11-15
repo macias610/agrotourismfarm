@@ -6,6 +6,7 @@ using System.Web;
 using Repository.Models;
 using System.Data.Entity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using DomainModel.Models;
 
 namespace Repository.Repo
 {
@@ -37,10 +38,10 @@ namespace Repository.Repo
             return attraction;
         }
 
-        public IQueryable<Attraction> GetAttractions()
+        public IList<Attraction> GetAttractions()
         {
             IQueryable<Attraction> attractions = db.Attractions.AsNoTracking();
-            return attractions;
+            return attractions.ToList();
 
         }
 

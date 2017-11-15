@@ -6,21 +6,21 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Repository.Models;
-using Repository.IRepo;
 using PagedList;
 using System.Data.Entity.Infrastructure;
 using Microsoft.AspNet.Identity;
+using Service.IService;
+using DomainModel.Models;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class AttractionsController : Controller
     {
-        private readonly IAttractionRepository repository;
+        private readonly IAttractionService attractionService;
 
-        public AttractionsController(IAttractionRepository repository)
+        public AttractionsController(IAttractionService attractionService)
         {
-            this.repository = repository;
+            this.attractionService = attractionService;
         }
 
         [Authorize(Roles ="Admin")]
@@ -31,7 +31,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<Attraction> attractions = repository.GetAttractions().ToList();
+            IList<Attraction> attractions = attractionService.GetAttractions();
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(attractions.ToPagedList<Attraction>(currentPage,perPage));
@@ -62,8 +62,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    repository.AddAttraction(attraction);
-                    repository.SaveChanges();
+                    attractionService.AddAttraction(attraction);
                     return RedirectToAction("Index");
                 }
                 catch
@@ -88,7 +87,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Attraction attraction = repository.GetAttractionById((int)id);
+            Attraction attraction = attractionService.GetAttractionById((int)id);
             if (attraction == null)
             {
                 return HttpNotFound();
@@ -111,7 +110,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Attraction attractionToUpdate = repository.GetAttractionById((int)id);
+            Attraction attractionToUpdate = attractionService.GetAttractionById((int)id);
             if (attractionToUpdate == null)
             {
                 Attraction deletedAttraction = new Attraction();
@@ -124,8 +123,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    repository.UpdateAttraction(attractionToUpdate, rowVersion);
-                    repository.SaveChanges();
+                    attractionService.UpdateAttraction(attractionToUpdate, rowVersion);
 
                     return RedirectToAction("Index");
                 }
@@ -181,7 +179,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Attraction attraction = repository.GetAttractionById((int)id);
+            Attraction attraction = attractionService.GetAttractionById((int)id);
             if (attraction == null)
             {
                 if (concurrencyError.GetValueOrDefault())
@@ -210,15 +208,14 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            if (repository.countReservationsWithGivenAttraction(attraction.Id) >= 1)
+            if (attractionService.countReservationsWithGivenAttraction(attraction.Id) >= 1)
             {
                 ViewBag.error = true;
                 return View(attraction);
             }
             try
             {
-                repository.RemoveAttraction(attraction);
-                repository.SaveChanges();
+                attractionService.RemoveAttraction(attraction);
                 return RedirectToAction("Index");
             }
             catch (DbUpdateConcurrencyException)

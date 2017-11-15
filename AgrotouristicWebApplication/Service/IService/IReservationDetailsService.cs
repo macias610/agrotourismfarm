@@ -1,0 +1,43 @@
+﻿using DomainModel.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using ViewModel;
+
+namespace Service.IService
+{
+    public interface IReservationDetailsService
+    {
+        Reservation GetReservationById(int id);
+        IList<House> GetHousesForReservation(int id);
+        Meal GetHouseMealForReservation(int reservationId, int houseId);
+        IList<Participant> GetParticipantsHouseForReservation(int reservationId, int houseId);
+        IList<House> GetAvaiableHousesInTerm(DateTime startDate, DateTime endDate);
+        IList<SelectListItem> GetNamesAvaiableHouses(IList<House> houses);
+        House GetHouseByName(string name);
+        Attraction GetAttractionByName(string name);
+        IList<SelectListItem> GetNamesAvaiableMeals();
+        IList<Participant> CopyParticipantsData(IList<Participant> tagetList, IList<Participant> actualList);
+        IList<SelectListItem> GetSelectedHousesMeals(Dictionary<string, int> dictionary, bool longVersion);
+        Dictionary<DateTime, List<string>> InitializeDictionaryForAssignedAttractions(DateTime startDate, DateTime endDate);
+        IList<SelectListItem> GetWeeksFromSelectedTerm(DateTime startDate, DateTime endDate);
+        IList<SelectListItem> GetAvaiableDatesInWeek(string term);
+        IList<SelectListItem> GetAvaiableAttractions();
+        IList<SelectListItem> GetParticipantsQuantity(int quantity);
+        Dictionary<DateTime, List<string>> GetAttractionsInGivenWeek(string term, Dictionary<DateTime, List<string>> dictionary);
+        Dictionary<DateTime, List<string>> RetreiveAttractionsInGivenWeek(string term, int id);
+        Dictionary<string, List<Participant>> RetreiveHouseParticipants(int id);
+        int GetMaxRowsToTableAttractions(Dictionary<DateTime, List<string>> dictionary);
+
+
+        void SaveSelectedHouses(NewReservation reservation, IList<string> selectedHouses);
+        void SaveAssignedMealsToHouses(NewReservation reservation, IList<string> selectedMeals);
+        void ClearParticipantsFormular(NewReservation reservation);
+        void WriteDocument(string fileName, byte[] content, HttpResponseBase response);
+        bool ValidateFormularParticipants(Dictionary<string, List<Participant>> dictionary);
+    }
+}

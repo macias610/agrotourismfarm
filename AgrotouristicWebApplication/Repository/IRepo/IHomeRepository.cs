@@ -8,8 +8,8 @@ namespace Repository.IRepo
 {
     public interface IHomeRepository
     {
-        List<string> GetAvaiableMeals();
-        List<string> GetAvaiableHouses();
-        List<string> GetAvaiableAttractions();
+        IList<string> GetAvaiableMeals();
+        IList<string> GetAvaiableHouses();
+        IList<string> GetAvaiableAttractions();
     }
 }

@@ -1,5 +1,5 @@
 ﻿using PagedList;
-using Repository.IRepo;
+using Service.IService;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
@@ -8,10 +8,11 @@ namespace AgrotouristicWebApplication.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IHomeRepository repository;
-        public HomeController(IHomeRepository repository)
+        private readonly IHomeService homeService;
+
+        public HomeController(IHomeService repository)
         {
-            this.repository = repository;
+            this.homeService = repository;
         }
 
         public ActionResult Index(bool? expiredSession)
@@ -31,7 +32,7 @@ namespace AgrotouristicWebApplication.Controllers
 
         public ActionResult Attractions(int? page)
         {
-            List<string> attractions = repository.GetAvaiableAttractions();
+            IList<string> attractions = homeService.GetAvaiableAttractions();
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(attractions.ToPagedList<string>(currentPage,perPage));
@@ -39,7 +40,7 @@ namespace AgrotouristicWebApplication.Controllers
 
         public ActionResult Houses(int? page)
         {
-            List<string> houses = repository.GetAvaiableHouses();
+            IList<string> houses = homeService.GetAvaiableHouses();
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(houses.ToPagedList<string>(currentPage,perPage));
@@ -47,7 +48,7 @@ namespace AgrotouristicWebApplication.Controllers
 
         public ActionResult Meals(int? page)
         {
-            List<string> meals = repository.GetAvaiableMeals();
+            IList<string> meals = homeService.GetAvaiableMeals();
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(meals.ToPagedList<string>(currentPage,perPage));
