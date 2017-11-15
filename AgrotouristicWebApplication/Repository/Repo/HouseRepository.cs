@@ -6,6 +6,7 @@ using System.Web;
 using Repository.Models;
 using System.Web.Mvc;
 using System.Data.Entity;
+using DomainModel.Models;
 
 namespace Repository.Repo
 {
@@ -37,12 +38,12 @@ namespace Repository.Repo
             return numberHouses;
         }
 
-        public List<SelectListItem> getAvaiableTypes()
+        public IList<SelectListItem> getAvaiableTypes()
         {
-            List<HouseType> houseTypes = db.HouseTypes.AsNoTracking().ToList();
-            List<string> avaiableTypes = new List<string>();
-            houseTypes.ForEach(item => avaiableTypes.Add(item.Type));
-            List<SelectListItem> selectList = avaiableTypes.Select(avaiableType => new SelectListItem { Value = avaiableType, Text = avaiableType }).ToList();
+            IList<HouseType> houseTypes = db.HouseTypes.AsNoTracking().ToList();
+            IList<string> avaiableTypes = new List<string>();
+            houseTypes.ToList().ForEach(item => avaiableTypes.Add(item.Type));
+            IList<SelectListItem> selectList = avaiableTypes.Select(avaiableType => new SelectListItem { Value = avaiableType, Text = avaiableType }).ToList();
             return selectList;
         }
 
@@ -52,10 +53,10 @@ namespace Repository.Repo
             return house;
         }
 
-        public IQueryable<House> GetHouses()
+        public IList<House> GetHouses()
         {
             IQueryable<House> houses = db.Houses.AsNoTracking();
-            return houses;
+            return houses.ToList();
         }
 
         public HouseType GetHouseTypeById(int id)
@@ -72,10 +73,10 @@ namespace Repository.Repo
             return houseType;
         }
 
-        public IQueryable<HouseType> GetHouseTypes()
+        public IList<HouseType> GetHouseTypes()
         {
             IQueryable<HouseType> houseTypes = db.HouseTypes.AsNoTracking();
-            return houseTypes;
+            return houseTypes.ToList();
         }
 
         public void RemoveHouse(House house)
@@ -95,11 +96,11 @@ namespace Repository.Repo
 
         public void setAvailabilityHouse(House house)
         {
-            List<int> reservationsIdForHouse = (from reservation in db.Reservation_Houses
+            IList<int> reservationsIdForHouse = (from reservation in db.Reservation_Houses
                                                 where reservation.HouseId.Equals(house.Id)
                                                 select reservation.ReservationId).ToList();
 
-            List<Reservation> reservations = (from reservation in db.Reservations
+            IList<Reservation> reservations = (from reservation in db.Reservations
                                               where reservationsIdForHouse.Contains(reservation.Id)
                                               where reservation.StartDate <= DateTime.Now
                                               where reservation.EndDate >= DateTime.Now

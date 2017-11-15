@@ -6,22 +6,21 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Repository.Models;
-using Repository.IRepo;
-using Repository.ViewModels;
 using PagedList;
 using System.Data.Entity.Infrastructure;
 using Microsoft.AspNet.Identity;
+using Service.IService;
+using DomainModel.Models;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class HouseTypesController : Controller
     {
-        private readonly IHouseRepository repository;
+        private readonly IHouseService houseService;
 
-        public HouseTypesController(IHouseRepository repository)
+        public HouseTypesController(IHouseService houseService)
         {
-            this.repository = repository;
+            this.houseService = houseService;
         }
 
         [Authorize(Roles ="Admin")]
@@ -32,7 +31,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<HouseType> housesTypes = repository.GetHouseTypes().ToList();
+            IList<HouseType> housesTypes = houseService.GetHouseTypes();
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(housesTypes.ToPagedList<HouseType>(currentPage,perPage));
@@ -63,8 +62,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    repository.AddHouseType(houseType);
-                    repository.SaveChanges();
+                    houseService.AddHouseType(houseType);
                     return RedirectToAction("Index");
                 }
                 catch 
@@ -88,7 +86,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            HouseType houseType = repository.GetHouseTypeById((int)id);
+            HouseType houseType = houseService.GetHouseTypeById((int)id);
             if (houseType == null)
             {
                 return HttpNotFound();
@@ -111,7 +109,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            HouseType houseTypeToUpdate = repository.GetHouseTypeById((int)id);
+            HouseType houseTypeToUpdate = houseService.GetHouseTypeById((int)id);
             if (houseTypeToUpdate == null)
             {
                 HouseType deletedHouseType = new HouseType();
@@ -124,8 +122,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    repository.UpdateHouseType(houseTypeToUpdate, rowVersion);
-                    repository.SaveChanges();
+                    houseService.UpdateHouseType(houseTypeToUpdate, rowVersion);
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -174,7 +171,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            HouseType houseType = repository.GetHouseTypeById((int)id);
+            HouseType houseType = houseService.GetHouseTypeById((int)id);
             if (houseType == null)
             {
                 if (concurrencyError.GetValueOrDefault())
@@ -203,7 +200,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            if (repository.countHousesWithGivenType(houseType.Id) >= 1)
+            if (houseService.countHousesWithGivenType(houseType.Id) >= 1)
             {
                 ViewBag.error = true;
                 return View(houseType);
@@ -211,8 +208,7 @@ namespace AgrotouristicWebApplication.Controllers
 
             try
             {
-                repository.RemoveHouseType(houseType);
-                repository.SaveChanges();
+                houseService.RemoveHouseType(houseType);
                 return RedirectToAction("Index");
             }
             catch (DbUpdateConcurrencyException)

@@ -1,6 +1,6 @@
-﻿using Repository.IRepo;
+﻿using DomainModel.Models;
+using Repository.IRepo;
 using Repository.Models;
-using Repository.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ViewModel;
 
 namespace Repository.Repo
 {
@@ -20,7 +21,7 @@ namespace Repository.Repo
             this.db = db;
         }
 
-        public List<House> GetHousesForReservation(int id)
+        public IList<House> GetHousesForReservation(int id)
         {
             List<House> houses = (from resHouse in db.Reservation_Houses
                                   where resHouse.ReservationId.Equals(id)
@@ -38,7 +39,7 @@ namespace Repository.Repo
                          select m).FirstOrDefault();
             return meal;
         }
-        public List<Participant> GetParticipantsHouseForReservation(int reservationId, int houseId)
+        public IList<Participant> GetParticipantsHouseForReservation(int reservationId, int houseId)
         {
             List<Participant> participants = (from resHouse in db.Reservation_Houses
                                               where resHouse.HouseId.Equals(houseId)
@@ -47,7 +48,7 @@ namespace Repository.Repo
                                               select participant).ToList();
             return participants;
         }
-        public List<House> GetAvaiableHousesInTerm(DateTime startDate, DateTime endDate)
+        public IList<House> GetAvaiableHousesInTerm(DateTime startDate, DateTime endDate)
         {
             List<int> reservationHousesIDs = (from reservation in db.Reservations
                                               where (startDate.CompareTo(reservation.StartDate) >= 0 & startDate.CompareTo(reservation.EndDate) < 0)
@@ -61,7 +62,7 @@ namespace Repository.Repo
             houses.RemoveAll(item => reservationHousesIDs.Contains(item.Id));
             return houses;
         }
-        public List<SelectListItem> GetNamesAvaiableHouses(List<House> houses)
+        public IList<SelectListItem> GetNamesAvaiableHouses(IList<House> houses)
         {
             List<SelectListItem> selectList = houses.Select(house => new SelectListItem { Value = house.HouseType.Type + "(" + house.Name + ")|" + "(" + house.HouseType.Price + "[zł]/doba)" + ";", Text = house.HouseType.Type + "(" + house.Name + ")" + ";" }).ToList();
             return selectList;
@@ -73,13 +74,13 @@ namespace Repository.Repo
                            select h).FirstOrDefault();
             return house;
         }
-        public List<SelectListItem> GetNamesAvaiableMeals()
+        public IList<SelectListItem> GetNamesAvaiableMeals()
         {
             List<Meal> avaiableMeals = db.Meals.AsNoTracking().ToList();
             List<SelectListItem> selectList = avaiableMeals.Select(avaiableMeal => new SelectListItem { Value = avaiableMeal.Type + "(" + avaiableMeal.Price + "[zł]-os./dzień" + ")", Text = avaiableMeal.Type + "(" + avaiableMeal.Price + "[zł]-os./dzień" + ")" }).ToList();
             return selectList;
         }
-        public List<Participant> CopyParticipantsData(List<Participant> targetList, List<Participant> actualList)
+        public IList<Participant> CopyParticipantsData(IList<Participant> targetList, IList<Participant> actualList)
         {
             if(targetList.First().Id ==0)
             {
@@ -92,7 +93,7 @@ namespace Repository.Repo
             }
             return targetList;
         }
-        public List<SelectListItem> GetSelectedHousesMeals(Dictionary<string, int> dictionary, bool longVersion)
+        public IList<SelectListItem> GetSelectedHousesMeals(Dictionary<string, int> dictionary, bool longVersion)
         {
             List<string> result = new List<string>();
             foreach (KeyValuePair<string, int> item in dictionary)
@@ -105,7 +106,7 @@ namespace Repository.Repo
             List<SelectListItem> list = result.Select(item => new SelectListItem { Text = longVersion ? item : item.Split(';')[0] + ';', Value = longVersion ? item : item.Split(';')[0] + ';', Selected = true }).ToList();
             return list;
         }
-        public void SaveSelectedHouses(NewReservation reservation, List<string> selectedHouses)
+        public void SaveSelectedHouses(NewReservation reservation, IList<string> selectedHouses)
         {
             foreach (string house in selectedHouses)
             {
@@ -116,7 +117,7 @@ namespace Repository.Repo
                 reservation.AssignedHousesMeals.Add(house, -1);
             }
         }
-        public void SaveAssignedMealsToHouses(NewReservation reservation, List<string> selectedMeals)
+        public void SaveAssignedMealsToHouses(NewReservation reservation, IList<string> selectedMeals)
         {
             foreach (string houseMeal in selectedMeals)
             {
@@ -164,7 +165,7 @@ namespace Repository.Repo
             return result;
         }
 
-        public List<SelectListItem> GetWeeksFromSelectedTerm(DateTime startDate, DateTime endDate)
+        public IList<SelectListItem> GetWeeksFromSelectedTerm(DateTime startDate, DateTime endDate)
         {
             List<string> list = new List<string>();
             list.Add("-");
@@ -183,7 +184,7 @@ namespace Repository.Repo
             return selectList;
         }
 
-        public List<SelectListItem> GetAvaiableDatesInWeek(string term)
+        public IList<SelectListItem> GetAvaiableDatesInWeek(string term)
         {
             List<DateTime> result = new List<DateTime>();
             for (DateTime start = DateTime.Parse(term.Split(';')[0]); start.CompareTo(DateTime.Parse(term.Split(';')[1])) <= 0; start = start.AddDays(1))
@@ -194,7 +195,7 @@ namespace Repository.Repo
             return selectList;
         }
 
-        public List<SelectListItem> GetAvaiableAttractions()
+        public IList<SelectListItem> GetAvaiableAttractions()
         {
             List<string> namesAttractions = (from attraction in db.Attractions
                                              select attraction.Name).ToList();
@@ -210,7 +211,7 @@ namespace Repository.Repo
             return selectList;
         }
 
-        public List<SelectListItem> GetParticipantsQuantity(int quantity)
+        public IList<SelectListItem> GetParticipantsQuantity(int quantity)
         {
             List<string> list = new List<string>();
             for(int i=2;i<=quantity;i++)
@@ -298,23 +299,11 @@ namespace Repository.Repo
 
         public Attraction GetAttractionByName(string name)
         {
-            Models.Attraction attraction = (from attr in db.Attractions
+            Attraction attraction = (from attr in db.Attractions
                                      where attr.Name.Equals(name)
                                      select attr).FirstOrDefault();
             return attraction;
         }
 
-        public void WriteDocument(string fileName,byte[] content, HttpResponseBase response)
-        {
-            HttpContext.Current.Response.Clear();
-            response.ContentType = "application/pdf";
-            response.ContentEncoding = System.Text.Encoding.UTF8;
-            response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-            response.CacheControl = "No-cache";
-            response.BinaryWrite(content);
-            response.Flush();
-            response.SuppressContent = true;
-            HttpContext.Current.ApplicationInstance.CompleteRequest();
-        }
     }
 }

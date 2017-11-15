@@ -6,23 +6,23 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Repository.Models;
-using Repository.IRepo;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Repository.ViewModels;
 using PagedList;
 using System.Data.Entity.Validation;
 using Microsoft.AspNet.Identity;
+using Service.IService;
+using DomainModel.Models;
+using ViewModel;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class RoleUsersController : Controller
     {
-        private readonly IUserRepository repository;
+        private readonly IUserService userService;
 
-        public RoleUsersController(IUserRepository repository)
+        public RoleUsersController(IUserService userService)
         {
-            this.repository = repository;
+            this.userService = userService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -33,8 +33,8 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<User> users = repository.GetUsers().ToList();
-            Dictionary<string,string> roles = repository.GetRoles().ToDictionary(x=>x.Id,x=>x.Name);
+            List<User> users = userService.GetUsers().ToList();
+            Dictionary<string,string> roles = userService.GetRoles().ToDictionary(x=>x.Id,x=>x.Name);
             List<RolesUser> rolesUsers = new List<RolesUser>();
             users.ForEach(user => rolesUsers.Add(
                 new RolesUser()
@@ -44,7 +44,7 @@ namespace AgrotouristicWebApplication.Controllers
                     Name=user.Name,
                     Surname=user.Surname,
                     BirthDate=user.BirthDate,
-                    Roles= repository.GetUserRoles(user.Id)
+                    Roles= userService.GetUserRoles(user.Id).ToList()
                 }
             )
             );
@@ -72,13 +72,13 @@ namespace AgrotouristicWebApplication.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            List<IdentityUserRole> userRoles = repository.GetUserById(id).Roles.ToList();
-            Dictionary<string, string> roles = repository.GetRoles().ToDictionary(x => x.Id, x => x.Name);
+            List<IdentityUserRole> userRoles = userService.GetUserById(id).Roles.ToList();
+            Dictionary<string, string> roles = userService.GetRoles().ToDictionary(x => x.Id, x => x.Name);
 
             RoleUser roleUser = new RoleUser
             {
-                userId = id,
-                Roles = repository.GetNewRolesForUser(userRoles,roles)
+                UserId = id,
+                Roles = userService.GetNewRolesForUser(userRoles,roles)
             };
             if (concurrencyError.GetValueOrDefault())
             {
@@ -92,7 +92,7 @@ namespace AgrotouristicWebApplication.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Admin")]
-        public ActionResult Create([Bind(Include = "userId,SelectedRoleText")] RoleUser roleUser)
+        public ActionResult Create([Bind(Include = "UserId,SelectedRoleText")] RoleUser roleUser)
         {
             if (HttpContext.Session["Checker"] == null)
             {
@@ -103,20 +103,19 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    if (repository.GetUserById(roleUser.userId) == null)
+                    if (userService.GetUserById(roleUser.UserId) == null)
                     {
                         return RedirectToAction("Index", new { concurrencyError = true });
                     }
-                    else if (repository.GetUserRoles(roleUser.userId).Count>=2)
+                    else if (userService.GetUserRoles(roleUser.UserId).Count>=2)
                     {
-                        return RedirectToAction("Create", new { concurrencyError = true, id = roleUser.userId });
+                        return RedirectToAction("Create", new { concurrencyError = true, id = roleUser.UserId });
                     }
-                    else if(repository.GetUserRoles(roleUser.userId).Contains(roleUser.SelectedRoleText))
+                    else if(userService.GetUserRoles(roleUser.UserId).Contains(roleUser.SelectedRoleText))
                     {
-                        return RedirectToAction("Create", new { concurrencyError = true, id = roleUser.userId });
+                        return RedirectToAction("Create", new { concurrencyError = true, id = roleUser.UserId });
                     }
-                    repository.AssignToRole(roleUser.userId,roleUser.SelectedRoleText);
-                    repository.SaveChanges();
+                    userService.AssignToRole(roleUser.UserId,roleUser.SelectedRoleText);
                     return RedirectToAction("Index");
                 }
                 catch
@@ -147,7 +146,7 @@ namespace AgrotouristicWebApplication.Controllers
 
             RoleUser roleUser = new RoleUser
             {
-                userId = userId,
+                UserId = userId,
                 SelectedRoleText = selectedRoleText
 
             };
@@ -157,27 +156,26 @@ namespace AgrotouristicWebApplication.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Admin")]
-        public ActionResult DeleteConfirmed([Bind(Include = "userId,SelectedRoleText")] RoleUser roleUser)
+        public ActionResult DeleteConfirmed([Bind(Include = "UserId,SelectedRoleText")] RoleUser roleUser)
         {
             if (HttpContext.Session["Checker"] == null)
             {
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            Dictionary<string, string> roles = repository.GetRoles().ToDictionary(x => x.Name, x => x.Id);
+            Dictionary<string, string> roles = userService.GetRoles().ToDictionary(x => x.Name, x => x.Id);
             try
             {
-                if (roleUser.SelectedRoleText.Equals("Admin") && repository.GetNumberOfUsersForGivenRole(roles, "Admin") <= 1)
+                if (roleUser.SelectedRoleText.Equals("Admin") && userService.GetNumberOfUsersForGivenRole(roles, "Admin") <= 1)
                 {
                     ViewBag.error = true;
                     return View(roleUser);
                 }
-                else if (repository.GetUserById(roleUser.userId) == null || !repository.GetUserRoles(roleUser.userId).Contains(roleUser.SelectedRoleText) )
+                else if (userService.GetUserById(roleUser.UserId) == null || !userService.GetUserRoles(roleUser.UserId).Contains(roleUser.SelectedRoleText) )
                 {
                     return RedirectToAction("Index", new { concurrencyError = true });
                 }
-                repository.RemoveFromRole(roleUser.userId, roleUser.SelectedRoleText);
-                repository.SaveChanges();
+                userService.RemoveFromRole(roleUser.UserId, roleUser.SelectedRoleText);
             }
             catch
             {

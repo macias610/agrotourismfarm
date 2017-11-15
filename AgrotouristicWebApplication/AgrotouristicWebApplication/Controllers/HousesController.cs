@@ -6,22 +6,22 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Repository.Models;
-using Repository.IRepo;
-using Repository.ViewModels;
 using PagedList;
 using System.Data.Entity.Infrastructure;
 using Microsoft.AspNet.Identity;
+using DomainModel.Models;
+using Service.IService;
+using ViewModel;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class HousesController : Controller
     {
-        private readonly IHouseRepository repository;
+        private readonly IHouseService houseService;
 
-        public HousesController(IHouseRepository repository)
+        public HousesController(IHouseService houseService)
         {
-            this.repository = repository;
+            this.houseService = houseService;
         }
 
         [Authorize(Roles ="Admin")]
@@ -32,15 +32,15 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<House> houses = repository.GetHouses().ToList();
-            houses.ForEach(item => repository.setAvailabilityHouse(item));
+            List<House> houses = houseService.GetHouses().ToList();
+            houses.ForEach(item => houseService.setAvailabilityHouse(item));
  
             List<HouseDetails> houseDetails = new List<HouseDetails>();
             houses.ForEach(item => houseDetails.Add(new HouseDetails()
             {
                 House = item,
-                Price = repository.GetHouseTypeById(item.HouseTypeId).Price,
-                Type = repository.GetHouseTypeById(item.HouseTypeId).Type
+                Price = houseService.GetHouseTypeById(item.HouseTypeId).Price,
+                Type = houseService.GetHouseTypeById(item.HouseTypeId).Type
             }));
             int currentPage = page ?? 1;
             int perPage = 4;
@@ -56,7 +56,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             HouseDetails house = new HouseDetails()
             {
-                Types = repository.getAvaiableTypes()
+                Types = houseService.getAvaiableTypes()
             };
             return View(house);
         }
@@ -71,13 +71,12 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            house.HouseTypeId = repository.GetHouseTypeByType(selectedTypeText).Id;
+            house.HouseTypeId = houseService.GetHouseTypeByType(selectedTypeText).Id;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    repository.AddHouse(house);
-                    repository.SaveChanges();
+                    houseService.AddHouse(house);
                     ViewBag.exception = false;
                     return RedirectToAction("Index");
 
@@ -105,7 +104,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            House house = repository.GetHouseById((int)id);
+            House house = houseService.GetHouseById((int)id);
             if (house == null)
             {
                 return HttpNotFound();
@@ -128,7 +127,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            House houseToUpdate = repository.GetHouseById((int)id);
+            House houseToUpdate = houseService.GetHouseById((int)id);
             if (houseToUpdate == null)
             {
                 House deletedHouse = new House();
@@ -141,8 +140,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    repository.UpdateHouse(houseToUpdate, rowVersion);
-                    repository.SaveChanges();
+                    houseService.UpdateHouse(houseToUpdate, rowVersion);
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -194,7 +192,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            House house = repository.GetHouseById((int)id);
+            House house = houseService.GetHouseById((int)id);
             if (house == null)
             {
                 if (concurrencyError.GetValueOrDefault())
@@ -223,7 +221,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            repository.setAvailabilityHouse(house);
+            houseService.setAvailabilityHouse(house);
 
             if (house.statusHouse.Equals("Zajęty")|| house.statusHouse.Equals("Zarezerwowany"))
             {
@@ -232,8 +230,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             try
             {
-                repository.RemoveHouse(house);
-                repository.SaveChanges();
+                houseService.RemoveHouse(house);
                 return RedirectToAction("Index");
             }
             catch (DbUpdateConcurrencyException)

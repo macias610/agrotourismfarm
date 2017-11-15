@@ -1,5 +1,6 @@
 namespace Repository.Migrations
 {
+    using DomainModel.Models;
     using IRepo;
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.EntityFramework;

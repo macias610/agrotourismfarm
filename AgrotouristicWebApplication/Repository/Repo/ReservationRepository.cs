@@ -3,16 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Repository.Models;
-using Repository.ViewModels;
 using System.Web.Mvc;
 using System.Text.RegularExpressions;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using DomainModel.Models;
+using ViewModel;
 
 namespace Repository.Repo
 {
-    public class ReservationRepository : Email,IReservationRepository
+    public class ReservationRepository : IReservationRepository
     {
         private readonly IAgrotourismContext db;
 
@@ -31,21 +31,21 @@ namespace Repository.Repo
             }
         }
 
-        public List<Models.Attraction> GetAttractionsForReservation(int id)
+        public IList<Attraction> GetAttractionsForReservation(int id)
         {
-            List<Models.Attraction> attractions = (from attrRes in db.Attractions_Reservations
-                                            where attrRes.ReservationId.Equals(id)
-                                            join attraction in db.Attractions on attrRes.AttractionId equals attraction.Id
-                                            select attraction).ToList();
-            return attractions;
+            IQueryable<Attraction> attractions = (from attrRes in db.Attractions_Reservations
+                                                   where attrRes.ReservationId.Equals(id)
+                                                   join attraction in db.Attractions on attrRes.AttractionId equals attraction.Id
+                                                   select attraction); ;
+            return attractions.ToList();
         }
 
-        public IQueryable<Reservation> GetClientReservations(string id)
+        public IList<Reservation> GetClientReservations(string id)
         {
             IQueryable<Reservation> reservations = from reservation in db.Reservations
                                                    where reservation.ClientId.Equals(id)
                                                    select reservation;
-            return reservations;
+            return reservations.ToList();
         }
 
         public Attraction_Reservation GetDetailsAboutReservedAttraction(int id)
@@ -62,13 +62,13 @@ namespace Repository.Repo
             return reservation;
         }
 
-        public List<User> GetWorkersAssignedToAttraction(int id)
+        public IList<User> GetWorkersAssignedToAttraction(int id)
         {
-            List<User> workers = (from attrResWor in db.Attractions_Reservations_Workers
+            IQueryable<User> workers = (from attrResWor in db.Attractions_Reservations_Workers
                                   where attrResWor.Attraction_ReservationId.Equals(id)
                                   join worker in db.ApplicationUsers on attrResWor.WorkerId equals worker.Id
-                                  select worker).ToList();
-            return workers;
+                                  select worker);
+            return workers.ToList();
         }
 
         public Reservation GetReservationBasedOnData(NewReservation reservation, string userId)
@@ -241,7 +241,7 @@ namespace Repository.Repo
                 foreach(string attractionToAdd in toAdd)
                 {
                     string attractionName = attractionToAdd.Split(',')[0];
-                    Models.Attraction attraction = (from attr in db.Attractions
+                    Attraction attraction = (from attr in db.Attractions
                                              where attr.Name.Equals(attractionName)
                                              select attr).FirstOrDefault();
                     Attraction_Reservation attractionReservation = new Attraction_Reservation()
@@ -271,9 +271,9 @@ namespace Repository.Repo
             db.Reservations.Remove(toDelete);
         }   
 
-        public List<Reservation> RemoveOutOfDateReservations(List<Reservation> reservations)
+        public IList<Reservation> RemoveOutOfDateReservations(IList<Reservation> reservations)
         {
-            List<Reservation> result = new List<Reservation>();
+            IList<Reservation> result = new List<Reservation>();
             foreach(Reservation reservation in reservations)
             {
                 if(DateTime.Now.Date.CompareTo(reservation.DeadlinePayment)>0 && reservation.Status.Equals("oczekiwanie"))
@@ -289,7 +289,7 @@ namespace Repository.Repo
             return result;
         }
 
-        public IQueryable<Reservation> GetReservationsByState(string state)
+        public IList<Reservation> GetReservationsByState(string state)
         {
             IQueryable<Reservation> reservations = null;
             if (state.Equals("wszystkie"))
@@ -300,7 +300,7 @@ namespace Repository.Repo
             {
                 reservations = db.Reservations.Where(x => x.Status.Equals(state)).AsNoTracking();
             }
-            return reservations;
+            return reservations.ToList();
         }
 
         public void UpdateReservation(Reservation reservation,byte[] rowVersion)
@@ -352,12 +352,12 @@ namespace Repository.Repo
             return reservationHistory;
         }
 
-        public IQueryable<Reservation_History> GetClientArchiveReservations(string id)
+        public IList<Reservation_History> GetClientArchiveReservations(string id)
         {
             IQueryable<Reservation_History> archiveReservations = (from archiveReservation in db.Reservations_History
                                                    where archiveReservation.ClientId.Equals(id)
                                                    select archiveReservation).AsNoTracking();
-            return archiveReservations;
+            return archiveReservations.ToList();
         }
 
         public Reservation_History GetReservationHistoryById(int id)
@@ -376,7 +376,7 @@ namespace Repository.Repo
                 {
                     string attractionName = attr.Split(',')[0];
                     int quantityParticipants = Int32.Parse(attr.Split(',')[1]);
-                    Models.Attraction attraction = (from attract in db.Attractions
+                    Attraction attraction = (from attract in db.Attractions
                                              where attract.Name.Equals(attractionName)
                                              select attract).FirstOrDefault();
                     Attraction_Reservation attractionReservation = new Attraction_Reservation()
@@ -419,29 +419,10 @@ namespace Repository.Repo
             return true;
         }
 
-        public void SendEmailAwaitingReservation(Reservation reservation)
+        public User GetClientById(string id)
         {
-            reservation.Client = db.ApplicationUsers.Find(reservation.ClientId);
-            string subject = "Złożenie rezerwacji";
-            string body = string.Format("Drogi {0},<BR/> dziękujemy za złożenie rezerwacji<BR/>"
-                +"Data przyjazdu: {1}<BR/>"
-                + "Data wyjazdu: {2}<BR/>"
-                +"Termin płatności: {3}<BR/>"
-                +"Koszt całkowity: {4} zł<BR/>"
-                +"Prosimy do dokonanie wpłaty na konto podane na stronie głównej.", reservation.Client.UserName, reservation.StartDate.ToShortDateString(),reservation.EndDate.ToShortDateString(),reservation.DeadlinePayment.ToShortDateString(),reservation.OverallCost);
-            base.SendEmail(reservation.Client.UserName, subject,body);
-        }
-
-        public void SendEmailConfirmingReservation(Reservation reservation)
-        {
-            reservation.Client = db.ApplicationUsers.Find(reservation.ClientId);
-            string subject = "Potwierdzenie rezerwacji";
-            string body = string.Format("Drogi {0},<BR/> dziękujemy za dokonanie wpłaty rezerwacji<BR/>"
-                + "Data przyjazdu: {1}<BR/>"
-                + "Data wyjazdu: {2}<BR/>"
-                + "Termin płatności: {3}<BR/>"
-                + "Koszt całkowity: {4} zł<BR/>", reservation.Client.UserName, reservation.StartDate.ToShortDateString(), reservation.EndDate.ToShortDateString(), reservation.DeadlinePayment.ToShortDateString(), reservation.OverallCost);
-            base.SendEmail(reservation.Client.UserName, subject, body);
+            User user = db.ApplicationUsers.Find(id);
+            return user;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Repository.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -9,6 +8,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity.Infrastructure;
 using System.Web.Security;
 using System.Web.Mvc;
+using DomainModel.Models;
 
 namespace Repository.IRepo
 {

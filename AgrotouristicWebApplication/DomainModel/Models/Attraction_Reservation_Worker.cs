@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
+namespace DomainModel.Models
+{
+    public class Attraction_Reservation_Worker
+    {
+        public Attraction_Reservation_Worker()
+        {
+
+        }
+
+        public int Id { get; set; }
+        public string WorkerId { get; set; }
+        public int Attraction_ReservationId { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
+        public virtual User Worker { get; set; }
+        public virtual Attraction_Reservation Attraction_Reservation { get; set; }
+    }
+}

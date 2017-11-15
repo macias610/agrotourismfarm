@@ -6,20 +6,20 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Repository.Models;
-using Repository.IRepo;
-using Repository.ViewModels;
 using System.Data.Entity.Infrastructure;
 using Microsoft.AspNet.Identity;
+using Service.IService;
+using DomainModel.Models;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class ReceptionistReservationsController : Controller
     {
-        private readonly IReservationRepository repository;
-        public ReceptionistReservationsController(IReservationRepository repository)
+        private readonly IReservationService reservationService =null;
+
+        public ReceptionistReservationsController(IReservationService reservationService)
         {
-            this.repository = repository;
+            this.reservationService = reservationService;
         }
 
         [Authorize(Roles ="Recepcjonista")]
@@ -30,8 +30,8 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<string> optionStates = Reservation.OptionStates.ToList();
-            List<SelectListItem> list = optionStates.Select(optionState => new SelectListItem { Text = optionState, Value = optionState, Selected = optionState.Equals("-")?true:false }).ToList();
+            IList<string> optionStates = Reservation.OptionStates;
+            IList<SelectListItem> list = optionStates.Select(optionState => new SelectListItem { Text = optionState, Value = optionState, Selected = optionState.Equals("-")?true:false }).ToList();
             return View(list);
         }
 
@@ -44,7 +44,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<Reservation> reservations = repository.GetReservationsByState(state).ToList();
+            IList<Reservation> reservations = reservationService.GetReservationsByState(state);
             return PartialView("~/Views/Shared/_SelectedStatusReservationsPartial.cshtml", reservations);
         }
 
@@ -60,7 +60,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation reservation = repository.GetReservationById((int)id);
+            Reservation reservation = reservationService.GetReservationById((int)id);
             if (reservation == null)
             {
                 return HttpNotFound();
@@ -80,7 +80,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation editedReservation = repository.GetReservationById((int)id);
+            Reservation editedReservation = reservationService.GetReservationById((int)id);
             if (editedReservation == null)
             {
                 return HttpNotFound();
@@ -105,7 +105,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation editedReservation = repository.GetReservationById((int)id);
+            Reservation editedReservation = reservationService.GetReservationById((int)id);
             if (editedReservation == null)
             {
                 Reservation deletedReservation = new Reservation();
@@ -123,10 +123,9 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    repository.UpdateReservation(editedReservation, rowVersion);
-                    repository.SaveChanges();
+                    reservationService.UpdateReservation(editedReservation, rowVersion);
                     if (editedReservation.Status.Equals("zarezerwowano"))
-                        repository.SendEmailConfirmingReservation(editedReservation);
+                        reservationService.SendEmailConfirmingReservation(editedReservation);
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -185,7 +184,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation reservation = repository.GetReservationById((int)id);
+            Reservation reservation = reservationService.GetReservationById((int)id);
             if (reservation == null)
             {
                 if (concurrencyError.GetValueOrDefault())
@@ -217,12 +216,11 @@ namespace AgrotouristicWebApplication.Controllers
             }
             try
             {
-                reservation.Attraction_Reservation = repository.GetReservationById(reservation.Id).Attraction_Reservation;
-                reservation.Reservation_House = repository.GetReservationById(reservation.Id).Reservation_House;
-                Reservation_History reservationHistory = repository.GetReservationHistoryBasedReservation(reservation);
-                repository.RemoveReservation(reservation);
-                repository.AddReservationHistory(reservationHistory);
-                repository.SaveChanges();
+                reservation.Attraction_Reservation = reservationService.GetReservationById(reservation.Id).Attraction_Reservation;
+                reservation.Reservation_House = reservationService.GetReservationById(reservation.Id).Reservation_House;
+                Reservation_History reservationHistory = reservationService.GetReservationHistoryBasedReservation(reservation);
+                reservationService.RemoveReservation(reservation);
+                reservationService.AddReservationHistory(reservationHistory);
                 return RedirectToAction("Index");
             }
             catch (DbUpdateConcurrencyException)

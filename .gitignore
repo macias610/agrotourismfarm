@@ -4,3 +4,9 @@ AgrotouristicWebApplication/AgrotouristicWebApplication/obj/*
 AgrotouristicWebApplication/AgrotouristicWebApplication.Tests/bin/*
 AgrotouristicWebApplication/Repository/obj/*
 AgrotouristicWebApplication/Repository/bin/*
+AgrotouristicWebApplication/Service/obj/*
+AgrotouristicWebApplication/Service/bin/*
+AgrotouristicWebApplication/DomainModel/obj/*
+AgrotouristicWebApplication/DomainModel/bin/*
+AgrotouristicWebApplication/ViewModel/obj/*
+AgrotouristicWebApplication/ViewModel/bin/*

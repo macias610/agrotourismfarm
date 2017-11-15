@@ -6,21 +6,21 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Repository.Models;
-using Repository.IRepo;
 using PagedList;
 using System.Data.Entity.Infrastructure;
 using Microsoft.AspNet.Identity;
+using Service.IService;
+using DomainModel.Models;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class MealsController : Controller
     {
-        private readonly IMealRepository repository;
+        private readonly IMealService mealService;
 
-        public MealsController(IMealRepository repository)
+        public MealsController(IMealService mealService)
         {
-            this.repository = repository;
+            this.mealService = mealService;
         }
 
         public ActionResult Index(int? page)
@@ -30,7 +30,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<Meal> meals = repository.GetMeals().ToList();
+            IList<Meal> meals = mealService.GetMeals();
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(meals.ToPagedList<Meal>(currentPage,perPage));
@@ -61,8 +61,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    repository.AddMeal(meal);
-                    repository.SaveChanges();
+                    mealService.AddMeal(meal);
                     ViewBag.exception = false;
                     return RedirectToAction("Index");
                 }
@@ -87,7 +86,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Meal meal = repository.GetMealById((int)id);
+            Meal meal = mealService.GetMealById((int)id);
             if (meal == null)
             {
                 return HttpNotFound();
@@ -110,7 +109,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Meal mealToUpdate = repository.GetMealById((int)id);
+            Meal mealToUpdate = mealService.GetMealById((int)id);
             if (mealToUpdate == null)
             {
                 Meal deletedMeal = new Meal();
@@ -123,8 +122,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    repository.UpdateMeal(mealToUpdate, rowVersion);
-                    repository.SaveChanges();
+                    mealService.UpdateMeal(mealToUpdate, rowVersion);
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -173,7 +171,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Meal meal = repository.GetMealById((int)id);
+            Meal meal = mealService.GetMealById((int)id);
             if (meal == null)
             {
                 if (concurrencyError.GetValueOrDefault())
@@ -202,15 +200,14 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            if (repository.countHousesWithGivenMeal(meal.Id) >= 1)
+            if (mealService.countHousesWithGivenMeal(meal.Id) >= 1)
             {
                 ViewBag.error = true;
                 return View(meal);
             }
             try
             {
-                repository.RemoveMeal(meal);
-                repository.SaveChanges();
+                mealService.RemoveMeal(meal);
                 return RedirectToAction("Index");
             }
             catch (DbUpdateConcurrencyException)

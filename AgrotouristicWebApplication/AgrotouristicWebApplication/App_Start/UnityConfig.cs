@@ -2,11 +2,11 @@ using System;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
 using AgrotouristicWebApplication.Controllers;
-using Repository.IRepo;
-using Repository.Models;
-using Repository.Repository;
-using Repository.ViewModels;
-using Repository.Repo;
+using Service.IService;
+using Service;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Data.Entity;
 
 namespace AgrotouristicWebApplication.App_Start
 {
@@ -43,18 +43,10 @@ namespace AgrotouristicWebApplication.App_Start
 
             // TODO: Register your types here
             // container.RegisterType<IProductRepository, ProductRepository>();
+
             container.RegisterType<AccountController>(new InjectionConstructor());
             container.RegisterType<ManageController>(new InjectionConstructor());
-            container.RegisterType<IUserRepository,UserRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IHouseRepository, HouseRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IMealRepository, MealRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IAttractionRepository, AttractionRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IReservationRepository, ReservationRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IReservationDetailsRepository, ReservationDetailsRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IReservedAttractionsRepository, ReservedAttractionsRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IHomeRepository, HomeRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IAccountRepository, AccountRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IAgrotourismContext, AgrotourismContext>(new PerRequestLifetimeManager());
+
         }
     }
 }

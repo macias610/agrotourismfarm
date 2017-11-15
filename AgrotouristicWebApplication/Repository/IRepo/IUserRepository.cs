@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using DomainModel.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Repository.Models;
 using System;
 using System.Collections.Generic;
@@ -11,17 +12,17 @@ namespace Repository.IRepo
 {
     public interface IUserRepository: IDisposable
     {
-        IQueryable<IdentityRole> GetRoles();
-        IQueryable<User> GetUsers();
+        IList<IdentityRole> GetRoles();
+        IList<User> GetUsers();
         User GetUserById(string id);
         User GetOriginalValuesUser(string id);
         void AssignToRole(string userId, string role);
         void UpdateUser(User user,string securityStamp);
         void UpdateBaseDataUser(User user, string securityStamp);
-        List<SelectListItem> GetNewRolesForUser(List<IdentityUserRole> UserRoles, Dictionary<string, string> Roles);
-        List<string> GetAvaiableProfessons();
-        List<string> GetUserRoles(string id);
-        int GetNumberOfUsersForGivenRole(Dictionary<string, string> Roles,string role);
+        IList<SelectListItem> GetNewRolesForUser(IList<IdentityUserRole> userRoles, Dictionary<string, string> roles);
+        IList<string> GetAvaiableProfessons();
+        IList<string> GetUserRoles(string id);
+        int GetNumberOfUsersForGivenRole(Dictionary<string, string> roles,string role);
         void RemoveUser(User user,string securityStamp);
         bool isUserEmployed(string userId);
         void RemoveFromRole(string userId, string role);

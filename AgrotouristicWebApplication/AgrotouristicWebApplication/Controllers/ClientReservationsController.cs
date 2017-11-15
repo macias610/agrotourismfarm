@@ -5,25 +5,23 @@ using System.Data.Entity;
 using System.Linq;
 
 using System.Web.Mvc;
-using Repository.Models;
-using Repository.IRepo;
 using Microsoft.AspNet.Identity;
-using Repository.ViewModels;
 using PagedList;
-using System.Web.Security;
-using Microsoft.Owin.Security;
 using System.Net;
 using System.Web;
+using Service.IService;
+using DomainModel.Models;
+using ViewModel;
 
 namespace AgrotouristicWebApplication.Controllers
 {
     public class ClientReservationsController : Controller
     {
-        private readonly IReservationRepository repository;
+        private readonly IReservationService reservationService;
 
-        public ClientReservationsController(IReservationRepository repository)
+        public ClientReservationsController(IReservationService reservationService)
         {
-            this.repository = repository;
+            this.reservationService = reservationService;
         }
 
         [Authorize(Roles ="Klient")]
@@ -34,8 +32,8 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            List<Reservation> reservations = repository.GetClientReservations(User.Identity.GetUserId()).ToList();
-            reservations=repository.RemoveOutOfDateReservations(reservations);
+            IList<Reservation> reservations = reservationService.GetClientReservations(User.Identity.GetUserId()).ToList();
+            reservations=reservationService.RemoveOutOfDateReservations(reservations);
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(reservations.ToPagedList<Reservation>(currentPage,perPage));
@@ -53,7 +51,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation reservation = repository.GetReservationById((int)id);
+            Reservation reservation = reservationService.GetReservationById((int)id);
             if (reservation == null)
             {
                 return HttpNotFound();
@@ -105,22 +103,21 @@ namespace AgrotouristicWebApplication.Controllers
             if (ModelState.IsValid)
             {
                 reservation = (NewReservation )Session["Reservation"];
-                if(!repository.checkAvaiabilityHousesBeforeConformation(reservation))
+                if(!reservationService.checkAvaiabilityHousesBeforeConformation(reservation))
                 {
                     return RedirectToAction("Create", new { concurrencyError = true});
                 }
 
-                Reservation savedReservation = repository.GetReservationBasedOnData(reservation, User.Identity.GetUserId());
-                repository.AddReservation(savedReservation);
-                repository.SaveChanges();
-                repository.SaveAssignedMealsAndHouses(savedReservation.Id, reservation);
+                Reservation savedReservation = reservationService.GetReservationBasedOnData(reservation, User.Identity.GetUserId());
+                reservationService.AddReservation(savedReservation);
+                reservationService.SaveAssignedMealsAndHouses(savedReservation.Id, reservation);
                 if(reservation.AssignedAttractions.Any(pair => pair.Value != null && pair.Value.Any()))
                 {
-                    repository.SaveAssignedAttractions(savedReservation.Id, reservation);
+                    reservationService.SaveAssignedAttractions(savedReservation.Id, reservation);
                 }
 
                 Session.Remove("Reservation");
-                repository.SendEmailAwaitingReservation(savedReservation);
+                reservationService.SendEmailAwaitingReservation(savedReservation);
                 return RedirectToAction("Index");
             }
             return View(reservation);
@@ -138,7 +135,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation reservation = repository.GetReservationById((int)id);
+            Reservation reservation = reservationService.GetReservationById((int)id);
             if (reservation == null)
             {
                 return HttpNotFound();
@@ -153,7 +150,7 @@ namespace AgrotouristicWebApplication.Controllers
             if (!actions.Contains(action))
             {
                 Session.Remove("Reservation");
-                editedReservation = repository.RetreiveExistingReservation(reservation);
+                editedReservation = reservationService.RetreiveExistingReservation(reservation);
                 Session["Reservation"] = editedReservation;
             }
             else
@@ -178,11 +175,11 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 reservation = (NewReservation)Session["Reservation"];
                 if(reservation.stagesConfirmation[2])
-                    repository.ChangeAssignedMeals(Int32.Parse(Request.Form["ReservationId"]), reservation);
+                    reservationService.ChangeAssignedMeals(Int32.Parse(Request.Form["ReservationId"]), reservation);
                 if (reservation.stagesConfirmation[3])
-                    repository.ChangeAssignedParticipants(Int32.Parse(Request.Form["ReservationId"]), reservation);
+                    reservationService.ChangeAssignedParticipants(Int32.Parse(Request.Form["ReservationId"]), reservation);
                 if (reservation.stagesConfirmation[4])
-                    repository.ChangeAssignedAttractions(Int32.Parse(Request.Form["ReservationId"]), reservation);
+                    reservationService.ChangeAssignedAttractions(Int32.Parse(Request.Form["ReservationId"]), reservation);
 
                 Session.Remove("Reservation");
                 return RedirectToAction("Index");
@@ -203,7 +200,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation reservation = repository.GetReservationById((int)id);
+            Reservation reservation = reservationService.GetReservationById((int)id);
             if (reservation == null)
             {
                 return HttpNotFound();
@@ -222,9 +219,8 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            Reservation reservation = repository.GetReservationById(id);
-            repository.RemoveReservation(reservation);
-            repository.SaveChanges();
+            Reservation reservation = reservationService.GetReservationById(id);
+            reservationService.RemoveReservation(reservation);
             return RedirectToAction("Index");
         }
 

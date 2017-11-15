@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using DomainModel.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Repository.IRepo;
 using Repository.Models;
 using System;
