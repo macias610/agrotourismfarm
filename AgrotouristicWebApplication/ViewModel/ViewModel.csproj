@@ -75,6 +75,7 @@
     <Compile Include="AttractionNewInstructor.cs" />
     <Compile Include="HouseDetails.cs" />
     <Compile Include="NewReservation.cs" />
+    <Compile Include="PdfReservation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReservationAttractions.cs" />
     <Compile Include="ReservationHouseDetails.cs" />

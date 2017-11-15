@@ -50,7 +50,23 @@ namespace AgrotouristicWebApplication.Controllers
         public FileResult ExportPDFReservation(int id)
         {
             Reservation reservation = reservationDetailsService.GetReservationById(id);
-            string htmlContent = this.RenderView("~/Views/Shared/_PDFReservationPartial.cshtml", reservation);
+
+            IList<decimal> housesCosts = new List<decimal>();
+            reservation.Reservation_House.ToList()
+                .ForEach(item => housesCosts.Add(((Int32)(reservation.EndDate-reservation.StartDate).TotalDays+1)*(item.House.HouseType.Price)));
+
+            IList<decimal> mealsCosts = new List<decimal>();
+            reservation.Reservation_House.ToList()
+                .ForEach(item => mealsCosts.Add(((Int32)(reservation.EndDate - reservation.StartDate).TotalDays+1)* (item.Meal.Price * item.Participant.Count)));
+
+            PdfReservation pdfReservation = new PdfReservation()
+            {
+                Reservation = reservation,
+                HousesCosts = housesCosts,
+                MealsCosts = mealsCosts
+            };
+
+            string htmlContent = this.RenderView("~/Views/Shared/_PDFReservationPartial.cshtml", pdfReservation);
 
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(htmlContent);
