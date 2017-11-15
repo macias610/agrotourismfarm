@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountViewModels.cs" />
     <Compile Include="AttractionInstructorDetails.cs" />
     <Compile Include="AttractionInstructors.cs" />
     <Compile Include="AttractionNewInstructor.cs" />

@@ -14,7 +14,6 @@ using DomainModel.Models;
 using Service.IService;
 using Service.Service;
 using Service;
-using Repository.Models;
 
 namespace AgrotouristicWebApplication.Controllers
 {
