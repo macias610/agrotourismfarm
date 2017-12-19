@@ -23,14 +23,6 @@ namespace Repository.Repo
             db.Meals.Add(meal);
         }
 
-        public int countHousesWithGivenMeal(int id)
-        {
-            int houses = (from house in db.Reservation_Houses
-                                where house.MealId.Equals(id)
-                                select house.Id).ToList().Count;
-            return houses;
-        }
-
         public Meal GetMealById(int id)
         {
             Meal meal = db.Meals.Find(id);

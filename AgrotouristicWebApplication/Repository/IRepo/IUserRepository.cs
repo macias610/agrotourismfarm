@@ -15,18 +15,12 @@ namespace Repository.IRepo
         IList<IdentityRole> GetRoles();
         IList<User> GetUsers();
         User GetUserById(string id);
-        User GetOriginalValuesUser(string id);
+        User GetOriginalUserValues(string id);
         void AssignToRole(string userId, string role);
         void UpdateUser(User user,string securityStamp);
         void UpdateBaseDataUser(User user, string securityStamp);
-        IList<SelectListItem> GetNewRolesForUser(IList<IdentityUserRole> userRoles, Dictionary<string, string> roles);
-        IList<string> GetAvaiableProfessons();
-        IList<string> GetUserRoles(string id);
-        int GetNumberOfUsersForGivenRole(Dictionary<string, string> roles,string role);
         void RemoveUser(User user,string securityStamp);
-        bool isUserEmployed(string userId);
         void RemoveFromRole(string userId, string role);
-        void RemoveReservationsAssosiatedClient(string userId);
         void AddRole(IdentityRole role);
         void SaveChanges();
     }

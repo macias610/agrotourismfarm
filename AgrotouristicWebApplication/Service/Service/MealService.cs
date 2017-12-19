@@ -12,10 +12,12 @@ namespace Service.Service
     public class MealService : IMealService
     {
         private readonly IMealRepository mealRepository = null;
+        private readonly IReservationHouseRepository reservationHouseRepository = null;
 
-        public MealService(IMealRepository mealRepository)
+        public MealService(IMealRepository mealRepository, IReservationHouseRepository reservationHouseRepository)
         {
             this.mealRepository = mealRepository;
+            this.reservationHouseRepository = reservationHouseRepository;
         }
 
         public void AddMeal(Meal meal)
@@ -26,8 +28,10 @@ namespace Service.Service
 
         public int countHousesWithGivenMeal(int id)
         {
-            int housesQuantity = this.mealRepository.countHousesWithGivenMeal(id);
-            return housesQuantity;
+            IList<Reservation_House> reservationHouses = this.reservationHouseRepository
+                                                            .GetReservationsHouses();
+            int houses = reservationHouses.Where(item => item.MealId.Equals(id)).Count();
+            return houses;
         }
 
         public Meal GetMealById(int id)

@@ -201,14 +201,14 @@ namespace AgrotouristicWebApplication.Controllers
         [Authorize(Roles ="Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed([Bind(Include ="Id,Name,Descripction,Price,Discount,RowVersion")] Attraction attraction)
+        public ActionResult DeleteConfirmed([Bind(Include = "Id,Name,Description,Price,Discount,RowVersion")] Attraction attraction)
         {
             if (HttpContext.Session["Checker"] == null)
             {
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            if (attractionService.countReservationsWithGivenAttraction(attraction.Id) >= 1)
+            if (attractionService.countReservationsOfAttraction(attraction.Id) >= 1)
             {
                 ViewBag.error = true;
                 return View(attraction);

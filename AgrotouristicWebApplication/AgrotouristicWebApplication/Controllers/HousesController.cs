@@ -18,10 +18,12 @@ namespace AgrotouristicWebApplication.Controllers
     public class HousesController : Controller
     {
         private readonly IHouseService houseService;
+        private readonly IHouseTypeService houseTypeService;
 
-        public HousesController(IHouseService houseService)
+        public HousesController(IHouseService houseService, IHouseTypeService houseTypeService)
         {
             this.houseService = houseService;
+            this.houseTypeService = houseTypeService;
         }
 
         [Authorize(Roles ="Admin")]
@@ -39,8 +41,8 @@ namespace AgrotouristicWebApplication.Controllers
             houses.ForEach(item => houseDetails.Add(new HouseDetails()
             {
                 House = item,
-                Price = houseService.GetHouseTypeById(item.HouseTypeId).Price,
-                Type = houseService.GetHouseTypeById(item.HouseTypeId).Type
+                Price = houseTypeService.GetHouseTypeById(item.HouseTypeId).Price,
+                Type = houseTypeService.GetHouseTypeById(item.HouseTypeId).Type
             }));
             int currentPage = page ?? 1;
             int perPage = 4;
@@ -56,7 +58,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             HouseDetails house = new HouseDetails()
             {
-                Types = houseService.getAvaiableTypes()
+                Types = houseTypeService.getHouseTypesAsSelectList()
             };
             return View(house);
         }
@@ -71,7 +73,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            house.HouseTypeId = houseService.GetHouseTypeByType(selectedTypeText).Id;
+            house.HouseTypeId = houseTypeService.GetHouseTypeByType(selectedTypeText).Id;
             if (ModelState.IsValid)
             {
                 try
@@ -84,12 +86,19 @@ namespace AgrotouristicWebApplication.Controllers
                 catch 
                 {
                     ViewBag.exception = true;
-                    return View();
-
+                    HouseDetails exc = new HouseDetails()
+                    {
+                        Types = houseTypeService.getHouseTypesAsSelectList()
+                    };
+                    return View(exc);
                 }
 
             }
-            return View();
+            HouseDetails again = new HouseDetails()
+            {
+                Types = houseTypeService.getHouseTypesAsSelectList()
+            };
+            return View(again);
         }
 
         [Authorize(Roles ="Admin")]

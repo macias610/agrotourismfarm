@@ -10,16 +10,21 @@ using Repository.IRepo;
 using DomainModel.Models;
 using Repository.Models;
 using Repository.Repository;
+using System.Transactions;
 
 namespace Service
 {
     public class UserService : IUserService 
     {
         private readonly IUserRepository userRepository = null;
+        private readonly IAttractionRepository attractionRepository = null;
+        private readonly IReservationRepository reservationRepository = null;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IAttractionRepository attractionRepository, IReservationRepository reservationRepository)
         {
             this.userRepository = userRepository;
+            this.attractionRepository = attractionRepository;
+            this.reservationRepository = reservationRepository;
         }
 
         public UserService()
@@ -39,29 +44,64 @@ namespace Service
             this.userRepository.SaveChanges();
         }
 
-        public IList<string> GetAvaiableProfessons()
+        public IList<string> GetAvaiableProfessions()
         {
-            IList<string> avaiableProfessions = this.userRepository.GetAvaiableProfessons();
-
-            return avaiableProfessions;
+            IList<Attraction> attractions = this.attractionRepository.GetAttractions();
+            IList<string> professions = attractions.Select(item => item.Name).ToList();
+            professions.Add("Administrator");
+            professions.Add("-");
+            return professions;
         }
 
         public IList<SelectListItem> GetNewRolesForUser(IList<IdentityUserRole> userRoles, Dictionary<string, string> roles)
         {
-            IList<SelectListItem> newRoles = this.userRepository.GetNewRolesForUser(userRoles, roles);
-            return newRoles;
+            Dictionary<int, string> avaiableRoles = new Dictionary<int, string>();
+            List<string> idUserRoles = new List<string>();
+            userRoles.ToList().ForEach(item => idUserRoles.Add(item.RoleId));
+
+            int index = 0;
+
+            foreach (KeyValuePair<string, string> role in roles)
+            {
+                if (!idUserRoles.Contains(role.Key))
+                {
+                    avaiableRoles.Add(index, role.Value);
+                    index++;
+                }
+            }
+            List<SelectListItem> selectList = avaiableRoles
+                                                .Select(avaiableRole => new SelectListItem { Value = avaiableRole.Key.ToString(), Text = avaiableRole.Value })
+                                                .ToList();
+            return selectList;
         }
 
-        public int GetNumberOfUsersForGivenRole(Dictionary<string, string> roles, string role)
+        public int CountUsersForGivenRole(Dictionary<string, string> roles, string role)
         {
-            int numbers = this.userRepository.GetNumberOfUsersForGivenRole(roles, role);
-            return numbers;
+            IList<User> users = this.userRepository.GetUsers();
+            List<string> userRoles = new List<string>();
+            int numberOfUsers = 0;
+
+            foreach (IdentityUser user in users)
+            {
+                List<IdentityUserRole> list = user.Roles.ToList();
+                list.ForEach(x => userRoles.Add(x.RoleId));
+            }
+
+            string roleId = roles[role];
+
+            foreach (string userRole in userRoles)
+            {
+                if (userRole.Equals(roleId))
+                {
+                    numberOfUsers++;
+                }
+            }
+            return numberOfUsers;
         }
 
-        public User GetOriginalValuesUser(string id)
+        public User GetOriginalUserValues(string id)
         {
-            User user = this.userRepository.GetOriginalValuesUser(id);
-
+            User user = this.userRepository.GetOriginalUserValues(id);
             return user;
         }
 
@@ -79,8 +119,13 @@ namespace Service
 
         public IList<string> GetUserRoles(string id)
         {
-            IList<string> userRoles = this.userRepository.GetUserRoles(id);
-
+            User user = GetUserById(id);
+            Dictionary<string, string> roles = GetRoles().ToDictionary(x => x.Id, x => x.Name);
+            List<string> userRoles = new List<string>();
+            foreach (IdentityUserRole userRole in user.Roles)
+            {
+                userRoles.Add(roles[userRole.RoleId]);
+            }
             return userRoles;
         }
 
@@ -92,8 +137,21 @@ namespace Service
 
         public bool isUserEmployed(string userId)
         {
-            bool isEmployed = this.userRepository.isUserEmployed(userId);
-            return isEmployed;
+            Dictionary<string, string> roles = this.userRepository.GetRoles().ToDictionary(x => x.Name, x => x.Id);
+            roles.Remove("Klient");
+            List<string> userRoles = new List<string>();
+            this.userRepository.GetUserById(userId).Roles
+                .ToList()
+                .ForEach(item => userRoles.Add(item.RoleId));
+
+            foreach (string userRoleId in userRoles)
+            {
+                if (roles.ContainsValue(userRoleId))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void RemoveFromRole(string userId, string role)
@@ -102,9 +160,18 @@ namespace Service
             this.userRepository.SaveChanges();
         }
 
-        public void RemoveReservationsAssosiatedClient(string userId)
+        public void RemoveClientReservations(string userId)
         {
-            this.userRepository.RemoveReservationsAssosiatedClient(userId);
+            IList<Reservation> reservations = this.reservationRepository.GetClientReservations(userId);
+            using (TransactionScope scope = new TransactionScope())
+            {
+                foreach(Reservation reservation in reservations)
+                {
+                    this.reservationRepository.RemoveReservation(reservation);
+                    this.reservationRepository.SaveChanges();
+                }
+                scope.Complete();
+            }
         }
 
         public void RemoveUser(User user, string securityStamp)

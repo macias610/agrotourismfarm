@@ -156,12 +156,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgrotourismContext.cs" />
+    <Compile Include="IRepo\IAttractionReservationRepository.cs" />
     <Compile Include="IRepo\IAgrotourismContext.cs" />
     <Compile Include="IRepo\IAttractionRepository.cs" />
     <Compile Include="IRepo\IHomeRepository.cs" />
     <Compile Include="IRepo\IHouseRepository.cs" />
+    <Compile Include="IRepo\IHouseTypeRepository.cs" />
     <Compile Include="IRepo\IMealRepository.cs" />
     <Compile Include="IRepo\IReservationDetailsRepository.cs" />
+    <Compile Include="IRepo\IReservationHouseRepository.cs" />
     <Compile Include="IRepo\IReservationRepository.cs" />
     <Compile Include="IRepo\IReservedAttractionsRepository.cs" />
     <Compile Include="IRepo\IUserRepository.cs" />
@@ -276,10 +279,13 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repo\AttractionRepository.cs" />
+    <Compile Include="Repo\AttractionReservationRepository.cs" />
     <Compile Include="Repo\HomeRepository.cs" />
     <Compile Include="Repo\HouseRepository.cs" />
+    <Compile Include="Repo\HouseTypeRepository.cs" />
     <Compile Include="Repo\MealRepository.cs" />
     <Compile Include="Repo\ReservationDetailsRepository.cs" />
+    <Compile Include="Repo\ReservationHouseRepository.cs" />
     <Compile Include="Repo\ReservationRepository.cs" />
     <Compile Include="Repo\ReservedAttractionsRepository.cs" />
     <Compile Include="Repo\UserRepository.cs" />

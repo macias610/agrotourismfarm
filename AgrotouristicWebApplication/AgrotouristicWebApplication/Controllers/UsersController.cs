@@ -113,7 +113,7 @@ namespace AgrotouristicWebApplication.Controllers
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    User databaseValues = userService.GetOriginalValuesUser(ex.Message);
+                    User databaseValues = userService.GetOriginalUserValues(ex.Message);
                     if (databaseValues == null)
                     {
                         ModelState.AddModelError(string.Empty,
@@ -183,7 +183,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return HttpNotFound();
             }
-            IList<string> professions = userService.GetAvaiableProfessons();
+            IList<string> professions = userService.GetAvaiableProfessions();
             ViewData["Professions"] = professions;
             return View(user);
         }
@@ -222,7 +222,7 @@ namespace AgrotouristicWebApplication.Controllers
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    User databaseValues = userService.GetOriginalValuesUser(ex.Message);
+                    User databaseValues = userService.GetOriginalUserValues(ex.Message);
                     if (databaseValues == null)
                     {
                         ModelState.AddModelError(string.Empty,
@@ -272,7 +272,7 @@ namespace AgrotouristicWebApplication.Controllers
                 }
             }
             userToUpdate.isUserEmployed = userService.isUserEmployed(id);
-            IList<string> professions = userService.GetAvaiableProfessons();
+            IList<string> professions = userService.GetAvaiableProfessions();
             ViewData["Professions"] = professions;
             return View(userToUpdate);
         }
@@ -320,7 +320,7 @@ namespace AgrotouristicWebApplication.Controllers
             }
             Dictionary<string, string> roles = userService.GetRoles().ToDictionary(x => x.Name, x => x.Id);
             Dictionary<string, string> rolesSecond = userService.GetRoles().ToDictionary(x => x.Id, x => x.Name);
-            if (userService.GetUserRoles(user.Id).Contains("Admin") && userService.GetNumberOfUsersForGivenRole(roles, "Admin") <= 1)
+            if (userService.GetUserRoles(user.Id).Contains("Admin") && userService.CountUsersForGivenRole(roles, "Admin") <= 1)
             {
                 ViewBag.error = true;
                 return View(user);
@@ -329,7 +329,7 @@ namespace AgrotouristicWebApplication.Controllers
             try
             {
                 if (userService.GetUserRoles(user.Id).Contains("Klient"))
-                    userService.RemoveReservationsAssosiatedClient(user.Id);
+                    userService.RemoveClientReservations(user.Id);
                 userService.RemoveUser(user, securityStamp);
                 return RedirectToAction("Index");
             }

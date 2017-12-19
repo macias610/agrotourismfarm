@@ -14,7 +14,6 @@ namespace Repository.IRepo
         Meal GetMealById(int id);
         void AddMeal(Meal meal);
         void UpdateMeal(Meal meal,byte[] rowVersion);
-        int countHousesWithGivenMeal(int id);
         void RemoveMeal(Meal meal);
         void SaveChanges();
     }

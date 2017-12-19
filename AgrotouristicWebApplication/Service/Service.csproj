@@ -113,6 +113,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
@@ -156,6 +157,7 @@
     <Compile Include="IService\IAttractionService.cs" />
     <Compile Include="IService\IHomeService.cs" />
     <Compile Include="IService\IHouseService.cs" />
+    <Compile Include="IService\IHouseTypeService.cs" />
     <Compile Include="IService\IMealService.cs" />
     <Compile Include="IService\IReservationDetailsService.cs" />
     <Compile Include="IService\IReservationService.cs" />
@@ -167,6 +169,7 @@
     <Compile Include="Service\Email.cs" />
     <Compile Include="Service\HomeService.cs" />
     <Compile Include="Service\HouseService.cs" />
+    <Compile Include="Service\HouseTypeService.cs" />
     <Compile Include="Service\MealService.cs" />
     <Compile Include="Service\ReservationDetailsService.cs" />
     <Compile Include="Service\ReservationService.cs" />

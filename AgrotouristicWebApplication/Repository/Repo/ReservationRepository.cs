@@ -424,5 +424,11 @@ namespace Repository.Repo
             User user = db.ApplicationUsers.Find(id);
             return user;
         }
+
+        public IList<Reservation> GetReservations()
+        {
+            IQueryable<Reservation> reservations = this.db.Reservations.AsNoTracking();
+            return reservations.ToList();
+        }
     }
 }

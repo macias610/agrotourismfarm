@@ -25,7 +25,7 @@ namespace Service.IService
 
         IList<SelectListItem> GetNewRolesForUser(IList<IdentityUserRole> sserRoles, Dictionary<string, string> roles);
 
-        int GetNumberOfUsersForGivenRole(Dictionary<string, string> roles, string role);
+        int CountUsersForGivenRole(Dictionary<string, string> roles, string role);
 
         void UpdateUser(User user, string securityStamp);
 
@@ -33,14 +33,14 @@ namespace Service.IService
 
         void RemoveUser(User user, string securityStamp);
 
-        IList<string> GetAvaiableProfessons();
+        IList<string> GetAvaiableProfessions();
 
         void UpdateBaseDataUser(User user, string securityStamp);
 
-        User GetOriginalValuesUser(string id);
+        User GetOriginalUserValues(string id);
 
         IList<string> GetUserRoles(string id);
 
-        void RemoveReservationsAssosiatedClient(string userId);
+        void RemoveClientReservations(string userId);
     }
 }
