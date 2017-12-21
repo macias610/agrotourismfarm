@@ -29,6 +29,12 @@ namespace Repository.Repo
             return meal;
         }
 
+        public Meal GetMealByType(string type)
+        {
+            Meal meal = this.db.Meals.Where(item => item.Type.Equals(type)).SingleOrDefault();
+            return meal;
+        }
+
         public IList<Meal> GetMeals()
         {
             IQueryable<Meal> meals = db.Meals.AsNoTracking();

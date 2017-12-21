@@ -15,6 +15,8 @@ namespace Repository.IRepo
 
         IList<Reservation_House> GetReservationsHouses();
 
+        IList<Reservation_House> GetReservationHousesOfReservationId(int id);
+
         void RemoveReservationHouse(Reservation_House reservationHouse);
 
         void SaveChanges();

@@ -28,6 +28,14 @@ namespace Repository.Repo
             return reservationHouse;
         }
 
+        public IList<Reservation_House> GetReservationHousesOfReservationId(int id)
+        {
+            IList<Reservation_House> reservationHouses = (from resHouse in db.Reservation_Houses
+                                                          where resHouse.ReservationId.Equals(id)
+                                                          select resHouse).ToList();
+            return reservationHouses;
+        }
+
         public IList<Reservation_House> GetReservationsHouses()
         {
             IQueryable<Reservation_House> reservationsHouses = this.db.Reservation_Houses.AsNoTracking();

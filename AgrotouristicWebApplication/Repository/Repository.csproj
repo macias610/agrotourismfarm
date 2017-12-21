@@ -163,7 +163,7 @@
     <Compile Include="IRepo\IHouseRepository.cs" />
     <Compile Include="IRepo\IHouseTypeRepository.cs" />
     <Compile Include="IRepo\IMealRepository.cs" />
-    <Compile Include="IRepo\IReservationDetailsRepository.cs" />
+    <Compile Include="IRepo\IParticipantRepository.cs" />
     <Compile Include="IRepo\IReservationHouseRepository.cs" />
     <Compile Include="IRepo\IReservationRepository.cs" />
     <Compile Include="IRepo\IReservedAttractionsRepository.cs" />
@@ -284,7 +284,7 @@
     <Compile Include="Repo\HouseRepository.cs" />
     <Compile Include="Repo\HouseTypeRepository.cs" />
     <Compile Include="Repo\MealRepository.cs" />
-    <Compile Include="Repo\ReservationDetailsRepository.cs" />
+    <Compile Include="Repo\ParticipantRepository.cs" />
     <Compile Include="Repo\ReservationHouseRepository.cs" />
     <Compile Include="Repo\ReservationRepository.cs" />
     <Compile Include="Repo\ReservedAttractionsRepository.cs" />

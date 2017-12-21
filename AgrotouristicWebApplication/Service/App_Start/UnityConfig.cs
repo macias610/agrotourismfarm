@@ -71,10 +71,14 @@ namespace Service.App_Start
             container.RegisterType<IHomeService, HomeService>(new PerRequestLifetimeManager());
             container.RegisterType<IHouseService, HouseService>(new PerRequestLifetimeManager());
             container.RegisterType<IMealService, MealService>(new PerRequestLifetimeManager());
-            container.RegisterType<IReservationDetailsService, ReservationDetailsService>(new PerRequestLifetimeManager());
+            container.RegisterType<IDetailsReservationService, DetailsReservationService>(new PerRequestLifetimeManager());
             container.RegisterType<IReservationService, ReservationService>(new PerRequestLifetimeManager());
             container.RegisterType<IReservedAttractionsService, ReservedAttractionsService>(new PerRequestLifetimeManager());
             container.RegisterType<IHouseTypeService, HouseTypeService>(new PerRequestLifetimeManager());
+            container.RegisterType<IAttractionReservationService, AttractionReservationService>(new PerRequestLifetimeManager());
+            container.RegisterType<IMealReservationService, MealReservationService>(new PerRequestLifetimeManager());
+            container.RegisterType<IHouseReservationService, HouseReservationService>(new PerRequestLifetimeManager());
+            container.RegisterType<IParticipantReservationService, ParticipantReservationService>(new PerRequestLifetimeManager());
             container.RegisterType<IUserService, UserService>(new PerRequestLifetimeManager());
 
 
@@ -84,12 +88,12 @@ namespace Service.App_Start
             container.RegisterType<IMealRepository, MealRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IAttractionRepository, AttractionRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IReservationRepository, ReservationRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IReservationDetailsRepository, ReservationDetailsRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IReservedAttractionsRepository, ReservedAttractionsRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IHomeRepository, HomeRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IAttractionReservationRepository, AttractionReservationRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IReservationHouseRepository, ReservationHouseRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IHouseTypeRepository, HouseTypeRepository>(new PerRequestLifetimeManager());
+            container.RegisterType<IParticipantRepository, ParticipantRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IAgrotourismContext, AgrotourismContext>(new PerRequestLifetimeManager());
         }
     }
