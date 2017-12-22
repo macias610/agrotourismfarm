@@ -79,6 +79,7 @@ namespace Service.App_Start
             container.RegisterType<IMealReservationService, MealReservationService>(new PerRequestLifetimeManager());
             container.RegisterType<IHouseReservationService, HouseReservationService>(new PerRequestLifetimeManager());
             container.RegisterType<IParticipantReservationService, ParticipantReservationService>(new PerRequestLifetimeManager());
+            container.RegisterType<IReservationHistoryService, ReservationHistoryService>(new PerRequestLifetimeManager());
             container.RegisterType<IUserService, UserService>(new PerRequestLifetimeManager());
 
 

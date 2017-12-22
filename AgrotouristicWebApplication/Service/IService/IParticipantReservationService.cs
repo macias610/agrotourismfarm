@@ -16,6 +16,7 @@ namespace Service.IService
         IList<SelectListItem> GetParticipantsQuantity(int quantity);
         Dictionary<string, List<Participant>> RetreiveHouseParticipants(int id);
         void ClearParticipantsFormular(NewReservation reservation);
+        void ChangeAssignedParticipants(int id, NewReservation reservation);
         bool ValidateFormularParticipants(Dictionary<string, List<Participant>> dictionary);
     }
 }

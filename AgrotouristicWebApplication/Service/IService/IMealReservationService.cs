@@ -15,5 +15,6 @@ namespace Service.IService
         IList<SelectListItem> GetNamesAvaiableMeals();
         void ConfirmAssignedMealsToHouses(NewReservation reservation, IList<string> selectedMeals);
         IList<SelectListItem> GetSelectedHousesMeals(Dictionary<string, int> dictionary, bool longVersion);
+        void ChangeAssignedMeals(int id, NewReservation reservation);
     }
 }

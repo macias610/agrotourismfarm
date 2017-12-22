@@ -34,6 +34,14 @@ namespace Repository.Repo
             return attractionReservations.ToList();
         }
 
+        public IList<Attraction_Reservation> GetAttractionsReservationsByReservationId(int id)
+        {
+            IList<Attraction_Reservation> attractionsReservation = (from attrRes in db.Attractions_Reservations
+                                                                    where attrRes.ReservationId.Equals(id)
+                                                                    select attrRes).ToList();
+            return attractionsReservation;
+        }
+
         public void RemoveAttractionReservation(Attraction_Reservation attractionReservation)
         {
             db.Entry(attractionReservation).State = EntityState.Deleted;

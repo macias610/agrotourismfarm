@@ -162,10 +162,13 @@ namespace Service
 
         public void RemoveClientReservations(string userId)
         {
-            IList<Reservation> reservations = this.reservationRepository.GetClientReservations(userId);
+            IList<Reservation> clientReservations = this.reservationRepository
+                                                            .GetReservations()
+                                                            .Where(item => item.ClientId.Equals(userId))
+                                                            .ToList();
             using (TransactionScope scope = new TransactionScope())
             {
-                foreach(Reservation reservation in reservations)
+                foreach(Reservation reservation in clientReservations)
                 {
                     this.reservationRepository.RemoveReservation(reservation);
                     this.reservationRepository.SaveChanges();

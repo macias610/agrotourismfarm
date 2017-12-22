@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Web.Mvc;
 using ViewModel;
 
@@ -15,11 +17,15 @@ namespace Service.Service
     {
         private readonly IMealRepository mealRepository = null;
         private readonly IReservationHouseRepository reservationHouseRepository = null;
+        private readonly IHouseRepository houseRepository = null;
+        private readonly IReservationRepository reservationRepository = null;
 
-        public MealReservationService(IMealRepository mealRepository, IReservationHouseRepository reservationHouseRepository)
+        public MealReservationService(IMealRepository mealRepository, IReservationHouseRepository reservationHouseRepository, IHouseRepository houseRepository, IReservationRepository reservationRepository)
         {
             this.mealRepository = mealRepository;
             this.reservationHouseRepository = reservationHouseRepository;
+            this.houseRepository = houseRepository;
+            this.reservationRepository = reservationRepository;
         }
 
         public IList<SelectListItem> GetSelectedHousesMeals(Dictionary<string, int> dictionary, bool longVersion)
@@ -61,6 +67,29 @@ namespace Service.Service
                             .Where(item => item.HouseId.Equals(houseId))
                             .Select(item => item.Meal).SingleOrDefault();
             return meal;
+        }
+
+        public void ChangeAssignedMeals(int id, NewReservation reservation)
+        {
+            using (TransactionScope scope = new TransactionScope())
+            {
+                foreach (KeyValuePair<string, int> item in reservation.AssignedHousesMeals)
+                {
+                    string houseName = Regex.Match(item.Key, @"\(([^)]*)\)").Groups[1].Value;
+                    int houseId = this.houseRepository.GetHouseByName(houseName).Id;
+                    Reservation_House reservationHouse = this.reservationHouseRepository
+                                                                .GetReservationHousesOfReservationId(id)
+                                                                .Where(elem => elem.HouseId.Equals(houseId))
+                                                                .FirstOrDefault();
+                    reservationHouse.MealId = item.Value;
+                    this.reservationHouseRepository.UpdateReservationHouse(reservationHouse, reservationHouse.RowVersion);
+                    Reservation editedReservation = this.reservationRepository.GetReservationById(id);
+                    editedReservation.OverallCost = reservation.OverallCost;
+                    this.reservationRepository.UpdateReservation(editedReservation, editedReservation.RowVersion);
+                    this.reservationRepository.SaveChanges();
+                }
+                scope.Complete();
+            }
         }
     }
 }

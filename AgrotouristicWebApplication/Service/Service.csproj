@@ -164,6 +164,7 @@
     <Compile Include="IService\IMealService.cs" />
     <Compile Include="IService\IParticipantReservationService.cs" />
     <Compile Include="IService\IDetailsReservationService.cs" />
+    <Compile Include="IService\IReservationHistoryService.cs" />
     <Compile Include="IService\IReservationService.cs" />
     <Compile Include="IService\IReservedAttractionsService.cs" />
     <Compile Include="IService\IUserService.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="Service\MealService.cs" />
     <Compile Include="Service\ParticipantReservationService.cs" />
     <Compile Include="Service\DetailsReservationService.cs" />
+    <Compile Include="Service\ReservationHistoryService.cs" />
     <Compile Include="Service\ReservationService.cs" />
     <Compile Include="Service\ReservedAttractionsService.cs" />
     <Compile Include="Service\RoleComparer.cs" />

@@ -17,11 +17,17 @@ namespace AgrotouristicWebApplication.Controllers
 {
     public class ClientReservationsController : Controller
     {
-        private readonly IReservationService reservationService;
+        private readonly IReservationService reservationService =null;
+        private readonly IAttractionReservationService attractionReservationService = null;
+        private readonly IParticipantReservationService participantReservationService = null;
+        private readonly IMealReservationService mealReservationService = null;
 
-        public ClientReservationsController(IReservationService reservationService)
+        public ClientReservationsController(IReservationService reservationService, IAttractionReservationService attractionReservationService, IParticipantReservationService participantReservationService, IMealReservationService mealReservationService)
         {
             this.reservationService = reservationService;
+            this.attractionReservationService = attractionReservationService;
+            this.participantReservationService = participantReservationService;
+            this.mealReservationService = mealReservationService;
         }
 
         [Authorize(Roles ="Klient")]
@@ -32,8 +38,8 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            IList<Reservation> reservations = reservationService.GetClientReservations(User.Identity.GetUserId()).ToList();
-            reservations=reservationService.RemoveOutOfDateReservations(reservations);
+            reservationService.RemoveOutOfDateReservations(User.Identity.GetUserId());
+            IList<Reservation> reservations = reservationService.GetClientReservations(User.Identity.GetUserId());
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(reservations.ToPagedList<Reservation>(currentPage,perPage));
@@ -103,17 +109,17 @@ namespace AgrotouristicWebApplication.Controllers
             if (ModelState.IsValid)
             {
                 reservation = (NewReservation )Session["Reservation"];
-                if(!reservationService.checkAvaiabilityHousesBeforeConformation(reservation))
+                if(!reservationService.checkAvaiabilityHousesBeforeConfirmation(reservation))
                 {
                     return RedirectToAction("Create", new { concurrencyError = true});
                 }
 
                 Reservation savedReservation = reservationService.GetReservationBasedOnData(reservation, User.Identity.GetUserId());
                 reservationService.AddReservation(savedReservation);
-                reservationService.SaveAssignedMealsAndHouses(savedReservation.Id, reservation);
+                reservationService.SaveReservationHouses(savedReservation.Id, reservation);
                 if(reservation.AssignedAttractions.Any(pair => pair.Value != null && pair.Value.Any()))
                 {
-                    reservationService.SaveAssignedAttractions(savedReservation.Id, reservation);
+                    attractionReservationService.SaveAssignedAttractions(savedReservation.Id, reservation);
                 }
 
                 Session.Remove("Reservation");
@@ -175,11 +181,11 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 reservation = (NewReservation)Session["Reservation"];
                 if(reservation.stagesConfirmation[2])
-                    reservationService.ChangeAssignedMeals(Int32.Parse(Request.Form["ReservationId"]), reservation);
+                    this.mealReservationService.ChangeAssignedMeals(Int32.Parse(Request.Form["ReservationId"]), reservation);
                 if (reservation.stagesConfirmation[3])
-                    reservationService.ChangeAssignedParticipants(Int32.Parse(Request.Form["ReservationId"]), reservation);
+                    this.participantReservationService.ChangeAssignedParticipants(Int32.Parse(Request.Form["ReservationId"]), reservation);
                 if (reservation.stagesConfirmation[4])
-                    reservationService.ChangeAssignedAttractions(Int32.Parse(Request.Form["ReservationId"]), reservation);
+                    this.attractionReservationService.ChangeAssignedAttractions(Int32.Parse(Request.Form["ReservationId"]), reservation);
 
                 Session.Remove("Reservation");
                 return RedirectToAction("Index");

@@ -6,21 +6,85 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Web.Mvc;
+using ViewModel;
 
 namespace Service.Service
 {
-    public class AttractionReservationService :IAttractionReservationService
+    public class AttractionReservationService : IAttractionReservationService
     {
         private readonly IAttractionRepository attractionRepository = null;
         private readonly IAttractionReservationRepository attractionReservationRepository = null;
         private readonly IUserRepository userRepository = null;
+        private readonly IReservationRepository reservationRepository = null;
 
-        public AttractionReservationService(IAttractionRepository attractionRepository, IAttractionReservationRepository attractionReservationRepository, IUserRepository userRepository)
+        public AttractionReservationService(IAttractionRepository attractionRepository, IAttractionReservationRepository attractionReservationRepository, IUserRepository userRepository, IReservationRepository reservationRepository)
         {
             this.attractionRepository = attractionRepository;
             this.attractionReservationRepository = attractionReservationRepository;
             this.userRepository = userRepository;
+            this.reservationRepository = reservationRepository;
+        }
+
+        public void ChangeAssignedAttractions(int id, NewReservation reservation)
+        {
+            using (TransactionScope scope = new TransactionScope())
+            {
+                List<Attraction_Reservation> attractionsReservation = this.attractionReservationRepository
+                                                                        .GetAttractionsReservationsByReservationId(id)
+                                                                            .ToList();
+                Dictionary<DateTime, List<string>> dictionary = new Dictionary<DateTime, List<string>>();
+                for (DateTime date = reservation.AssignedAttractions.Keys.First(); date <= reservation.AssignedAttractions.Keys.Last(); date = date.AddDays(1))
+                {
+                    dictionary.Add(date, new List<string>());
+                }
+                attractionsReservation.ForEach(item => dictionary[item.TermAffair].Add(item.Attraction.Name + ',' + item.QuantityParticipant));
+
+                List<string> attractionsToRemove = new List<string>();
+
+                foreach (KeyValuePair<DateTime, List<string>> item in dictionary)
+                {
+                    List<Attraction_Reservation> attractionsReservationInDay = attractionsReservation.Where(elem => elem.TermAffair.Equals(item.Key)).ToList();
+                    List<string> oldAttractions = item.Value;
+                    List<string> newAttractions = reservation.AssignedAttractions[item.Key];
+                    List<string> toRemove = oldAttractions.Where(elem => !(newAttractions.Contains(elem))).ToList();
+                    foreach (string attractionToRemove in toRemove)
+                    {
+                        Attraction_Reservation attractionReservation = attractionsReservationInDay.Where(elem => elem.Attraction.Name.Equals(attractionToRemove.Split(',')[0])).FirstOrDefault();
+                        attractionsReservationInDay.Remove(attractionReservation);
+                        this.attractionReservationRepository.RemoveAttractionReservation(attractionReservation);
+                    }
+                }
+                this.attractionReservationRepository.SaveChanges();
+                foreach (KeyValuePair<DateTime, List<string>> item in reservation.AssignedAttractions.Where(pair => pair.Value.Any()))
+                {
+                    List<string> oldAttractions = dictionary[item.Key];
+                    List<string> newAttractions = item.Value;
+                    List<string> toAdd = newAttractions.Where(elem => !(oldAttractions.Contains(elem))).ToList();
+                    foreach (string attractionToAdd in toAdd)
+                    {
+                        string attractionName = attractionToAdd.Split(',')[0];
+                        Attraction attraction = this.attractionRepository.GetAttractionByName(attractionName);
+                        Attraction_Reservation attractionReservation = new Attraction_Reservation()
+                        {
+                            AttractionId = attraction.Id,
+                            ReservationId = id,
+                            TermAffair = item.Key,
+                            QuantityParticipant = Int32.Parse(attractionToAdd.Split(',')[1]),
+                            OverallCost = attraction.Price * Int32.Parse(attractionToAdd.Split(',')[1])
+                        };
+                        this.attractionReservationRepository.AddAttractionReservation(attractionReservation);
+                    }
+                }
+                this.attractionReservationRepository.SaveChanges();
+                Reservation editedReservation = this.reservationRepository.GetReservationById(id);
+                editedReservation.OverallCost = reservation.OverallCost;
+                this.reservationRepository.UpdateReservation(editedReservation, editedReservation.RowVersion);
+                this.reservationRepository.SaveChanges();
+
+                scope.Complete();
+            }
         }
 
         public Attraction GetAttractionByName(string name)
@@ -105,6 +169,34 @@ namespace Service.Service
                 dictionary[date] = result;
             }
             return dictionary;
+        }
+
+        public void SaveAssignedAttractions(int id, NewReservation reservation)
+        {
+            using (TransactionScope scope = new TransactionScope())
+            {
+                Dictionary<DateTime, List<string>> dictionary = reservation.AssignedAttractions.Where(x => x.Value.Any()).ToDictionary(t => t.Key, t => t.Value);
+                foreach (KeyValuePair<DateTime, List<string>> item in dictionary)
+                {
+                    foreach (string attr in item.Value)
+                    {
+                        string attractionName = attr.Split(',')[0];
+                        int quantityParticipants = Int32.Parse(attr.Split(',')[1]);
+                        Attraction attraction = this.attractionRepository.GetAttractionByName(attractionName);
+                        Attraction_Reservation attractionReservation = new Attraction_Reservation()
+                        {
+                            AttractionId = attraction.Id,
+                            ReservationId = id,
+                            TermAffair = item.Key,
+                            QuantityParticipant = quantityParticipants,
+                            OverallCost = quantityParticipants * attraction.Price
+                        };
+                        this.attractionReservationRepository.AddAttractionReservation(attractionReservation);
+                    }
+                    this.attractionReservationRepository.SaveChanges();
+                }
+                scope.Complete();
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Repository.IRepo
     {
         IList<House> GetHouses();
         House GetHouseById(int id);
+        House GetHouseByName(string name);
         void AddHouse(House house);
         void RemoveHouse(House house);
         void UpdateHouse(House house,byte[] rowVersion);

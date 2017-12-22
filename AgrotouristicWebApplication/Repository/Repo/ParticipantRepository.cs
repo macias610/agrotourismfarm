@@ -23,5 +23,21 @@ namespace Repository.Repo
                                                select participant).ToList();
             return participants;
         }
+
+        public void AddParticipant(Participant participant)
+        {
+            db.Participants.Add(participant);
+        }
+
+        public void SaveChanges()
+        {
+            this.db.SaveChanges();
+        }
+
+        public Participant GetParticipantById(int id)
+        {
+            Participant participant = this.db.Participants.Find(id);
+            return participant;
+        }
     }
 }

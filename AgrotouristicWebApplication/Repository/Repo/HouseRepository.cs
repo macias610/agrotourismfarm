@@ -32,6 +32,14 @@ namespace Repository.Repo
             return house;
         }
 
+        public House GetHouseByName(string name)
+        {
+            House house = (from hou in db.Houses
+                           where hou.Name.Equals(name)
+                           select hou).FirstOrDefault();
+            return house;
+        }
+
         public IList<House> GetHouses()
         {
             IQueryable<House> houses = db.Houses.AsNoTracking();

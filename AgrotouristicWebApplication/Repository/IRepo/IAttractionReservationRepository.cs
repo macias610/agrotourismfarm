@@ -13,6 +13,8 @@ namespace Repository.IRepo
 
         Attraction_Reservation GetAttractionReservationById(int id);
 
+        IList<Attraction_Reservation> GetAttractionsReservationsByReservationId(int id);
+
         IList<Attraction_Reservation> GetAttractionsReservations();
 
         void RemoveAttractionReservation(Attraction_Reservation attractionReservation);

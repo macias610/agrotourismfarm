@@ -164,6 +164,7 @@
 {
     @Html.AntiForgeryToken()
 
+
     <div class="form-horizontal">
         <h4>Domek</h4>
         <hr />
@@ -171,48 +172,65 @@
 
         <div id="housesDropdownLists">
 
-            <div class="form-group">
-                @Html.Label("Rodzaje domków", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("HousesAvaiableHouses", Model["Avaiable"], new { id = "HousesAvaiableHouses",@class = "SelectListHouses" })
-                    <input type="button" id="btnShowDescription" value="Opis" />
-                    <div id="description" style="display:inline-flex">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        @Html.Label("Rodzaje domków", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownList("HousesAvaiableHouses", Model["Avaiable"], new { id = "HousesAvaiableHouses", @class = "SelectListHouses" })
+                            <input type="button" id="btnShowDescription" value="Opis" />
+                            
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.Label("Liczba dni", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            <input type="text" id="housesStayLength" name="housesStayLength" readonly="readonly" value="@ViewBag.StayLength" />
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-4" style="position:relative;right:120px;">
+                    <div id="description">
 
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="form-group">
+                        @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownList("HousesSelectedHouses", Model["Selected"], new { id = "HousesSelectedHouses", @class = "SelectListHouses", onchange = "handler(event)" })
+                            @Html.Label("Cena domku", new { id = "labelHousePrice", style = "border: 1px solid black;font-weight: normal;" })
+                            <input type="button" id="btnRemoveSelected" value="Usuń zaznaczenie" />
+                        </div>
+                    </div>
 
-            <div class="form-group">
-                @Html.Label("Liczba dni", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <input type="text" id="housesStayLength" name="housesStayLength" readonly="readonly" value="@ViewBag.StayLength" />
+                    <div class="form-group">
+                        <div id="DivHousesOverallCost">
+                            @Html.Label("Całkowity koszt", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <input type="text" id="housesOverallCost" name="housesOverallCost" readonly="readonly" value="@ViewBag.OverallCost" />
+                            </div>
+                        </div>
+                    </div>
+
+                    @Html.ListBox("HousesListBoxSelected", Model["Selected"], new { id = "HousesListBoxSelected", style = "visibility:hidden" })
+                    <div class="form-group">
+                        <div class="row col-md-8">
+                            <div class="col-md-4">
+                                <input type="button" id="btnAddHouse" value="Dodaj domek" class="btn btn-default" />
+                            </div>
+                            <div class="col-md-4">
+                                <input type="submit" id="btnConfirmHouses" value="Potwierdź domki" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
             </div>
-
-            <div class="form-group">
-                @Html.Label("Wybrane domki", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("HousesSelectedHouses", Model["Selected"], new { id = "HousesSelectedHouses", @class = "SelectListHouses", onchange = "handler(event)" })
-                    @Html.Label("Cena domku", new { id = "labelHousePrice", style = "border: 1px solid black;font-weight: normal;" })
-                    <input type="button" id="btnRemoveSelected" value="Usuń zaznaczenie"  />
-                </div>
-            </div>
-
-            <div id="DivHousesOverallCost">
-                @Html.Label("Całkowity koszt", htmlAttributes: new { @class = "control-label col-md-2" })
-                <input type="text" id="housesOverallCost" name="housesOverallCost" readonly="readonly" value="@ViewBag.OverallCost" />
-            </div>
-
-            @Html.ListBox("HousesListBoxSelected", Model["Selected"], new { id = "HousesListBoxSelected", style="visibility:hidden" })
-
-        </div>
-        <div class="form-group">
-            <div class="col-md-10">
-                <input type="button" id="btnAddHouse" value="Dodaj domek" class="btn btn-default"  />
-                <input type="submit" id="btnConfirmHouses" value="Potwierdź domki" class="btn btn-default" />
-            </div>
-        </div>
+        </div>     
     </div>
 
 }

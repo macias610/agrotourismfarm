@@ -10,5 +10,8 @@ namespace Repository.IRepo
     public interface IParticipantRepository
     {
         IList<Participant> GetParticipantsForHouseReservation(int id);
+        Participant GetParticipantById(int id);
+        void AddParticipant(Participant participant);
+        void SaveChanges();
     }
 }

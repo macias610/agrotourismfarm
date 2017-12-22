@@ -15,11 +15,11 @@ namespace AgrotouristicWebApplication.Controllers
 {
     public class ClientArchiveReservationsController : Controller
     {
-        private readonly IReservationService reservationService;
+        private readonly IReservationHistoryService reservationHistoryService;
 
-        public ClientArchiveReservationsController(IReservationService reservationService)
+        public ClientArchiveReservationsController(IReservationHistoryService reservationHistoryService)
         {
-            this.reservationService = reservationService;
+            this.reservationHistoryService = reservationHistoryService;
         }
 
         [Authorize(Roles ="Klient")]
@@ -30,7 +30,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            IList<Reservation_History> reservationsHistory = reservationService.GetClientArchiveReservations(User.Identity.GetUserId()).ToList();
+            IList<Reservation_History> reservationsHistory = reservationHistoryService.GetClientArchiveReservations(User.Identity.GetUserId()).ToList();
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(reservationsHistory.ToPagedList<Reservation_History>(currentPage,perPage));
@@ -48,7 +48,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation_History reservationHistory = reservationService.GetReservationHistoryById((int)id);
+            Reservation_History reservationHistory = reservationHistoryService.GetReservationHistoryById((int)id);
             if (reservationHistory == null)
             {
                 return HttpNotFound();
