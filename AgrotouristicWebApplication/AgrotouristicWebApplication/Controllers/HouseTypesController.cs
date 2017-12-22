@@ -16,11 +16,11 @@ namespace AgrotouristicWebApplication.Controllers
 {
     public class HouseTypesController : Controller
     {
-        private readonly IHouseService houseService;
+        private readonly IHouseTypeService houseTypeService;
 
-        public HouseTypesController(IHouseService houseService)
+        public HouseTypesController(IHouseTypeService houseTypeService)
         {
-            this.houseService = houseService;
+            this.houseTypeService = houseTypeService;
         }
 
         [Authorize(Roles ="Admin")]
@@ -31,7 +31,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            IList<HouseType> housesTypes = houseService.GetHouseTypes();
+            IList<HouseType> housesTypes = houseTypeService.GetHouseTypes();
             int currentPage = page ?? 1;
             int perPage = 4;
             return View(housesTypes.ToPagedList<HouseType>(currentPage,perPage));
@@ -62,7 +62,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    houseService.AddHouseType(houseType);
+                    houseTypeService.AddHouseType(houseType);
                     return RedirectToAction("Index");
                 }
                 catch 
@@ -86,7 +86,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            HouseType houseType = houseService.GetHouseTypeById((int)id);
+            HouseType houseType = houseTypeService.GetHouseTypeById((int)id);
             if (houseType == null)
             {
                 return HttpNotFound();
@@ -109,7 +109,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            HouseType houseTypeToUpdate = houseService.GetHouseTypeById((int)id);
+            HouseType houseTypeToUpdate = houseTypeService.GetHouseTypeById((int)id);
             if (houseTypeToUpdate == null)
             {
                 HouseType deletedHouseType = new HouseType();
@@ -122,7 +122,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 try
                 {
-                    houseService.UpdateHouseType(houseTypeToUpdate, rowVersion);
+                    houseTypeService.UpdateHouseType(houseTypeToUpdate, rowVersion);
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -171,7 +171,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            HouseType houseType = houseService.GetHouseTypeById((int)id);
+            HouseType houseType = houseTypeService.GetHouseTypeById((int)id);
             if (houseType == null)
             {
                 if (concurrencyError.GetValueOrDefault())
@@ -200,7 +200,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            if (houseService.countHousesWithGivenType(houseType.Id) >= 1)
+            if (houseTypeService.countHousesOfType(houseType.Id) >= 1)
             {
                 ViewBag.error = true;
                 return View(houseType);
@@ -208,7 +208,7 @@ namespace AgrotouristicWebApplication.Controllers
 
             try
             {
-                houseService.RemoveHouseType(houseType);
+                houseTypeService.RemoveHouseType(houseType);
                 return RedirectToAction("Index");
             }
             catch (DbUpdateConcurrencyException)

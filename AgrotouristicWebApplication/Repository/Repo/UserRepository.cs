@@ -72,49 +72,6 @@ namespace Repository.Repository
             return user;
         }
 
-        public IList<SelectListItem> GetNewRolesForUser(IList<IdentityUserRole> userRoles, Dictionary<string, string> roles)
-        {
-            Dictionary<int,string> avaiableRoles = new Dictionary<int, string>();
-            List<string> IdUserRoles = new List<string>();
-            userRoles.ToList().ForEach(item => IdUserRoles.Add(item.RoleId));
-
-            int index = 0;
-
-            foreach (KeyValuePair<string, string> role in roles)
-            {
-                if (!IdUserRoles.Contains(role.Key))
-                {
-                    avaiableRoles.Add(index,role.Value);
-                    index++;
-                }
-            }
-            List<SelectListItem> selectList = avaiableRoles.Select(avaiableRole => new SelectListItem { Value = avaiableRole.Key.ToString(), Text = avaiableRole.Value }).ToList();
-            return selectList;
-        }
-
-        public int GetNumberOfUsersForGivenRole(Dictionary<string, string> roles,string role)
-        {
-            List<string> userRoles = new List<string>();
-            int numberOfUsers = 0;
-
-            foreach(IdentityUser user in db.Users)
-            {
-                List <IdentityUserRole> list= user.Roles.ToList();
-                list.ForEach(x => userRoles.Add(x.RoleId));
-            }
-   
-            string roleId = roles[role];
-
-            foreach(string userRole in userRoles)
-            {
-                if(userRole.Equals(roleId))
-                {
-                    numberOfUsers++;
-                }
-            }
-            return numberOfUsers;
-        }
-
         public void UpdateUser(User user,string securityStamp)
         {
             if(!db.Entry(user).OriginalValues["SecurityStamp"].Equals(securityStamp))
@@ -123,23 +80,6 @@ namespace Repository.Repository
             }
             db.Entry(user).OriginalValues["SecurityStamp"] = securityStamp;
             GetUserManager().UpdateSecurityStamp(user.Id);
-        }
-
-        public bool isUserEmployed(string userId)
-        {
-            Dictionary<string, string> roles = db.Roles.ToDictionary(x => x.Name, x => x.Id);
-            roles.Remove("Klient");
-            List<string> userRoles = new List<string>();
-            db.Users.Find(userId).Roles.ToList().ForEach(item => userRoles.Add(item.RoleId));
-
-            foreach(string userRoleId in userRoles)
-            {
-                if (roles.ContainsValue(userRoleId))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         public void RemoveUser(User user,string securityStamp)
@@ -160,15 +100,6 @@ namespace Repository.Repository
             db.Entry(user).State = EntityState.Deleted;
         }
 
-        public IList<string> GetAvaiableProfessons()
-        {
-            List<string> professions = (from attraction in db.Attractions
-                                        select attraction.Name).ToList();
-            professions.Add("Administrator");
-            professions.Add("-");
-            return professions;
-        }
-
         public void UpdateBaseDataUser(User user,string securityStamp)
         {
             if (!db.Entry(user).OriginalValues["SecurityStamp"].Equals(securityStamp))
@@ -179,7 +110,7 @@ namespace Repository.Repository
             GetUserManager().UpdateSecurityStamp(user.Id);
         }
 
-        public User GetOriginalValuesUser(string id)
+        public User GetOriginalUserValues(string id)
         {
             User user = GetUserById(id);
             User orignal = new User();
@@ -199,28 +130,5 @@ namespace Repository.Repository
             return orignal;
         }
 
-        public IList<string> GetUserRoles(string id)
-        {
-            User user = GetUserById(id);
-            Dictionary<string, string> roles = GetRoles().ToDictionary(x => x.Id, x => x.Name);
-            List<string> result = new List<string>();
-            foreach (IdentityUserRole userRole in user.Roles)
-            {
-                result.Add(roles[userRole.RoleId]);
-            }
-            return result;
-        }
-
-        public void RemoveReservationsAssosiatedClient(string userId)
-        {
-            IQueryable<Reservation> reservations = (from reservation in db.Reservations
-                                                    where reservation.ClientId.Equals(userId)
-                                                    select reservation);
-            foreach(Reservation reservation in reservations.ToList())
-            {
-                db.Reservations.Remove(reservation);
-            }
-            SaveChanges();
-        }
     }
 }

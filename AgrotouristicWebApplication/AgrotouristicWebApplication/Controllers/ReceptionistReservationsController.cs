@@ -16,10 +16,12 @@ namespace AgrotouristicWebApplication.Controllers
     public class ReceptionistReservationsController : Controller
     {
         private readonly IReservationService reservationService =null;
+        private readonly IReservationHistoryService reservationHistoryService = null;
 
-        public ReceptionistReservationsController(IReservationService reservationService)
+        public ReceptionistReservationsController(IReservationService reservationService, IReservationHistoryService reservationHistoryService)
         {
             this.reservationService = reservationService;
+            this.reservationHistoryService = reservationHistoryService;
         }
 
         [Authorize(Roles ="Recepcjonista")]
@@ -216,11 +218,11 @@ namespace AgrotouristicWebApplication.Controllers
             }
             try
             {
-                reservation.Attraction_Reservation = reservationService.GetReservationById(reservation.Id).Attraction_Reservation;
-                reservation.Reservation_House = reservationService.GetReservationById(reservation.Id).Reservation_House;
-                Reservation_History reservationHistory = reservationService.GetReservationHistoryBasedReservation(reservation);
-                reservationService.RemoveReservation(reservation);
-                reservationService.AddReservationHistory(reservationHistory);
+                reservation.Attraction_Reservation = this.reservationService.GetReservationById(reservation.Id).Attraction_Reservation;
+                reservation.Reservation_House = this.reservationService.GetReservationById(reservation.Id).Reservation_House;
+                Reservation_History reservationHistory = this.reservationHistoryService.GetReservationHistoryBasedReservation(reservation);
+                this.reservationService.RemoveReservation(reservation);
+                this.reservationHistoryService.AddReservationHistory(reservationHistory);
                 return RedirectToAction("Index");
             }
             catch (DbUpdateConcurrencyException)

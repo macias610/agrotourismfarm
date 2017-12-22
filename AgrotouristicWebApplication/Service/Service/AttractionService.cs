@@ -12,10 +12,12 @@ namespace Service.Service
     public class AttractionService : IAttractionService
     {
         private readonly IAttractionRepository attractionRepository;
+        private readonly IAttractionReservationRepository attractionReservationRepository;
 
-        public AttractionService(IAttractionRepository attractionRepository)
+        public AttractionService(IAttractionRepository attractionRepository, IAttractionReservationRepository attractionReservationRepository)
         {
             this.attractionRepository = attractionRepository;
+            this.attractionReservationRepository = attractionReservationRepository;
         }
 
         public void AddAttraction(Attraction attraction)
@@ -24,9 +26,11 @@ namespace Service.Service
             this.attractionRepository.SaveChanges();
         }
 
-        public int countReservationsWithGivenAttraction(int id)
+        public int countReservationsOfAttraction(int id)
         {
-            int quantity = this.attractionRepository.countReservationsWithGivenAttraction(id);
+            IList<Attraction_Reservation> reservations = this.attractionReservationRepository
+                                                            .GetAttractionsReservations();
+            int quantity = reservations.Where(item => item.AttractionId.Equals(id)).Count();
             return quantity;
         }
 

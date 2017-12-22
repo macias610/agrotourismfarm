@@ -166,7 +166,7 @@ namespace AgrotouristicWebApplication.Controllers
             Dictionary<string, string> roles = userService.GetRoles().ToDictionary(x => x.Name, x => x.Id);
             try
             {
-                if (roleUser.SelectedRoleText.Equals("Admin") && userService.GetNumberOfUsersForGivenRole(roles, "Admin") <= 1)
+                if (roleUser.SelectedRoleText.Equals("Admin") && userService.CountUsersForGivenRole(roles, "Admin") <= 1)
                 {
                     ViewBag.error = true;
                     return View(roleUser);

@@ -24,17 +24,17 @@ namespace Repository.Repo
             db.Attractions.Add(attraction);
         }
 
-        public int countReservationsWithGivenAttraction(int id)
-        {
-            int reservations = (from reservation in db.Attractions_Reservations
-                                where reservation.AttractionId.Equals(id)
-                                select reservation.Id).ToList().Count;
-            return reservations;
-        }
-
         public Attraction GetAttractionById(int id)
         {
             Attraction attraction = db.Attractions.Find(id);
+            return attraction;
+        }
+
+        public Attraction GetAttractionByName(string name)
+        {
+            Attraction attraction = (from attr in db.Attractions
+                                     where attr.Name.Equals(name)
+                                     select attr).FirstOrDefault();
             return attraction;
         }
 

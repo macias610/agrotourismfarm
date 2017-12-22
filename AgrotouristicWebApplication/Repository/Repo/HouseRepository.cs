@@ -25,31 +25,18 @@ namespace Repository.Repo
             db.Houses.Add(house);
         }
 
-        public void AddHouseType(HouseType houseType)
-        {
-            db.HouseTypes.Add(houseType);
-        }
-
-        public int countHousesWithGivenType(int id)
-        {
-            int numberHouses = (from house in db.Houses
-                                where house.HouseTypeId.Equals(id)
-                                select house.Id).ToList().Count;
-            return numberHouses;
-        }
-
-        public IList<SelectListItem> getAvaiableTypes()
-        {
-            IList<HouseType> houseTypes = db.HouseTypes.AsNoTracking().ToList();
-            IList<string> avaiableTypes = new List<string>();
-            houseTypes.ToList().ForEach(item => avaiableTypes.Add(item.Type));
-            IList<SelectListItem> selectList = avaiableTypes.Select(avaiableType => new SelectListItem { Value = avaiableType, Text = avaiableType }).ToList();
-            return selectList;
-        }
 
         public House GetHouseById(int id)
         {
             House house = db.Houses.Find(id);
+            return house;
+        }
+
+        public House GetHouseByName(string name)
+        {
+            House house = (from hou in db.Houses
+                           where hou.Name.Equals(name)
+                           select hou).FirstOrDefault();
             return house;
         }
 
@@ -59,34 +46,9 @@ namespace Repository.Repo
             return houses.ToList();
         }
 
-        public HouseType GetHouseTypeById(int id)
-        {
-            HouseType houseType = db.HouseTypes.Find(id);
-            return houseType;
-        }
-
-        public HouseType GetHouseTypeByType(string type)
-        {
-            HouseType houseType = (from item in db.HouseTypes
-                                   where item.Type.Equals(type)
-                                   select item).FirstOrDefault();
-            return houseType;
-        }
-
-        public IList<HouseType> GetHouseTypes()
-        {
-            IQueryable<HouseType> houseTypes = db.HouseTypes.AsNoTracking();
-            return houseTypes.ToList();
-        }
-
         public void RemoveHouse(House house)
         {
             db.Entry(house).State=EntityState.Deleted;
-        }
-
-        public void RemoveHouseType(HouseType houseType)
-        {
-            db.Entry(houseType).State = EntityState.Deleted;
         }
 
         public void SaveChanges()
@@ -94,39 +56,9 @@ namespace Repository.Repo
             db.SaveChanges();
         }
 
-        public void setAvailabilityHouse(House house)
-        {
-            IList<int> reservationsIdForHouse = (from reservation in db.Reservation_Houses
-                                                where reservation.HouseId.Equals(house.Id)
-                                                select reservation.ReservationId).ToList();
-
-            IList<Reservation> reservations = (from reservation in db.Reservations
-                                              where reservationsIdForHouse.Contains(reservation.Id)
-                                              where reservation.StartDate <= DateTime.Now
-                                              where reservation.EndDate >= DateTime.Now
-                                              select reservation).ToList();
-            if (reservations.Count >= 1)
-            {
-                house.statusHouse = "Zajęty";
-            }
-            else if(reservationsIdForHouse.Count >= 1)
-            {
-                house.statusHouse = "Zarezerwowany";
-            }
-            else
-            {
-                house.statusHouse = "Wolny";
-            }
-        }
-
         public void UpdateHouse(House house,byte[] rowVersion)
         {
             db.Entry(house).OriginalValues["RowVersion"] = rowVersion;
-        }
-
-        public void UpdateHouseType(HouseType houseType,byte[] rowVersion)
-        {
-            db.Entry(houseType).OriginalValues["RowVersion"] = rowVersion;
         }
     }
 }

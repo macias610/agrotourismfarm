@@ -12,9 +12,9 @@ namespace Repository.IRepo
     {
         IList<Meal> GetMeals();
         Meal GetMealById(int id);
+        Meal GetMealByType(string type);
         void AddMeal(Meal meal);
         void UpdateMeal(Meal meal,byte[] rowVersion);
-        int countHousesWithGivenMeal(int id);
         void RemoveMeal(Meal meal);
         void SaveChanges();
     }

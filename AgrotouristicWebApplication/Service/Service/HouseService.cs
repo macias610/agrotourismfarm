@@ -13,34 +13,20 @@ namespace Service.Service
     public class HouseService : IHouseService
     {
         private readonly IHouseRepository houseRepository = null;
+        private readonly IReservationRepository reservationRepository = null;
+        private readonly IReservationHouseRepository reservationHouseRepository = null;
 
-        public HouseService(IHouseRepository houseService)
+        public HouseService(IHouseRepository houseRepository, IReservationRepository reservationRepository, IReservationHouseRepository reservationHouseRepository)
         {
-            this.houseRepository = houseService;
+            this.houseRepository = houseRepository;
+            this.reservationRepository = reservationRepository;
+            this.reservationHouseRepository = reservationHouseRepository;
         }
 
         public void AddHouse(House house)
         {
             this.houseRepository.AddHouse(house);
             this.houseRepository.SaveChanges();
-        }
-
-        public void AddHouseType(HouseType houseType)
-        {
-            this.houseRepository.AddHouseType(houseType);
-            this.houseRepository.SaveChanges();
-        }
-
-        public int countHousesWithGivenType(int id)
-        {
-            int quantity = this.houseRepository.countHousesWithGivenType(id);
-            return quantity;
-        }
-
-        public IList<SelectListItem> getAvaiableTypes()
-        {
-            IList<SelectListItem> avaiableTypes = this.houseRepository.getAvaiableTypes();
-            return avaiableTypes;
         }
 
         public House GetHouseById(int id)
@@ -55,24 +41,6 @@ namespace Service.Service
             return houses;
         }
 
-        public HouseType GetHouseTypeById(int id)
-        {
-            HouseType houseType = this.houseRepository.GetHouseTypeById(id);
-            return houseType;
-        }
-
-        public HouseType GetHouseTypeByType(string type)
-        {
-            HouseType houseType = this.houseRepository.GetHouseTypeByType(type);
-            return houseType;
-        }
-
-        public IList<HouseType> GetHouseTypes()
-        {
-            IList<HouseType> houseTypes = this.houseRepository.GetHouseTypes();
-            return houseTypes;
-        }
-
         public void RemoveHouse(House house)
         {
             this.houseRepository.RemoveHouse(house);
@@ -80,15 +48,32 @@ namespace Service.Service
 
         }
 
-        public void RemoveHouseType(HouseType houseType)
-        {
-            this.houseRepository.RemoveHouseType(houseType);
-            this.houseRepository.SaveChanges();
-        }
-
         public void setAvailabilityHouse(House house)
         {
-            this.houseRepository.setAvailabilityHouse(house);
+            IList<Reservation> reservations = this.reservationRepository.GetReservations();
+            IList<Reservation_House> reservationsHouses = this.reservationHouseRepository
+                                                                .GetReservationsHouses();
+            IList<int> reservationsIdOfHouse = reservationsHouses
+                                                .Where(item => item.HouseId.Equals(house.Id))
+                                                .Select(item => item.ReservationId).ToList();
+
+            reservations = reservations.Where(item => reservationsIdOfHouse.Contains(item.Id))
+                            .Where(item => item.StartDate <= DateTime.Now)
+                            .Where(item => item.EndDate >= DateTime.Now)
+                            .ToList();
+
+            if (reservations.Count >= 1)
+            {
+                house.statusHouse = "Zajęty";
+            }
+            else if (reservationsIdOfHouse.Count >= 1)
+            {
+                house.statusHouse = "Zarezerwowany";
+            }
+            else
+            {
+                house.statusHouse = "Wolny";
+            }
         }
 
         public void UpdateHouse(House house, byte[] rowVersion)
@@ -97,10 +82,5 @@ namespace Service.Service
             this.houseRepository.SaveChanges();
         }
 
-        public void UpdateHouseType(HouseType houseType, byte[] rowVersion)
-        {
-            this.houseRepository.UpdateHouseType(houseType, rowVersion);
-            this.houseRepository.SaveChanges();
-        }
     }
 }

@@ -12,7 +12,7 @@ namespace Repository.IRepo
     {
         IList<Attraction> GetAttractions();
         Attraction GetAttractionById(int id);
-        int countReservationsWithGivenAttraction(int id);
+        Attraction GetAttractionByName(string name);
         void AddAttraction(Attraction attraction);
         void UpdateAttraction(Attraction attraction,byte[] rowVersion);
         void RemoveAttraction(Attraction attraction);
