@@ -4,14 +4,13 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edytuj</h2>
+<h2>Edytuj rezerwację</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Rezerwacja</h4>
         <hr />
 
         <input type="button" id="editMealsSection" value="Posiłki" onclick="location.href='@Url.Action("EditMeals", "ReservationDetails",new { id=ViewBag.ReservationId})'" />
@@ -24,8 +23,8 @@
     </div>
 
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
+    <div class="form-group" style="margin-top: 10px;">
+        <div class="col-md-10">
             <input type="submit" id="editConfirmReservation" value="Potwierdź rezerwację" class="btn btn-default" />
         </div>
     </div>

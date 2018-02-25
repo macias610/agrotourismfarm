@@ -89,12 +89,12 @@ namespace Service.App_Start
             container.RegisterType<IMealRepository, MealRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IAttractionRepository, AttractionRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IReservationRepository, ReservationRepository>(new PerRequestLifetimeManager());
-            container.RegisterType<IReservedAttractionsRepository, ReservedAttractionsRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IHomeRepository, HomeRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IAttractionReservationRepository, AttractionReservationRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IReservationHouseRepository, ReservationHouseRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IHouseTypeRepository, HouseTypeRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IParticipantRepository, ParticipantRepository>(new PerRequestLifetimeManager());
+            container.RegisterType<IAttractionReservationWorkerRepository, AttractionReservationWorkerRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IAgrotourismContext, AgrotourismContext>(new PerRequestLifetimeManager());
         }
     }

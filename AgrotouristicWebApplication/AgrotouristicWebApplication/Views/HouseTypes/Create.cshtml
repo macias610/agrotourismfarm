@@ -11,14 +11,13 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Dodaj rodzaj domku</h2>
+<h2>Dodaj typ domku</h2>
 
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>HouseType</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">

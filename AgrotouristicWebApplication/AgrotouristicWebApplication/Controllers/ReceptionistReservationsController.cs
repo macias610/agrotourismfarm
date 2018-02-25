@@ -10,6 +10,7 @@ using System.Data.Entity.Infrastructure;
 using Microsoft.AspNet.Identity;
 using Service.IService;
 using DomainModel.Models;
+using PagedList;
 
 namespace AgrotouristicWebApplication.Controllers
 {
@@ -39,7 +40,7 @@ namespace AgrotouristicWebApplication.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Recepcjonista")]
-        public ActionResult GetReservationsByState(string state)
+        public ActionResult GetReservationsByState(string state, int? page)
         {
             if (HttpContext.Session["Checker"] == null)
             {
@@ -47,7 +48,9 @@ namespace AgrotouristicWebApplication.Controllers
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
             IList<Reservation> reservations = reservationService.GetReservationsByState(state);
-            return PartialView("~/Views/Shared/_SelectedStatusReservationsPartial.cshtml", reservations);
+            int currentPage = page ?? 1;
+            int perPage = 4;
+            return PartialView("~/Views/Shared/_SelectedStatusReservationsPartial.cshtml", reservations.ToPagedList<Reservation>(currentPage, perPage));
         }
 
         [Authorize(Roles ="Recepcjonista")]

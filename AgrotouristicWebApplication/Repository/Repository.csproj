@@ -159,6 +159,7 @@
     <Compile Include="IRepo\IAttractionReservationRepository.cs" />
     <Compile Include="IRepo\IAgrotourismContext.cs" />
     <Compile Include="IRepo\IAttractionRepository.cs" />
+    <Compile Include="IRepo\IAttractionReservationWorkerRepository.cs" />
     <Compile Include="IRepo\IHomeRepository.cs" />
     <Compile Include="IRepo\IHouseRepository.cs" />
     <Compile Include="IRepo\IHouseTypeRepository.cs" />
@@ -166,7 +167,6 @@
     <Compile Include="IRepo\IParticipantRepository.cs" />
     <Compile Include="IRepo\IReservationHouseRepository.cs" />
     <Compile Include="IRepo\IReservationRepository.cs" />
-    <Compile Include="IRepo\IReservedAttractionsRepository.cs" />
     <Compile Include="IRepo\IUserRepository.cs" />
     <Compile Include="Migrations\201707240938007_initial.cs" />
     <Compile Include="Migrations\201707240938007_initial.Designer.cs">
@@ -280,6 +280,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repo\AttractionRepository.cs" />
     <Compile Include="Repo\AttractionReservationRepository.cs" />
+    <Compile Include="Repo\AttractionReservationWorkerRepository.cs" />
     <Compile Include="Repo\HomeRepository.cs" />
     <Compile Include="Repo\HouseRepository.cs" />
     <Compile Include="Repo\HouseTypeRepository.cs" />
@@ -287,7 +288,6 @@
     <Compile Include="Repo\ParticipantRepository.cs" />
     <Compile Include="Repo\ReservationHouseRepository.cs" />
     <Compile Include="Repo\ReservationRepository.cs" />
-    <Compile Include="Repo\ReservedAttractionsRepository.cs" />
     <Compile Include="Repo\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
