@@ -6,12 +6,12 @@ using System.Web;
 
 namespace DomainModel.Models
 {
-    public class Attraction_Reservation
+    public class AttractionReservation
     {
 
-        public Attraction_Reservation()
+        public AttractionReservation()
         {
-            this.Attraction_Reservation_Worker = new HashSet<Attraction_Reservation_Worker>();
+            this.Attraction_Reservation_Worker = new HashSet<AttractionReservationWorker>();
         }
 
         public int Id { get; set; }
@@ -35,6 +35,6 @@ namespace DomainModel.Models
 
         public virtual Attraction Attraction { get; set; }
         public virtual Reservation Reservation { get; set; }
-        public virtual ICollection<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
+        public virtual ICollection<AttractionReservationWorker> Attraction_Reservation_Worker { get; set; }
     }
 }

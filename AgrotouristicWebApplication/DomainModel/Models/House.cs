@@ -12,7 +12,7 @@ namespace DomainModel.Models
     {
         public House()
         {
-            this.Reservation_House = new HashSet<Reservation_House>();
+            this.Reservation_House = new HashSet<ReservationHouse>();
         }
 
         [Display(Name = "Id:")]
@@ -41,6 +41,6 @@ namespace DomainModel.Models
 
         public virtual HouseType HouseType { get; set; }
 
-        public ICollection<Reservation_House> Reservation_House { get; set; }
+        public ICollection<ReservationHouse> Reservation_House { get; set; }
     }
 }

@@ -49,7 +49,7 @@ namespace Service.Service
                                                         )
                                                         .Select(item => item.Id)
                                                         .ToList();
-            IList<Reservation_House> reservationHouses = this.reservationHouseRepository.GetReservationsHouses();
+            IList<ReservationHouse> reservationHouses = this.reservationHouseRepository.GetReservationsHouses();
             IList<string> reservationHousesNames = reservationHouses
                                                     .Where(item => reservationsId.Contains(item.ReservationId))
                                                     .Select(item => item.House.Name)
@@ -136,7 +136,7 @@ namespace Service.Service
             exisitingReservation.StartDate = reservation.StartDate;
             exisitingReservation.EndDate = reservation.EndDate;
             exisitingReservation.OverallCost = reservation.OverallCost;
-            IList<Reservation_House> reservationHouses = this.reservationHouseRepository
+            IList<ReservationHouse> reservationHouses = this.reservationHouseRepository
                                                                 .GetReservationHousesOfReservationId(reservation.Id);
             List<string> selectedHousesMeals = reservationHouses
                                                 .Select(item => item.House.HouseType.Type + "(" + item.House.Name + ");" + item.MealId)
@@ -161,7 +161,7 @@ namespace Service.Service
             {
                 dictionary.Add(st, new List<string>());
             }
-            List<Attraction_Reservation> attractionsReservation = this.attractionReservationRepository
+            List<AttractionReservation> attractionsReservation = this.attractionReservationRepository
                                                                         .GetAttractionsReservationsByReservationId(reservation.Id)
                                                                         .ToList();
             HashSet<DateTime> dates = new HashSet<DateTime>();
@@ -182,7 +182,7 @@ namespace Service.Service
             {
                 string houseName = Regex.Match(item.Key, @"\(([^)]*)\)").Groups[1].Value;
                 int houseId = this.houseRepository.GetHouseByName(houseName).Id;
-                Reservation_House reservationHouse = new Reservation_House()
+                ReservationHouse reservationHouse = new ReservationHouse()
                 {
                     HouseId = houseId,
                     MealId = item.Value,

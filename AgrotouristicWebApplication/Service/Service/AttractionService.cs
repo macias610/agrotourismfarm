@@ -28,7 +28,7 @@ namespace Service.Service
 
         public int countReservationsOfAttraction(int id)
         {
-            IList<Attraction_Reservation> reservations = this.attractionReservationRepository
+            IList<AttractionReservation> reservations = this.attractionReservationRepository
                                                             .GetAttractionsReservations();
             int quantity = reservations.Where(item => item.AttractionId.Equals(id)).Count();
             return quantity;

@@ -23,15 +23,15 @@ namespace Service.Service
             this.attractionReservationWorkerRepository = attractionReservationWorkerRepository;
         }
 
-        public void AssignInstructorToAttraction(Attraction_Reservation_Worker attractionReservationWorker)
+        public void AssignInstructorToAttraction(AttractionReservationWorker attractionReservationWorker)
         {
             this.attractionReservationWorkerRepository.AddAttractionReservationWorker(attractionReservationWorker);
             this.attractionReservationWorkerRepository.SaveChanges();
         }
 
-        public bool checkStateInstructorToAttraction(Attraction_Reservation_Worker attractionReservationWorker)
+        public bool checkStateInstructorToAttraction(AttractionReservationWorker attractionReservationWorker)
         {
-            List<Attraction_Reservation_Worker> added = this.attractionReservationWorkerRepository
+            List<AttractionReservationWorker> added = this.attractionReservationWorkerRepository
                                                             .GetAttractionsReservationsWorkers()
                                                             .ToList();
             added = added.Where(item => item.Attraction_ReservationId.Equals(attractionReservationWorker.Attraction_ReservationId))
@@ -45,15 +45,15 @@ namespace Service.Service
                 return false;
         }
 
-        public Attraction_Reservation GetAttractionReservationById(int id)
+        public AttractionReservation GetAttractionReservationById(int id)
         {
-            Attraction_Reservation attractionReservation = this.attractionReservationRepository.GetAttractionReservationById(id);
+            AttractionReservation attractionReservation = this.attractionReservationRepository.GetAttractionReservationById(id);
             return attractionReservation;
         }
 
-        public Attraction_Reservation_Worker GetAttractionReservationWorkerById(int id)
+        public AttractionReservationWorker GetAttractionReservationWorkerById(int id)
         {
-            Attraction_Reservation_Worker attractionReservation = this.attractionReservationWorkerRepository.GetAttractionReservationWorkerById(id);
+            AttractionReservationWorker attractionReservation = this.attractionReservationWorkerRepository.GetAttractionReservationWorkerById(id);
             return attractionReservation;
         }
 
@@ -61,7 +61,7 @@ namespace Service.Service
         {
             DateTime start = DateTime.Parse(term.Split(';')[0]);
             DateTime end = DateTime.Parse(term.Split(';')[1]);
-            List<Attraction_Reservation> attractionsReservation = this.attractionReservationRepository.GetAttractionsReservations().ToList();
+            List<AttractionReservation> attractionsReservation = this.attractionReservationRepository.GetAttractionsReservations().ToList();
             attractionsReservation = attractionsReservation.Where(item => item.TermAffair.CompareTo(start) >= 0
                                                                     && item.TermAffair.CompareTo(end) <= 0)
                                                             .ToList();
@@ -101,7 +101,7 @@ namespace Service.Service
                                             .Where(item => item.Profession.Equals(attractionName))
                                             .ToList();
 
-            IList<Attraction_Reservation_Worker> rr = this.attractionReservationWorkerRepository
+            IList<AttractionReservationWorker> rr = this.attractionReservationWorkerRepository
                                                             .GetAttractionsReservationsWorkers()
                                                             .ToList();
             rr = rr.Where(item => item.Attraction_ReservationId.Equals(id)).ToList();
@@ -138,7 +138,7 @@ namespace Service.Service
                                         .Select(item => item.Attraction_ReservationId)
                                         .ToList();
 
-            List<Attraction_Reservation> instructorClassesInWeek = this.attractionReservationRepository
+            List<AttractionReservation> instructorClassesInWeek = this.attractionReservationRepository
                                                                         .GetAttractionsReservations()
                                                                         .ToList();
             instructorClassesInWeek = instructorClassesInWeek
@@ -171,7 +171,7 @@ namespace Service.Service
 
         public string GetInstructorsForReservedAttraction(int id)
         {
-            Attraction_Reservation attractionReservation = this.attractionReservationRepository.GetAttractionReservationById(id);
+            AttractionReservation attractionReservation = this.attractionReservationRepository.GetAttractionReservationById(id);
             Dictionary<int, User> workers = new Dictionary<int, User>();
             attractionReservation.Attraction_Reservation_Worker.ToList().ForEach(x => workers.Add(x.Id, x.Worker));
             List<string> listResult = new List<string>();
@@ -214,7 +214,7 @@ namespace Service.Service
             return listItem;
         }
 
-        public void RemoveAssignedInstructorAttraction(Attraction_Reservation_Worker attractionReservationWorker)
+        public void RemoveAssignedInstructorAttraction(AttractionReservationWorker attractionReservationWorker)
         {
             this.attractionReservationWorkerRepository.RemoveAttractionReservationWorker(attractionReservationWorker);
             this.attractionReservationWorkerRepository.SaveChanges();
@@ -223,7 +223,7 @@ namespace Service.Service
         public string RetreiveInstructorsAssignedToAttraction(int id, string attractionName)
         {
             string result = string.Empty;
-            List<Attraction_Reservation_Worker> rr = this.attractionReservationWorkerRepository
+            List<AttractionReservationWorker> rr = this.attractionReservationWorkerRepository
                                                             .GetAttractionsReservationsWorkers()
                                                             .ToList();
             rr = rr.Where(item => item.Attraction_ReservationId.Equals(id)).ToList();

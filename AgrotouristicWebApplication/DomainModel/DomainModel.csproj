@@ -86,16 +86,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Attraction.cs" />
-    <Compile Include="Models\Attraction_Reservation.cs" />
-    <Compile Include="Models\Attraction_Reservation_Worker.cs" />
+    <Compile Include="Models\AttractionReservation.cs" />
+    <Compile Include="Models\AttractionReservationWorker.cs" />
     <Compile Include="Models\House.cs" />
     <Compile Include="Models\HouseType.cs" />
     <Compile Include="Models\Meal.cs" />
     <Compile Include="Models\Participant.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Reservation.cs" />
-    <Compile Include="Models\Reservation_History.cs" />
-    <Compile Include="Models\Reservation_House.cs" />
+    <Compile Include="Models\ReservationHistory.cs" />
+    <Compile Include="Models\ReservationHouse.cs" />
     <Compile Include="Models\User.cs" />
   </ItemGroup>
   <ItemGroup>

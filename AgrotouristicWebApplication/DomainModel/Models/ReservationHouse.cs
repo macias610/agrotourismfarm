@@ -6,9 +6,9 @@ using System.Web;
 
 namespace DomainModel.Models
 {
-    public class Reservation_House
+    public class ReservationHouse
     {
-        public Reservation_House()
+        public ReservationHouse()
         {
             this.Participant = new HashSet<Participant>();
         }

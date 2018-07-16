@@ -17,32 +17,32 @@ namespace Repository.Repo
             this.db = db;
         }
 
-        public void AddAttractionReservation(Attraction_Reservation attractionReservation)
+        public void AddAttractionReservation(AttractionReservation attractionReservation)
         {
             db.Attractions_Reservations.Add(attractionReservation);
         }
 
-        public Attraction_Reservation GetAttractionReservationById(int id)
+        public AttractionReservation GetAttractionReservationById(int id)
         {
-            Attraction_Reservation attractionReservation = db.Attractions_Reservations.Find(id);
+            AttractionReservation attractionReservation = db.Attractions_Reservations.Find(id);
             return attractionReservation;
         }
 
-        public IList<Attraction_Reservation> GetAttractionsReservations()
+        public IList<AttractionReservation> GetAttractionsReservations()
         {
-            IQueryable<Attraction_Reservation> attractionReservations = db.Attractions_Reservations.AsNoTracking();
+            IQueryable<AttractionReservation> attractionReservations = db.Attractions_Reservations.AsNoTracking();
             return attractionReservations.ToList();
         }
 
-        public IList<Attraction_Reservation> GetAttractionsReservationsByReservationId(int id)
+        public IList<AttractionReservation> GetAttractionsReservationsByReservationId(int id)
         {
-            IList<Attraction_Reservation> attractionsReservation = (from attrRes in db.Attractions_Reservations
+            IList<AttractionReservation> attractionsReservation = (from attrRes in db.Attractions_Reservations
                                                                     where attrRes.ReservationId.Equals(id)
                                                                     select attrRes).ToList();
             return attractionsReservation;
         }
 
-        public void RemoveAttractionReservation(Attraction_Reservation attractionReservation)
+        public void RemoveAttractionReservation(AttractionReservation attractionReservation)
         {
             db.Entry(attractionReservation).State = EntityState.Deleted;
         }
@@ -52,7 +52,7 @@ namespace Repository.Repo
             db.SaveChanges();
         }
 
-        public void UpdateAttractionReservation(Attraction_Reservation attractionReservation, byte[] rowVersion)
+        public void UpdateAttractionReservation(AttractionReservation attractionReservation, byte[] rowVersion)
         {
             db.Entry(attractionReservation).OriginalValues["RowVersion"] = rowVersion;
         }

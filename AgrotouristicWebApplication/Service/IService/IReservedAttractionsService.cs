@@ -15,14 +15,14 @@ namespace Service.IService
         Dictionary<DateTime, List<string>> GetAttractionsInstructorsInGivenWeek(string term);
         Dictionary<DateTime, List<string>> GetClassesInstructorInGivenWeek(string term, string idInstructor);
         IList<SelectListItem> GetAvaiableInstructors(int id, string attractionName);
-        Attraction_Reservation GetAttractionReservationById(int id);
-        Attraction_Reservation_Worker GetAttractionReservationWorkerById(int id);
+        AttractionReservation GetAttractionReservationById(int id);
+        AttractionReservationWorker GetAttractionReservationWorkerById(int id);
         int GetMaxRowsToTableAttractions(Dictionary<DateTime, List<string>> dictionary);
-        bool checkStateInstructorToAttraction(Attraction_Reservation_Worker attractionReservationWorker);
+        bool checkStateInstructorToAttraction(AttractionReservationWorker attractionReservationWorker);
         User GetInstructorAssignedToAttraction(string id);
         string GetInstructorsForReservedAttraction(int id);
         string RetreiveInstructorsAssignedToAttraction(int id, string attractionName);
-        void RemoveAssignedInstructorAttraction(Attraction_Reservation_Worker attractionReservationWorker);
-        void AssignInstructorToAttraction(Attraction_Reservation_Worker attractionReservationWorker);
+        void RemoveAssignedInstructorAttraction(AttractionReservationWorker attractionReservationWorker);
+        void AssignInstructorToAttraction(AttractionReservationWorker attractionReservationWorker);
     }
 }

@@ -17,8 +17,8 @@ namespace DomainModel.Models
         public User()
         {
             this.Reservations = new HashSet<Reservation>();
-            this.Reservations_History = new HashSet<Reservation_History>();
-            this.Attraction_Reservation_Worker = new HashSet<Attraction_Reservation_Worker>();
+            this.Reservations_History = new HashSet<ReservationHistory>();
+            this.Attraction_Reservation_Worker = new HashSet<AttractionReservationWorker>();
         }
 
         [Required]
@@ -53,11 +53,11 @@ namespace DomainModel.Models
         public override string Email { get; set; }
         public override bool EmailConfirmed { get; set; }
 
-        public virtual ICollection<Attraction_Reservation_Worker> Attraction_Reservation_Worker { get; set; }
+        public virtual ICollection<AttractionReservationWorker> Attraction_Reservation_Worker { get; set; }
 
         public virtual ICollection<Reservation> Reservations { get; set; }
 
-        public virtual ICollection<Reservation_History> Reservations_History { get; private set; }
+        public virtual ICollection<ReservationHistory> Reservations_History { get; private set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
         {

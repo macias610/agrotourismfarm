@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -168,114 +169,6 @@
     <Compile Include="IRepo\IReservationHouseRepository.cs" />
     <Compile Include="IRepo\IReservationRepository.cs" />
     <Compile Include="IRepo\IUserRepository.cs" />
-    <Compile Include="Migrations\201707240938007_initial.cs" />
-    <Compile Include="Migrations\201707240938007_initial.Designer.cs">
-      <DependentUpon>201707240938007_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201707272217113_users_to_one_table.cs" />
-    <Compile Include="Migrations\201707272217113_users_to_one_table.Designer.cs">
-      <DependentUpon>201707272217113_users_to_one_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201707272225495_nullable_hiredate_user.cs" />
-    <Compile Include="Migrations\201707272225495_nullable_hiredate_user.Designer.cs">
-      <DependentUpon>201707272225495_nullable_hiredate_user.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201708062025435_added_HouseType_table_with_unique_type.cs" />
-    <Compile Include="Migrations\201708062025435_added_HouseType_table_with_unique_type.Designer.cs">
-      <DependentUpon>201708062025435_added_HouseType_table_with_unique_type.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201708070917441_added_unique_type_meal.cs" />
-    <Compile Include="Migrations\201708070917441_added_unique_type_meal.Designer.cs">
-      <DependentUpon>201708070917441_added_unique_type_meal.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201708072226082_extended_length_name_description_in_Attraction_table.cs" />
-    <Compile Include="Migrations\201708072226082_extended_length_name_description_in_Attraction_table.Designer.cs">
-      <DependentUpon>201708072226082_extended_length_name_description_in_Attraction_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201708090922383_changed_name_of_FK_in_Attraction_Reservation_Worker.cs" />
-    <Compile Include="Migrations\201708090922383_changed_name_of_FK_in_Attraction_Reservation_Worker.Designer.cs">
-      <DependentUpon>201708090922383_changed_name_of_FK_in_Attraction_Reservation_Worker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201708310737590_changed_delete_on_cascade_relations.cs" />
-    <Compile Include="Migrations\201708310737590_changed_delete_on_cascade_relations.Designer.cs">
-      <DependentUpon>201708310737590_changed_delete_on_cascade_relations.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709030847337_removed_table_ReservationHouseParticipant_changed_delete_on_cascade.cs" />
-    <Compile Include="Migrations\201709030847337_removed_table_ReservationHouseParticipant_changed_delete_on_cascade.Designer.cs">
-      <DependentUpon>201709030847337_removed_table_ReservationHouseParticipant_changed_delete_on_cascade.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709050958545_added_Reservation_History_table.cs" />
-    <Compile Include="Migrations\201709050958545_added_Reservation_History_table.Designer.cs">
-      <DependentUpon>201709050958545_added_Reservation_History_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709111440030_added_delete_on_cascade_for_AttractionReservation.cs" />
-    <Compile Include="Migrations\201709111440030_added_delete_on_cascade_for_AttractionReservation.Designer.cs">
-      <DependentUpon>201709111440030_added_delete_on_cascade_for_AttractionReservation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709160536026_Added_delete_on_cascade_for_Attraction_Reservation_Worker.cs" />
-    <Compile Include="Migrations\201709160536026_Added_delete_on_cascade_for_Attraction_Reservation_Worker.Designer.cs">
-      <DependentUpon>201709160536026_Added_delete_on_cascade_for_Attraction_Reservation_Worker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709161746458_delete_birthDate_from_Participants.cs" />
-    <Compile Include="Migrations\201709161746458_delete_birthDate_from_Participants.Designer.cs">
-      <DependentUpon>201709161746458_delete_birthDate_from_Participants.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709201321335_RowVersion_Attractions_table.cs" />
-    <Compile Include="Migrations\201709201321335_RowVersion_Attractions_table.Designer.cs">
-      <DependentUpon>201709201321335_RowVersion_Attractions_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709201809237_RowVersion_HouseType_table.cs" />
-    <Compile Include="Migrations\201709201809237_RowVersion_HouseType_table.Designer.cs">
-      <DependentUpon>201709201809237_RowVersion_HouseType_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709202001363_RowVersion_House_table.cs" />
-    <Compile Include="Migrations\201709202001363_RowVersion_House_table.Designer.cs">
-      <DependentUpon>201709202001363_RowVersion_House_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709202023347_RowVersion_Meal_table.cs" />
-    <Compile Include="Migrations\201709202023347_RowVersion_Meal_table.Designer.cs">
-      <DependentUpon>201709202023347_RowVersion_Meal_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709231005447_RowVersion_Reservation_table.cs" />
-    <Compile Include="Migrations\201709231005447_RowVersion_Reservation_table.Designer.cs">
-      <DependentUpon>201709231005447_RowVersion_Reservation_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709240832184_RowVersion_Participant_table.cs" />
-    <Compile Include="Migrations\201709240832184_RowVersion_Participant_table.Designer.cs">
-      <DependentUpon>201709240832184_RowVersion_Participant_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709240844132_RowVersion_Attraction_Reservation_table.cs" />
-    <Compile Include="Migrations\201709240844132_RowVersion_Attraction_Reservation_table.Designer.cs">
-      <DependentUpon>201709240844132_RowVersion_Attraction_Reservation_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709240851583_RowVersion_Reservation_House_table.cs" />
-    <Compile Include="Migrations\201709240851583_RowVersion_Reservation_House_table.Designer.cs">
-      <DependentUpon>201709240851583_RowVersion_Reservation_House_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709240858031_RowVersion_AttractionReservationWorker_table.cs" />
-    <Compile Include="Migrations\201709240858031_RowVersion_AttractionReservationWorker_table.Designer.cs">
-      <DependentUpon>201709240858031_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709240913481_deleted_RowVersion_AttractionReservationWorker_table.cs" />
-    <Compile Include="Migrations\201709240913481_deleted_RowVersion_AttractionReservationWorker_table.Designer.cs">
-      <DependentUpon>201709240913481_deleted_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201709240914511_added_RowVersion_AttractionReservationWorker_table.cs" />
-    <Compile Include="Migrations\201709240914511_added_RowVersion_AttractionReservationWorker_table.Designer.cs">
-      <DependentUpon>201709240914511_added_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201710050808432_added_delete_on_cascade_for_ApplicationUser.cs" />
-    <Compile Include="Migrations\201710050808432_added_delete_on_cascade_for_ApplicationUser.Designer.cs">
-      <DependentUpon>201710050808432_added_delete_on_cascade_for_ApplicationUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201710050857045_deleted_delete_on_cascade_for_ApplicationUser.cs" />
-    <Compile Include="Migrations\201710050857045_deleted_delete_on_cascade_for_ApplicationUser.Designer.cs">
-      <DependentUpon>201710050857045_deleted_delete_on_cascade_for_ApplicationUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711142028183_sth.cs" />
-    <Compile Include="Migrations\201711142028183_sth.Designer.cs">
-      <DependentUpon>201711142028183_sth.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repo\AttractionRepository.cs" />
@@ -289,89 +182,6 @@
     <Compile Include="Repo\ReservationHouseRepository.cs" />
     <Compile Include="Repo\ReservationRepository.cs" />
     <Compile Include="Repo\UserRepository.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201707240938007_initial.resx">
-      <DependentUpon>201707240938007_initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201707272217113_users_to_one_table.resx">
-      <DependentUpon>201707272217113_users_to_one_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201707272225495_nullable_hiredate_user.resx">
-      <DependentUpon>201707272225495_nullable_hiredate_user.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708062025435_added_HouseType_table_with_unique_type.resx">
-      <DependentUpon>201708062025435_added_HouseType_table_with_unique_type.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708070917441_added_unique_type_meal.resx">
-      <DependentUpon>201708070917441_added_unique_type_meal.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708072226082_extended_length_name_description_in_Attraction_table.resx">
-      <DependentUpon>201708072226082_extended_length_name_description_in_Attraction_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708090922383_changed_name_of_FK_in_Attraction_Reservation_Worker.resx">
-      <DependentUpon>201708090922383_changed_name_of_FK_in_Attraction_Reservation_Worker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708310737590_changed_delete_on_cascade_relations.resx">
-      <DependentUpon>201708310737590_changed_delete_on_cascade_relations.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709030847337_removed_table_ReservationHouseParticipant_changed_delete_on_cascade.resx">
-      <DependentUpon>201709030847337_removed_table_ReservationHouseParticipant_changed_delete_on_cascade.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709050958545_added_Reservation_History_table.resx">
-      <DependentUpon>201709050958545_added_Reservation_History_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709111440030_added_delete_on_cascade_for_AttractionReservation.resx">
-      <DependentUpon>201709111440030_added_delete_on_cascade_for_AttractionReservation.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709160536026_Added_delete_on_cascade_for_Attraction_Reservation_Worker.resx">
-      <DependentUpon>201709160536026_Added_delete_on_cascade_for_Attraction_Reservation_Worker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709161746458_delete_birthDate_from_Participants.resx">
-      <DependentUpon>201709161746458_delete_birthDate_from_Participants.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709201321335_RowVersion_Attractions_table.resx">
-      <DependentUpon>201709201321335_RowVersion_Attractions_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709201809237_RowVersion_HouseType_table.resx">
-      <DependentUpon>201709201809237_RowVersion_HouseType_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709202001363_RowVersion_House_table.resx">
-      <DependentUpon>201709202001363_RowVersion_House_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709202023347_RowVersion_Meal_table.resx">
-      <DependentUpon>201709202023347_RowVersion_Meal_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709231005447_RowVersion_Reservation_table.resx">
-      <DependentUpon>201709231005447_RowVersion_Reservation_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709240832184_RowVersion_Participant_table.resx">
-      <DependentUpon>201709240832184_RowVersion_Participant_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709240844132_RowVersion_Attraction_Reservation_table.resx">
-      <DependentUpon>201709240844132_RowVersion_Attraction_Reservation_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709240851583_RowVersion_Reservation_House_table.resx">
-      <DependentUpon>201709240851583_RowVersion_Reservation_House_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709240858031_RowVersion_AttractionReservationWorker_table.resx">
-      <DependentUpon>201709240858031_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709240913481_deleted_RowVersion_AttractionReservationWorker_table.resx">
-      <DependentUpon>201709240913481_deleted_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709240914511_added_RowVersion_AttractionReservationWorker_table.resx">
-      <DependentUpon>201709240914511_added_RowVersion_AttractionReservationWorker_table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201710050808432_added_delete_on_cascade_for_ApplicationUser.resx">
-      <DependentUpon>201710050808432_added_delete_on_cascade_for_ApplicationUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201710050857045_deleted_delete_on_cascade_for_ApplicationUser.resx">
-      <DependentUpon>201710050857045_deleted_delete_on_cascade_for_ApplicationUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711142028183_sth.resx">
-      <DependentUpon>201711142028183_sth.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DomainModel\DomainModel.csproj">

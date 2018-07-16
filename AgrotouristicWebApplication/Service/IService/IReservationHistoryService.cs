@@ -9,9 +9,9 @@ namespace Service.IService
 {
     public interface IReservationHistoryService
     {
-        IList<Reservation_History> GetClientArchiveReservations(string id);
-        Reservation_History GetReservationHistoryBasedReservation(Reservation reservation);
-        Reservation_History GetReservationHistoryById(int id);
-        void AddReservationHistory(Reservation_History reservationHistory);
+        IList<ReservationHistory> GetClientArchiveReservations(string id);
+        ReservationHistory GetReservationHistoryBasedReservation(Reservation reservation);
+        ReservationHistory GetReservationHistoryById(int id);
+        void AddReservationHistory(ReservationHistory reservationHistory);
     }
 }

@@ -9,18 +9,18 @@ namespace Repository.IRepo
 {
     public interface IReservationHouseRepository
     {
-        void AddReservationHouse(Reservation_House reservationHouse);
+        void AddReservationHouse(ReservationHouse reservationHouse);
 
-        Reservation_House GetReservationHouseById(int id);
+        ReservationHouse GetReservationHouseById(int id);
 
-        IList<Reservation_House> GetReservationsHouses();
+        IList<ReservationHouse> GetReservationsHouses();
 
-        IList<Reservation_House> GetReservationHousesOfReservationId(int id);
+        IList<ReservationHouse> GetReservationHousesOfReservationId(int id);
 
-        void RemoveReservationHouse(Reservation_House reservationHouse);
+        void RemoveReservationHouse(ReservationHouse reservationHouse);
 
         void SaveChanges();
 
-        void UpdateReservationHouse(Reservation_House reservationHouse, byte[] rowVersion);
+        void UpdateReservationHouse(ReservationHouse reservationHouse, byte[] rowVersion);
     }
 }

@@ -64,7 +64,7 @@ namespace Service.Service
 
         public IList<House> GetHousesForReservation(int id)
         {
-            IList<Reservation_House> reservationHouses = this.reservationHouseRepository
+            IList<ReservationHouse> reservationHouses = this.reservationHouseRepository
                                                             .GetReservationHousesOfReservationId(id);
             IList<House> houses = reservationHouses.Select(item => item.House).ToList();
             return houses;

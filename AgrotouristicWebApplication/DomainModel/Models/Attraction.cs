@@ -11,7 +11,7 @@ namespace DomainModel.Models
 
         public Attraction()
         {
-            this.Attraction_Reservation = new HashSet<Attraction_Reservation>();
+            this.Attraction_Reservation = new HashSet<AttractionReservation>();
         }
 
         [Display(Name = "Id:")]
@@ -39,6 +39,6 @@ namespace DomainModel.Models
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
-        public ICollection<Attraction_Reservation> Attraction_Reservation { get; set; }
+        public ICollection<AttractionReservation> Attraction_Reservation { get; set; }
     }
 }

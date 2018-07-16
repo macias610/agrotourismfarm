@@ -223,7 +223,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 reservation.Attraction_Reservation = this.reservationService.GetReservationById(reservation.Id).Attraction_Reservation;
                 reservation.Reservation_House = this.reservationService.GetReservationById(reservation.Id).Reservation_House;
-                Reservation_History reservationHistory = this.reservationHistoryService.GetReservationHistoryBasedReservation(reservation);
+                ReservationHistory reservationHistory = this.reservationHistoryService.GetReservationHistoryBasedReservation(reservation);
                 this.reservationService.RemoveReservation(reservation);
                 this.reservationHistoryService.AddReservationHistory(reservationHistory);
                 return RedirectToAction("Index");

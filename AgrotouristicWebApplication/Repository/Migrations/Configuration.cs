@@ -6,6 +6,7 @@ namespace Repository.Migrations
     using Microsoft.AspNet.Identity.EntityFramework;
     using Models;
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
@@ -19,21 +20,29 @@ namespace Repository.Migrations
 
         protected override void Seed(AgrotourismContext context)
         {
-            //SeedRoles(context);
-            //SeedUsers(context);
-
+            SeedRoles(context);
+            SeedUsers(context);
         }
 
         private void SeedRoles(AgrotourismContext context)
         {
             RoleManager<IdentityRole> roleManager = new RoleManager<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>(new RoleStore<IdentityRole>());
 
-            if (!roleManager.RoleExists("Admin"))
+            IList<string> roles = new List<string>
             {
-                IdentityRole role = new IdentityRole();
-                role.Name = "Admin";
-                roleManager.Create(role);
+                "Admin","Klient","Instruktor","Recepcjonista"
+            };
+
+            foreach(string roleName in roles)
+            {
+                if (!roleManager.RoleExists(roleName))
+                {
+                    IdentityRole role = new IdentityRole();
+                    role.Name = roleName;
+                    roleManager.Create(role);
+                }
             }
+            
         }
 
         private void SeedUsers(AgrotourismContext context)
@@ -41,10 +50,10 @@ namespace Repository.Migrations
             UserStore<User> store = new UserStore<User>(context);
             UserManager<User> manager = new UserManager<User>(store);
 
-            if (!context.Users.Any(u => u.UserName == "Admin@gmail.com"))
+            if (!context.Users.Any(u => u.UserName == "admin@gmail.com"))
             {
-                User user = new User { UserName = "Admin@gmail.com", Name = "Adam", Surname = "Kowalski", BirthDate = DateTime.Now, HireDate=DateTime.Now, Profession="Admin",Salary= 2300 };
-                var adminresult = manager.Create(user, "Password6#");
+                User user = new User { UserName = "admin@gmail.com", Name = "Adam", Surname = "Kowalski", BirthDate = DateTime.Now, HireDate=DateTime.Now, Profession="Admin",Salary= 2300, EmailConfirmed = true };
+                var adminresult = manager.Create(user, "Password6!");
 
                 if (adminresult.Succeeded)
                 {

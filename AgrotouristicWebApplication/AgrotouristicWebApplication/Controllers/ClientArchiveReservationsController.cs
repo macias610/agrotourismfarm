@@ -30,10 +30,10 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            IList<Reservation_History> reservationsHistory = reservationHistoryService.GetClientArchiveReservations(User.Identity.GetUserId()).ToList();
+            IList<ReservationHistory> reservationsHistory = reservationHistoryService.GetClientArchiveReservations(User.Identity.GetUserId()).ToList();
             int currentPage = page ?? 1;
             int perPage = 4;
-            return View(reservationsHistory.ToPagedList<Reservation_History>(currentPage,perPage));
+            return View(reservationsHistory.ToPagedList<ReservationHistory>(currentPage,perPage));
         }
 
         [Authorize(Roles = "Klient")]
@@ -48,7 +48,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reservation_History reservationHistory = reservationHistoryService.GetReservationHistoryById((int)id);
+            ReservationHistory reservationHistory = reservationHistoryService.GetReservationHistoryById((int)id);
             if (reservationHistory == null)
             {
                 return HttpNotFound();

@@ -17,24 +17,24 @@ namespace Repository.Repo
             this.db = db;
         }
 
-        public void AddAttractionReservationWorker(Attraction_Reservation_Worker attractionReservationWorker)
+        public void AddAttractionReservationWorker(AttractionReservationWorker attractionReservationWorker)
         {
             this.db.Attractions_Reservations_Workers.Add(attractionReservationWorker);
         }
 
-        public Attraction_Reservation_Worker GetAttractionReservationWorkerById(int id)
+        public AttractionReservationWorker GetAttractionReservationWorkerById(int id)
         {
             var attrResWorker = this.db.Attractions_Reservations_Workers.Find(id);
             return attrResWorker;
         }
 
-        public IList<Attraction_Reservation_Worker> GetAttractionsReservationsWorkers()
+        public IList<AttractionReservationWorker> GetAttractionsReservationsWorkers()
         {
-            IQueryable<Attraction_Reservation_Worker> attrResWorkers = this.db.Attractions_Reservations_Workers.AsNoTracking();
+            IQueryable<AttractionReservationWorker> attrResWorkers = this.db.Attractions_Reservations_Workers.AsNoTracking();
             return attrResWorkers.ToList();
         }
 
-        public void RemoveAttractionReservationWorker(Attraction_Reservation_Worker attractionReservationWorker)
+        public void RemoveAttractionReservationWorker(AttractionReservationWorker attractionReservationWorker)
         {
             this.db.Entry(attractionReservationWorker).State = EntityState.Deleted;
         }

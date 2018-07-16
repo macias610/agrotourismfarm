@@ -18,24 +18,24 @@ namespace Service.Service
             this.reservationRepository = reservationRepository;
         }
 
-        public void AddReservationHistory(Reservation_History reservationHistory)
+        public void AddReservationHistory(ReservationHistory reservationHistory)
         {
             this.reservationRepository.AddReservationHistory(reservationHistory);
             this.reservationRepository.SaveChanges();
         }
 
-        public IList<Reservation_History> GetClientArchiveReservations(string id)
+        public IList<ReservationHistory> GetClientArchiveReservations(string id)
         {
-            IList<Reservation_History> archiveReservations = this.reservationRepository.GetClientArchiveReservations(id);
+            IList<ReservationHistory> archiveReservations = this.reservationRepository.GetClientArchiveReservations(id);
             return archiveReservations;
         }
 
-        public Reservation_History GetReservationHistoryBasedReservation(Reservation reservation)
+        public ReservationHistory GetReservationHistoryBasedReservation(Reservation reservation)
         {
             string reservedHouses = String.Empty;
             string reservedAttractions = String.Empty;
 
-            foreach (Reservation_House reservationHouse in reservation.Reservation_House.ToList())
+            foreach (ReservationHouse reservationHouse in reservation.Reservation_House.ToList())
             {
                 reservedHouses += reservationHouse.House.HouseType.Type + "(" + reservationHouse.House.Name + ");";
             }
@@ -44,7 +44,7 @@ namespace Service.Service
             if (reservation.Attraction_Reservation.Count > 0)
             {
                 HashSet<string> set = new HashSet<string>();
-                foreach (Attraction_Reservation reservationAttraction in reservation.Attraction_Reservation.ToList())
+                foreach (AttractionReservation reservationAttraction in reservation.Attraction_Reservation.ToList())
                 {
                     set.Add(reservationAttraction.Attraction.Name);
                 }
@@ -57,7 +57,7 @@ namespace Service.Service
             else
                 reservedAttractions = "Brak";
 
-            Reservation_History reservationHistory = new Reservation_History()
+            ReservationHistory reservationHistory = new ReservationHistory()
             {
                 ClientId = reservation.ClientId,
                 StartDate = reservation.StartDate,
@@ -69,9 +69,9 @@ namespace Service.Service
             return reservationHistory;
         }
 
-        public Reservation_History GetReservationHistoryById(int id)
+        public ReservationHistory GetReservationHistoryById(int id)
         {
-            Reservation_History reservationHistory = this.reservationRepository.GetReservationHistoryById(id);
+            ReservationHistory reservationHistory = this.reservationRepository.GetReservationHistoryById(id);
             return reservationHistory;
         }
     }

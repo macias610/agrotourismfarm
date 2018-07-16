@@ -6,7 +6,7 @@ using System.Web;
 
 namespace DomainModel.Models
 {
-    public class Reservation_History
+    public class ReservationHistory
     {
         [Display(Name = "Id:")]
         [Required]

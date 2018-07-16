@@ -12,7 +12,7 @@ namespace DomainModel.Models
 
         public Meal()
         {
-            this.Reservation_House = new HashSet<Reservation_House>();
+            this.Reservation_House = new HashSet<ReservationHouse>();
         }
 
         [Display(Name = "Id:")]
@@ -33,6 +33,6 @@ namespace DomainModel.Models
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
-        public virtual ICollection<Reservation_House> Reservation_House { get; set; }
+        public virtual ICollection<ReservationHouse> Reservation_House { get; set; }
     }
 }

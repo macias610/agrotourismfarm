@@ -31,7 +31,7 @@ namespace Service.Service
         {
             using (TransactionScope scope = new TransactionScope())
             {
-                List<Attraction_Reservation> attractionsReservation = this.attractionReservationRepository
+                List<AttractionReservation> attractionsReservation = this.attractionReservationRepository
                                                                         .GetAttractionsReservationsByReservationId(id)
                                                                             .ToList();
                 Dictionary<DateTime, List<string>> dictionary = new Dictionary<DateTime, List<string>>();
@@ -45,13 +45,13 @@ namespace Service.Service
 
                 foreach (KeyValuePair<DateTime, List<string>> item in dictionary)
                 {
-                    List<Attraction_Reservation> attractionsReservationInDay = attractionsReservation.Where(elem => elem.TermAffair.Equals(item.Key)).ToList();
+                    List<AttractionReservation> attractionsReservationInDay = attractionsReservation.Where(elem => elem.TermAffair.Equals(item.Key)).ToList();
                     List<string> oldAttractions = item.Value;
                     List<string> newAttractions = reservation.AssignedAttractions[item.Key];
                     List<string> toRemove = oldAttractions.Where(elem => !(newAttractions.Contains(elem))).ToList();
                     foreach (string attractionToRemove in toRemove)
                     {
-                        Attraction_Reservation attractionReservation = attractionsReservationInDay.Where(elem => elem.Attraction.Name.Equals(attractionToRemove.Split(',')[0])).FirstOrDefault();
+                        AttractionReservation attractionReservation = attractionsReservationInDay.Where(elem => elem.Attraction.Name.Equals(attractionToRemove.Split(',')[0])).FirstOrDefault();
                         attractionsReservationInDay.Remove(attractionReservation);
                         this.attractionReservationRepository.RemoveAttractionReservation(attractionReservation);
                     }
@@ -66,7 +66,7 @@ namespace Service.Service
                     {
                         string attractionName = attractionToAdd.Split(',')[0];
                         Attraction attraction = this.attractionRepository.GetAttractionByName(attractionName);
-                        Attraction_Reservation attractionReservation = new Attraction_Reservation()
+                        AttractionReservation attractionReservation = new AttractionReservation()
                         {
                             AttractionId = attraction.Id,
                             ReservationId = id,
@@ -150,7 +150,7 @@ namespace Service.Service
             DateTime start = DateTime.Parse(term.Split(';')[0]);
             DateTime end = DateTime.Parse(term.Split(';')[1]);
 
-            List<Attraction_Reservation> attractionsReservation = this.attractionReservationRepository.GetAttractionsReservations().ToList();
+            List<AttractionReservation> attractionsReservation = this.attractionReservationRepository.GetAttractionsReservations().ToList();
             attractionsReservation = attractionsReservation.Where(item => item.ReservationId.Equals(id) &&
                                                                             item.TermAffair.CompareTo(start) >= 0 &&
                                                                             item.TermAffair.CompareTo(end) <= 0)
@@ -183,7 +183,7 @@ namespace Service.Service
                         string attractionName = attr.Split(',')[0];
                         int quantityParticipants = Int32.Parse(attr.Split(',')[1]);
                         Attraction attraction = this.attractionRepository.GetAttractionByName(attractionName);
-                        Attraction_Reservation attractionReservation = new Attraction_Reservation()
+                        AttractionReservation attractionReservation = new AttractionReservation()
                         {
                             AttractionId = attraction.Id,
                             ReservationId = id,

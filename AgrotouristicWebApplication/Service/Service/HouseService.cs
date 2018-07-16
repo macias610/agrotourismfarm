@@ -51,7 +51,7 @@ namespace Service.Service
         public void setAvailabilityHouse(House house)
         {
             IList<Reservation> reservations = this.reservationRepository.GetReservations();
-            IList<Reservation_House> reservationsHouses = this.reservationHouseRepository
+            IList<ReservationHouse> reservationsHouses = this.reservationHouseRepository
                                                                 .GetReservationsHouses();
             IList<int> reservationsIdOfHouse = reservationsHouses
                                                 .Where(item => item.HouseId.Equals(house.Id))

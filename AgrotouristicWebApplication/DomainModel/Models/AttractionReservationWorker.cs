@@ -6,9 +6,9 @@ using System.Web;
 
 namespace DomainModel.Models
 {
-    public class Attraction_Reservation_Worker
+    public class AttractionReservationWorker
     {
-        public Attraction_Reservation_Worker()
+        public AttractionReservationWorker()
         {
 
         }
@@ -21,6 +21,6 @@ namespace DomainModel.Models
         public byte[] RowVersion { get; set; }
 
         public virtual User Worker { get; set; }
-        public virtual Attraction_Reservation Attraction_Reservation { get; set; }
+        public virtual AttractionReservation Attraction_Reservation { get; set; }
     }
 }

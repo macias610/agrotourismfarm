@@ -28,7 +28,7 @@ namespace Service.Service
 
         public int countHousesWithGivenMeal(int id)
         {
-            IList<Reservation_House> reservationHouses = this.reservationHouseRepository
+            IList<ReservationHouse> reservationHouses = this.reservationHouseRepository
                                                             .GetReservationsHouses();
             int houses = reservationHouses.Where(item => item.MealId.Equals(id)).Count();
             return houses;

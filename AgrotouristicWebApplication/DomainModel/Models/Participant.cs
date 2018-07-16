@@ -32,7 +32,7 @@ namespace DomainModel.Models
         public byte[] RowVersion { get; set; }
 
         public int Reservation_HouseId { get; set; }
-        public virtual Reservation_House Reservation_House { get; set; }
+        public virtual ReservationHouse Reservation_House { get; set; }
 
     }
 }

@@ -74,7 +74,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            Attraction_Reservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(id);
+            AttractionReservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(id);
             AttractionInstructorDetails attractionRemovedInstructor = new AttractionInstructorDetails()
             {
                 AttractionName=attractionReservation.Attraction.Name,
@@ -97,7 +97,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            Attraction_Reservation_Worker attractionReservationWorker = reservedAttractionsService.GetAttractionReservationWorkerById(id);
+            AttractionReservationWorker attractionReservationWorker = reservedAttractionsService.GetAttractionReservationWorkerById(id);
             try
             {
                 if (attractionReservationWorker == null || !reservedAttractionsService.checkStateInstructorToAttraction(attractionReservationWorker))
@@ -110,7 +110,7 @@ namespace AgrotouristicWebApplication.Controllers
             catch 
             {
                 ViewBag.exception = true;
-                Attraction_Reservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(Int32.Parse(Request.Form["attractionReservationId"].ToString()));
+                AttractionReservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(Int32.Parse(Request.Form["attractionReservationId"].ToString()));
                 AttractionInstructorDetails attractionRemovedInstructor = new AttractionInstructorDetails()
                 {
                     AttractionName = attractionReservation.Attraction.Name,
@@ -132,7 +132,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            Attraction_Reservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(id);
+            AttractionReservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(id);
             AttractionNewInstructor attractionNewInstructor = new AttractionNewInstructor()
             {
                 AttractionName = attractionReservation.Attraction.Name,
@@ -155,7 +155,7 @@ namespace AgrotouristicWebApplication.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 return RedirectToAction("Index", "Home", new { expiredSession = true });
             }
-            Attraction_Reservation_Worker attractionReservationWorker = new Attraction_Reservation_Worker()
+            AttractionReservationWorker attractionReservationWorker = new AttractionReservationWorker()
             {
                 WorkerId= Request.Form["IdInstructor"].ToString(),
                 Attraction_ReservationId=idAttractionReservation,
@@ -172,7 +172,7 @@ namespace AgrotouristicWebApplication.Controllers
             catch
             {
                 ViewBag.exception = true;
-                Attraction_Reservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(idAttractionReservation);
+                AttractionReservation attractionReservation = reservedAttractionsService.GetAttractionReservationById(idAttractionReservation);
                 AttractionNewInstructor attractionNewInstructor = new AttractionNewInstructor()
                 {
                     AttractionName = attractionReservation.Attraction.Name,

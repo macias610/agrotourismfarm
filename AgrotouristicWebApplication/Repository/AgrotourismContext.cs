@@ -31,10 +31,10 @@ namespace Repository.Models
         public DbSet<HouseType> HouseTypes { get; set; }
         public DbSet<Meal> Meals { get; set; }
         public DbSet<Participant> Participants { get; set; }
-        public DbSet<Reservation_House> Reservation_Houses { get; set; }
-        public DbSet<Reservation_History> Reservations_History { get; set; }
-        public DbSet<Attraction_Reservation> Attractions_Reservations { get; set; }
-        public DbSet<Attraction_Reservation_Worker> Attractions_Reservations_Workers { get; set; }
+        public DbSet<ReservationHouse> Reservation_Houses { get; set; }
+        public DbSet<ReservationHistory> Reservations_History { get; set; }
+        public DbSet<AttractionReservation> Attractions_Reservations { get; set; }
+        public DbSet<AttractionReservationWorker> Attractions_Reservations_Workers { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace Repository.Models
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
                                             
 
-            modelBuilder.Entity<Reservation_House>().HasRequired(x => x.Reservation)
+            modelBuilder.Entity<ReservationHouse>().HasRequired(x => x.Reservation)
                                             .WithMany(x => x.Reservation_House)
                                             .HasForeignKey(x => x.ReservationId)
                                             .WillCascadeOnDelete(true);
@@ -55,12 +55,12 @@ namespace Repository.Models
                                             .HasForeignKey(x => x.Reservation_HouseId)
                                             .WillCascadeOnDelete(true);
 
-            modelBuilder.Entity<Attraction_Reservation>().HasRequired(x => x.Reservation)
+            modelBuilder.Entity<AttractionReservation>().HasRequired(x => x.Reservation)
                                             .WithMany(x => x.Attraction_Reservation)
                                             .HasForeignKey(x => x.ReservationId)
                                             .WillCascadeOnDelete(true);
 
-            modelBuilder.Entity<Attraction_Reservation_Worker>().HasRequired(x => x.Attraction_Reservation)
+            modelBuilder.Entity<AttractionReservationWorker>().HasRequired(x => x.Attraction_Reservation)
                                             .WithMany(x => x.Attraction_Reservation_Worker)
                                             .HasForeignKey(x => x.Attraction_ReservationId)
                                             .WillCascadeOnDelete(true);

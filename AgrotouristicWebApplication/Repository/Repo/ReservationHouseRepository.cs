@@ -17,32 +17,32 @@ namespace Repository.Repo
             this.db = db;
         }
 
-        public void AddReservationHouse(Reservation_House reservationHouse)
+        public void AddReservationHouse(ReservationHouse reservationHouse)
         {
             db.Reservation_Houses.Add(reservationHouse);
         }
 
-        public Reservation_House GetReservationHouseById(int id)
+        public ReservationHouse GetReservationHouseById(int id)
         {
-            Reservation_House reservationHouse = this.db.Reservation_Houses.Find(id);
+            ReservationHouse reservationHouse = this.db.Reservation_Houses.Find(id);
             return reservationHouse;
         }
 
-        public IList<Reservation_House> GetReservationHousesOfReservationId(int id)
+        public IList<ReservationHouse> GetReservationHousesOfReservationId(int id)
         {
-            IList<Reservation_House> reservationHouses = (from resHouse in db.Reservation_Houses
+            IList<ReservationHouse> reservationHouses = (from resHouse in db.Reservation_Houses
                                                           where resHouse.ReservationId.Equals(id)
                                                           select resHouse).ToList();
             return reservationHouses;
         }
 
-        public IList<Reservation_House> GetReservationsHouses()
+        public IList<ReservationHouse> GetReservationsHouses()
         {
-            IQueryable<Reservation_House> reservationsHouses = this.db.Reservation_Houses.AsNoTracking();
+            IQueryable<ReservationHouse> reservationsHouses = this.db.Reservation_Houses.AsNoTracking();
             return reservationsHouses.ToList();
         }
 
-        public void RemoveReservationHouse(Reservation_House reservationHouse)
+        public void RemoveReservationHouse(ReservationHouse reservationHouse)
         {
             this.db.Entry(reservationHouse).State = EntityState.Deleted;
         }
@@ -52,7 +52,7 @@ namespace Repository.Repo
             this.db.SaveChanges();
         }
 
-        public void UpdateReservationHouse(Reservation_House reservationHouse, byte[] rowVersion)
+        public void UpdateReservationHouse(ReservationHouse reservationHouse, byte[] rowVersion)
         {
             db.Entry(reservationHouse).OriginalValues["RowVersion"] = rowVersion;
         }

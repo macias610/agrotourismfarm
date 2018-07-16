@@ -66,22 +66,22 @@ namespace Repository.Repo
             db.Entry(reservation).OriginalValues["RowVersion"] = rowVersion;
         }
 
-        public void AddReservationHistory(Reservation_History reservationHistory)
+        public void AddReservationHistory(ReservationHistory reservationHistory)
         {
             db.Reservations_History.Add(reservationHistory);
         }
 
-        public IList<Reservation_History> GetClientArchiveReservations(string id)
+        public IList<ReservationHistory> GetClientArchiveReservations(string id)
         {
-            IQueryable<Reservation_History> archiveReservations = (from archiveReservation in db.Reservations_History
+            IQueryable<ReservationHistory> archiveReservations = (from archiveReservation in db.Reservations_History
                                                    where archiveReservation.ClientId.Equals(id)
                                                    select archiveReservation).AsNoTracking();
             return archiveReservations.ToList();
         }
 
-        public Reservation_History GetReservationHistoryById(int id)
+        public ReservationHistory GetReservationHistoryById(int id)
         {
-            Reservation_History reservationHistory = db.Reservations_History.Find(id);
+            ReservationHistory reservationHistory = db.Reservations_History.Find(id);
             return reservationHistory;
         }
 

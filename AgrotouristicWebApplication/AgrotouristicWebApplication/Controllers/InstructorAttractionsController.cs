@@ -73,7 +73,7 @@ namespace AgrotouristicWebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Attraction_Reservation attractionReservation = reservedAttractionsService.GetAttractionReservationById((int)id);
+            AttractionReservation attractionReservation = reservedAttractionsService.GetAttractionReservationById((int)id);
             if (attractionReservation == null)
             {
                 return HttpNotFound();

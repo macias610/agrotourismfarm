@@ -14,8 +14,8 @@ namespace DomainModel.Models
 
         public Reservation()
         {
-            this.Reservation_House = new HashSet<Reservation_House>();
-            this.Attraction_Reservation = new HashSet<Attraction_Reservation>();
+            this.Reservation_House = new HashSet<ReservationHouse>();
+            this.Attraction_Reservation = new HashSet<AttractionReservation>();
         }
 
         [Display(Name = "Id:")]
@@ -54,8 +54,8 @@ namespace DomainModel.Models
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
-        public virtual ICollection<Reservation_House> Reservation_House { get; set; }
-        public virtual ICollection<Attraction_Reservation> Attraction_Reservation { get; set; }
+        public virtual ICollection<ReservationHouse> Reservation_House { get; set; }
+        public virtual ICollection<AttractionReservation> Attraction_Reservation { get; set; }
         public virtual User Client { get; set; }
 
     }

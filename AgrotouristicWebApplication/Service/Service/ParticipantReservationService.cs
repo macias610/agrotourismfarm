@@ -29,9 +29,9 @@ namespace Service.Service
 
         public Dictionary<string, List<Participant>> RetreiveHouseParticipants(int id)
         {
-            IList<Reservation_House> reservationHouses = this.reservationHouseRepository.GetReservationHousesOfReservationId(id);
+            IList<ReservationHouse> reservationHouses = this.reservationHouseRepository.GetReservationHousesOfReservationId(id);
             Dictionary<string, List<Participant>> dictionary = new Dictionary<string, List<Participant>>();
-            foreach (Reservation_House resHouse in reservationHouses)
+            foreach (ReservationHouse resHouse in reservationHouses)
             {
                 string houseName = resHouse.House.HouseType.Type + '(' + resHouse.House.Name + ");";
                 List<Participant> participants = resHouse.Participant.ToList();
@@ -59,7 +59,7 @@ namespace Service.Service
 
         public IList<Participant> GetParticipantsHouseForReservation(int reservationId, int houseId)
         {
-            IList<Reservation_House> reservationHouses = this.reservationHouseRepository
+            IList<ReservationHouse> reservationHouses = this.reservationHouseRepository
                                                                 .GetReservationHousesOfReservationId(reservationId);
             int reservationHouseId = reservationHouses
                                         .Where(item => item.HouseId.Equals(houseId))
@@ -117,7 +117,7 @@ namespace Service.Service
                     string houseName = Regex.Match(item.Key, @"\(([^)]*)\)").Groups[1].Value;
                     int houseId = this.houseRepository.GetHouseByName(houseName).Id;
 
-                    Reservation_House reservationHouse = this.reservationHouseRepository
+                    ReservationHouse reservationHouse = this.reservationHouseRepository
                                                                 .GetReservationHousesOfReservationId(id)
                                                                 .Where(elem => elem.HouseId.Equals(houseId))
                                                                 .FirstOrDefault();

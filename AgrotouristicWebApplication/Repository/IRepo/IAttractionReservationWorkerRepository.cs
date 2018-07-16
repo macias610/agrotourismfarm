@@ -9,13 +9,13 @@ namespace Repository.IRepo
 {
     public interface IAttractionReservationWorkerRepository
     {
-        void AddAttractionReservationWorker(Attraction_Reservation_Worker attractionReservationWorker);
+        void AddAttractionReservationWorker(AttractionReservationWorker attractionReservationWorker);
 
-        Attraction_Reservation_Worker GetAttractionReservationWorkerById(int id);
+        AttractionReservationWorker GetAttractionReservationWorkerById(int id);
 
-        IList<Attraction_Reservation_Worker> GetAttractionsReservationsWorkers();
+        IList<AttractionReservationWorker> GetAttractionsReservationsWorkers();
 
-        void RemoveAttractionReservationWorker(Attraction_Reservation_Worker attractionReservationWorker);
+        void RemoveAttractionReservationWorker(AttractionReservationWorker attractionReservationWorker);
 
         void SaveChanges();
     }

@@ -62,7 +62,7 @@ namespace Service.Service
 
         public Meal GetHouseMealForReservation(int reservationId, int houseId)
         {
-            IList<Reservation_House> reservationHouses = this.reservationHouseRepository.GetReservationHousesOfReservationId(reservationId);
+            IList<ReservationHouse> reservationHouses = this.reservationHouseRepository.GetReservationHousesOfReservationId(reservationId);
             Meal meal = reservationHouses
                             .Where(item => item.HouseId.Equals(houseId))
                             .Select(item => item.Meal).SingleOrDefault();
@@ -77,7 +77,7 @@ namespace Service.Service
                 {
                     string houseName = Regex.Match(item.Key, @"\(([^)]*)\)").Groups[1].Value;
                     int houseId = this.houseRepository.GetHouseByName(houseName).Id;
-                    Reservation_House reservationHouse = this.reservationHouseRepository
+                    ReservationHouse reservationHouse = this.reservationHouseRepository
                                                                 .GetReservationHousesOfReservationId(id)
                                                                 .Where(elem => elem.HouseId.Equals(houseId))
                                                                 .FirstOrDefault();
